@@ -1,9 +1,10 @@
-'use client'
+﻿'use client'
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { getCalorieStatus, getStatusColour, getStatusMessage, getDailyPlan, getExercises, getGreeting, formatKcal } from '@/lib/calculations'
 import { FOODS } from '@/lib/foods'
+import { saveMeal, deleteMeal, saveWeight, fetchWeights, fetchMeals } from '@/lib/api-client'
 import type { UserProfile, MealEntry, WeightEntry } from '@/types'
 
 type MealType = 'breakfast' | 'lunch' | 'snack' | 'dinner'
@@ -128,7 +129,7 @@ export default function DashboardPage() {
         {/* GREETING */}
         <div className="mb-6">
           <h1 className="text-2xl font-extrabold text-gray-900">{getGreeting(profile.name)}</h1>
-          <p className="text-sm text-gray-500 mt-1">Goal: {formatKcal(goal)} today · Target: {profile.goalWeight} kg</p>
+          <p className="text-sm text-gray-500 mt-1">Goal: {formatKcal(goal)} today Â· Target: {profile.goalWeight} kg</p>
         </div>
 
         {/* STATS */}
@@ -219,7 +220,7 @@ export default function DashboardPage() {
                   <div key={f.id} className="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-gray-100 bg-gray-50 hover:bg-green-50 transition-colors">
                     <div className="flex-1">
                       <div className="text-sm font-medium text-gray-800">{f.name}</div>
-                      <div className="text-xs text-gray-400">{f.protein}g protein · {f.carbs}g carbs · {f.fat}g fat</div>
+                      <div className="text-xs text-gray-400">{f.protein}g protein Â· {f.carbs}g carbs Â· {f.fat}g fat</div>
                     </div>
                     <div className="text-sm text-gray-500 mr-2">{f.kcal} kcal</div>
                     <button onClick={() => addFood(FOODS.indexOf(f))}
@@ -247,7 +248,7 @@ export default function DashboardPage() {
                         <div className="flex items-center gap-2">
                           <div className="w-2 h-2 rounded-full" style={{ background: m.color }} />
                           <span className="font-semibold text-sm text-gray-800">{m.label}</span>
-                          {activeMeal === m.key && <span className="text-xs text-blue-500 font-medium">← adding here</span>}
+                          {activeMeal === m.key && <span className="text-xs text-blue-500 font-medium">â† adding here</span>}
                         </div>
                         <span className="text-xs text-gray-400">{mkcal} kcal</span>
                       </div>
@@ -257,7 +258,7 @@ export default function DashboardPage() {
                           <div key={ii} className="flex items-center gap-2 py-1">
                             <span className="flex-1 text-sm text-gray-700">{it.foodName}</span>
                             <span className="text-xs text-gray-400">{it.kcal} kcal</span>
-                            <button onClick={() => removeFood(m.key, ii)} className="text-gray-300 hover:text-red-400 text-base leading-none px-1">×</button>
+                            <button onClick={() => removeFood(m.key, ii)} className="text-gray-300 hover:text-red-400 text-base leading-none px-1">Ã—</button>
                           </div>
                         ))}
                         {items.length === 0 && <div className="text-xs text-gray-300 italic py-1">Nothing added yet</div>}
@@ -335,18 +336,18 @@ export default function DashboardPage() {
                     exDone[i] ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-100'
                   }`}>
                     <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-lg flex-shrink-0">
-                      {i === 0 ? '🏃' : '💪'}
+                      {i === 0 ? 'ðŸƒ' : 'ðŸ’ª'}
                     </div>
                     <div className="flex-1">
                       <div className="font-semibold text-sm text-gray-800">{ex.title}</div>
                       <div className="text-xs text-gray-400 mt-0.5">{ex.detail}</div>
-                      <div className="text-xs text-green-600 font-semibold mt-0.5">Burns ~{ex.burn} kcal · {ex.duration}</div>
+                      <div className="text-xs text-green-600 font-semibold mt-0.5">Burns ~{ex.burn} kcal Â· {ex.duration}</div>
                     </div>
                     <button onClick={() => setExDone(d => ({ ...d, [i]: !d[i] }))}
                       className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm transition-all ${
                         exDone[i] ? 'bg-green-600 border-green-600 text-white' : 'border-gray-300 text-transparent hover:border-green-400'
                       }`}>
-                      ✓
+                      âœ“
                     </button>
                   </div>
                 ))}
@@ -376,7 +377,7 @@ export default function DashboardPage() {
             {profile.reminders ? (
               <div className="space-y-4">
                 <div className="card">
-                  <div className="text-xs text-gray-400 uppercase tracking-wide font-semibold mb-2">7:00 AM — Morning plan</div>
+                  <div className="text-xs text-gray-400 uppercase tracking-wide font-semibold mb-2">7:00 AM â€” Morning plan</div>
                   <div className="text-sm text-gray-700 leading-relaxed">
                     Good morning {profile.name}! Today's calorie goal is <strong>{goal.toLocaleString()} kcal</strong>.<br/>
                     Start your day with: <strong>{plan.breakfast[new Date().getDate() % plan.breakfast.length]}</strong>.<br/>
@@ -385,16 +386,16 @@ export default function DashboardPage() {
                   <div className="inline-block mt-3 text-xs font-semibold bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full">Morning</div>
                 </div>
                 <div className="card">
-                  <div className="text-xs text-gray-400 uppercase tracking-wide font-semibold mb-2">8:00 PM — Evening check-in</div>
+                  <div className="text-xs text-gray-400 uppercase tracking-wide font-semibold mb-2">8:00 PM â€” Evening check-in</div>
                   <div className="text-sm text-gray-700 leading-relaxed">
                     Evening check-in: You've eaten <strong>{eaten.toLocaleString()} kcal</strong> today.{' '}
-                    {remain > 0 ? `${remain.toLocaleString()} kcal remaining — finish strong!` : `You're ${Math.abs(remain).toLocaleString()} kcal over today.`}<br/>
+                    {remain > 0 ? `${remain.toLocaleString()} kcal remaining â€” finish strong!` : `You're ${Math.abs(remain).toLocaleString()} kcal over today.`}<br/>
                     Tomorrow's breakfast: <strong>{plan.breakfast[(new Date().getDate() + 1) % plan.breakfast.length]}</strong>.
                   </div>
                   <div className="inline-block mt-3 text-xs font-semibold bg-blue-100 text-blue-700 px-3 py-1 rounded-full">Evening</div>
                 </div>
                 <div className="card">
-                  <div className="text-xs text-gray-400 uppercase tracking-wide font-semibold mb-2">Daily — Foods to avoid</div>
+                  <div className="text-xs text-gray-400 uppercase tracking-wide font-semibold mb-2">Daily â€” Foods to avoid</div>
                   <div className="flex flex-wrap gap-2 mt-1">
                     {plan.avoid.map(f => (
                       <span key={f} className="text-xs px-3 py-1.5 rounded-full bg-red-50 text-red-600 border border-red-200">{f}</span>
@@ -404,7 +405,7 @@ export default function DashboardPage() {
               </div>
             ) : (
               <div className="card text-center py-10">
-                <div className="text-3xl mb-3">🔕</div>
+                <div className="text-3xl mb-3">ðŸ”•</div>
                 <div className="font-semibold text-gray-800 mb-2">Reminders are off</div>
                 <div className="text-sm text-gray-500 mb-4">Enable them in your profile to get daily meal plans and check-ins.</div>
                 <button onClick={() => router.push('/onboarding')} className="btn-primary text-sm">Update profile</button>
