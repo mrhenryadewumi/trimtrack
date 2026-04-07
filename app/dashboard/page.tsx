@@ -196,43 +196,49 @@ export default function DashboardPage() {
         </div>
       </nav>
 
-      <div className="max-w-6xl mx-auto px-6 py-8">
+      <div className="max-w-2xl mx-auto px-5 py-6">
 
         {/* GREETING */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-extrabold text-gray-900">{getGreeting(profile.name)}</h1>
-          <p className="text-sm text-gray-500 mt-1">Goal: {formatKcal(goal)} today · Target: {profile.goalWeight} kg</p>
+        <div className="mb-5">
+          <h1 className="text-xl font-extrabold text-gray-900">{getGreeting(profile.name)}</h1>
+          <p className="text-sm text-gray-400 mt-0.5">Target: {profile.goalWeight} kg · {new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
         </div>
 
-        {/* STATS */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-          {[
-            { label: 'Daily goal', val: goal.toLocaleString(), unit: 'kcal' },
-            { label: 'Eaten today', val: eaten.toLocaleString(), unit: 'kcal' },
-            { label: 'Remaining', val: Math.abs(remain).toLocaleString(), unit: remain < 0 ? 'kcal over' : 'kcal left', colour: remain < 0 ? 'text-red-600' : remain < 200 ? 'text-yellow-600' : 'text-green-600' },
-            { label: 'Burned (exercise)', val: totalBurned.toString(), unit: 'kcal', colour: 'text-blue-600' },
-          ].map(s => (
-            <div key={s.label} className="bg-green-50 rounded-2xl p-4">
-              <div className="text-xs text-gray-500 mb-1">{s.label}</div>
-              <div className={`text-xl font-extrabold ${s.colour || 'text-gray-900'}`}>{s.val}</div>
-              <div className="text-xs text-gray-400">{s.unit}</div>
+        {/* HERO CALORIE CARD */}
+        <div className="bg-green-700 rounded-3xl p-6 mb-4 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-40 h-40 rounded-full bg-white/5 -mr-10 -mt-10"/>
+          <div className="absolute bottom-0 left-0 w-28 h-28 rounded-full bg-white/5 -ml-8 -mb-8"/>
+          <div className="relative">
+            <div className="text-green-200 text-sm font-medium mb-1">Remaining today</div>
+            <div className={`text-6xl font-extrabold tracking-tight mb-1 ${remain < 0 ? 'text-red-300' : remain < 200 ? 'text-yellow-300' : 'text-white'}`}>
+              {Math.abs(remain).toLocaleString()}
             </div>
-          ))}
-        </div>
-
-        {/* CALORIE BAR */}
-        <div className="card mb-6">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-semibold text-gray-800">Today's progress</span>
-            <span className="text-sm text-gray-500">{pct}%</span>
-          </div>
-          <div className="h-3 bg-gray-100 rounded-full overflow-hidden mb-2">
-            <motion.div className="h-full rounded-full" style={{ background: barColour }}
-              animate={{ width: `${pct}%` }} transition={{ duration: 0.5 }} />
-          </div>
-          <div className="flex justify-between text-xs text-gray-400">
-            <span>{eaten.toLocaleString()} eaten</span>
-            <span>Goal: {goal.toLocaleString()}</span>
+            <div className="text-green-200 text-sm mb-4">
+              {remain < 0 ? 'kcal over your goal' : `kcal left out of ${goal.toLocaleString()}`}
+            </div>
+            <div className="h-2 bg-white/20 rounded-full overflow-hidden mb-4">
+              <motion.div className="h-full rounded-full"
+                style={{ background: remain < 0 ? '#fca5a5' : remain < 200 ? '#fde047' : '#b5f23d' }}
+                animate={{ width: `${pct}%` }} transition={{ duration: 0.6 }} />
+            </div>
+            <div className="flex gap-4">
+              <div>
+                <div className="text-green-200 text-xs">Eaten</div>
+                <div className="text-white font-bold">{eaten.toLocaleString()} kcal</div>
+              </div>
+              <div className="w-px bg-white/20"/>
+              <div>
+                <div className="text-green-200 text-xs">Goal</div>
+                <div className="text-white font-bold">{goal.toLocaleString()} kcal</div>
+              </div>
+              {totalBurned > 0 && <>
+                <div className="w-px bg-white/20"/>
+                <div>
+                  <div className="text-green-200 text-xs">Burned</div>
+                  <div className="text-white font-bold">+{totalBurned} kcal</div>
+                </div>
+              </>}
+            </div>
           </div>
         </div>
 
