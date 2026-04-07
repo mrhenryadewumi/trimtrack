@@ -7,6 +7,7 @@ import { FOODS } from '@/lib/foods'
 import { saveMeal, deleteMeal, saveWeight, fetchWeights, fetchMeals } from '@/lib/api-client'
 import PhotoScanner from '@/components/PhotoScanner'
 import StepCounter from '@/components/StepCounter'
+import FoodSearch from '@/components/FoodSearch'
 import type { UserProfile, MealEntry, WeightEntry } from '@/types'
 
 type MealType = 'breakfast' | 'lunch' | 'snack' | 'dinner'
@@ -24,10 +25,8 @@ export default function DashboardPage() {
   const [weightLog, setWeightLog] = useState<WeightEntry[]>([])
   const [wtInput, setWtInput] = useState('')
   const [exDone, setExDone] = useState<Record<number, boolean>>({})
-  const [searchQuery, setSearchQuery] = useState('')
   const [activeMeal, setActiveMeal] = useState<MealType>('breakfast')
   const [activeTab, setActiveTab] = useState<'log' | 'progress' | 'plan'>('log')
-  const [showSearch, setShowSearch] = useState(false)
 
   const saveMealsLocal = useCallback((m: Record<MealType, MealEntry[]>) => {
     localStorage.setItem('trimtrack_meals_today', JSON.stringify(m))
@@ -71,7 +70,7 @@ export default function DashboardPage() {
     const food = FOODS[foodIdx]
     const entry: MealEntry = { userId: 'local', date: new Date().toISOString().split('T')[0], mealType: activeMeal, foodName: food.name, kcal: food.kcal, protein: food.protein, carbs: food.carbs, fat: food.fat }
     const updated = { ...meals, [activeMeal]: [...meals[activeMeal], entry] }
-    setMeals(updated); saveMealsLocal(updated); setShowSearch(false)
+    setMeals(updated); saveMealsLocal(updated)
     try {
       const result = await saveMeal({ meal_type: activeMeal, food_name: food.name, kcal: food.kcal, protein: food.protein, carbs: food.carbs, fat: food.fat })
       if (result?.data?.id) {
@@ -104,7 +103,7 @@ export default function DashboardPage() {
     try { await saveWeight(val) } catch (e) { console.error(e) }
   }
 
-  const filteredFoods = FOODS.filter(f => !searchQuery || f.name.toLowerCase().includes(searchQuery.toLowerCase()))
+  
 
   if (!profile) return (
     <div className="min-h-screen flex items-center justify-center bg-[#f6fbf8]">
@@ -180,34 +179,10 @@ export default function DashboardPage() {
             <div className="flex-1">
               <PhotoScanner onAdd={handlePhotoAdd} mealType={activeMeal} />
             </div>
-            <button onClick={() => setShowSearch(!showSearch)}
-              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 border border-gray-200 rounded-full text-sm font-semibold text-gray-600 hover:bg-gray-50">
-              🔍 Search
-            </button>
           </div>
-
-          {/* SEARCH DROPDOWN */}
-          <AnimatePresence>
-            {showSearch && (
-              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
-                <input className="w-full mt-3 border border-gray-200 rounded-full px-4 py-2 text-sm outline-none focus:border-green-600"
-                  placeholder="Search Nigerian foods..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} autoFocus />
-                <div className="space-y-1.5 mt-2 max-h-48 overflow-y-auto">
-                  {filteredFoods.slice(0, 15).map((f) => (
-                    <div key={f.id} className="flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-50 hover:bg-green-50 cursor-pointer"
-                      onClick={() => addFood(FOODS.indexOf(f))}>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium text-gray-800 truncate">{f.name}</div>
-                        <div className="text-xs text-gray-400">{f.protein}g P · {f.carbs}g C · {f.fat}g F</div>
-                      </div>
-                      <div className="text-xs font-bold text-green-700">{f.kcal} kcal</div>
-                    </div>
-                  ))}
-                  {filteredFoods.length === 0 && <div className="text-center text-sm text-gray-400 py-3">No foods found</div>}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <div className="mt-3">
+            <FoodSearch activeMeal={activeMeal} onAdd={handlePhotoAdd} />
+          </div>
         </div>
 
         {/* TABS */}
@@ -235,7 +210,7 @@ export default function DashboardPage() {
               return (
                 <div key={m.key} className={mi < 3 ? 'border-b border-gray-50' : ''}>
                   <div className="flex items-center justify-between px-4 py-3 cursor-pointer"
-                    onClick={() => { setActiveMeal(m.key); setShowSearch(true); setActiveTab('log') }}>
+                    onClick={() => { setActiveMeal(m.key); setActiveTab('log') }}>
                     <div className="flex items-center gap-2">
                       <div className="w-2 h-2 rounded-full" style={{ background: m.color }}/>
                       <span className="font-bold text-sm text-gray-800">{m.label}</span>
