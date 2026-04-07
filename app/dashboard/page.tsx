@@ -6,6 +6,7 @@ import { getCalorieStatus, getStatusColour, getStatusMessage, getDailyPlan, getE
 import { FOODS } from '@/lib/foods'
 import { saveMeal, deleteMeal, saveWeight, fetchWeights, fetchMeals } from '@/lib/api-client'
 import PhotoScanner from '@/components/PhotoScanner'
+import StepCounter from '@/components/StepCounter'
 import type { UserProfile, MealEntry, WeightEntry } from '@/types'
 
 type MealType = 'breakfast' | 'lunch' | 'snack' | 'dinner'
@@ -361,7 +362,10 @@ export default function DashboardPage() {
 
         {/* PROGRESS TAB */}
         {activeTab === 'progress' && (
-          <div className="grid lg:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            {/* STEPS */}
+            <StepCounter />
+            <div className="grid lg:grid-cols-2 gap-6">
             {/* WEIGHT LOG */}
             <div className="card">
               <div className="font-semibold text-gray-800 mb-3">Weight log</div>
@@ -443,6 +447,7 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
+        </div>
         )}
 
         {/* REMINDERS TAB */}
