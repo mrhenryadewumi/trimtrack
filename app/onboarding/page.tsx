@@ -27,6 +27,7 @@ const AVOID_OPTIONS = ['No beef', 'No pork', 'No fish', 'No chicken', 'No restri
 export default function OnboardingPage() {
   const router = useRouter()
   const [step, setStep] = useState(0)
+  const [saving, setSaving] = useState(false)
 
   const [profile, setProfile] = useState<Partial<UserProfile>>({
     name: '',
@@ -62,16 +63,25 @@ export default function OnboardingPage() {
     return calcWeeksToGoal(profile as UserProfile)
   }
 
-  function handleFinish() {
+  async function handleFinish() {
+    setSaving(true)
     const finalProfile: UserProfile = {
       ...(profile as UserProfile),
       dailyCalorieGoal: getCalGoal(),
     }
     localStorage.setItem('trimtrack_profile', JSON.stringify(finalProfile))
+    try {
+      await fetch('/api/profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: localStorage.getItem('trimtrack_session_id') || crypto.randomUUID(), ...finalProfile }),
+      })
+    } catch (e) { console.error(e) }
+    setSaving(false)
     router.push('/dashboard')
   }
 
-  const steps = ['About you', 'Your weight', 'Lifestyle', 'Review']
+  const steps = ['About you', 'Your weight', 'Lifestyle', 'Review', 'Ready']
   const totalSteps = steps.length
 
   return (
@@ -266,16 +276,94 @@ export default function OnboardingPage() {
           )}
         </AnimatePresence>
 
-        {/* NAV BUTTONS */}
+          {step === 4 && (
+            <motion.div key="s4" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}>
+              <div className="card text-center">
+                {/* Celebration icon */}
+                <div className="w-20 h-20 bg-lime-400 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl"
+                  style={{ animation: 'bounce 1s ease infinite' }}>
+                  🎯
+                </div>
+
+                <h2 className="text-2xl font-extrabold text-gray-900 mb-2">
+                  Your plan is ready, {profile.name || 'friend'}!
+                </h2>
+                <p className="text-sm text-gray-400 mb-8">Here's what TrimTrack calculated for you</p>
+
+                {/* Big calorie number */}
+                <div className="bg-green-700 rounded-3xl p-6 mb-4 text-center">
+                  <div className="text-green-200 text-sm font-medium mb-1">Your daily calorie goal</div>
+                  <div className="text-6xl font-extrabold text-white tracking-tight">
+                    {getCalGoal().toLocaleString()}
+                  </div>
+                  <div className="text-green-200 text-sm mt-1">kcal per day</div>
+                </div>
+
+                {/* Stats grid */}
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                  <div className="bg-green-50 rounded-2xl p-4 text-left">
+                    <div className="text-xs text-gray-400 font-medium mb-1">To lose</div>
+                    <div className="text-2xl font-extrabold text-gray-900">
+                      {Math.max(0, (profile.startWeight ?? 0) - (profile.goalWeight ?? 0))} kg
+                    </div>
+                  </div>
+                  <div className="bg-green-50 rounded-2xl p-4 text-left">
+                    <div className="text-xs text-gray-400 font-medium mb-1">Estimated time</div>
+                    <div className="text-2xl font-extrabold text-gray-900">
+                      {getWeeks()} weeks
+                    </div>
+                  </div>
+                  <div className="bg-green-50 rounded-2xl p-4 text-left">
+                    <div className="text-xs text-gray-400 font-medium mb-1">Meal culture</div>
+                    <div className="text-lg font-extrabold text-gray-900">
+                      {profile.country || 'Global'} 🍽️
+                    </div>
+                  </div>
+                  <div className="bg-green-50 rounded-2xl p-4 text-left">
+                    <div className="text-xs text-gray-400 font-medium mb-1">Reminders</div>
+                    <div className="text-lg font-extrabold text-gray-900">
+                      {profile.reminders ? '✓ Morning + evening' : 'Off'}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Goal date */}
+                <div className="bg-lime-50 border border-lime-200 rounded-2xl px-4 py-3 mb-2">
+                  <div className="text-sm font-semibold text-green-800">
+                    At this pace you could reach {profile.goalWeight} kg by{' '}
+                    <strong>
+                      {new Date(Date.now() + getWeeks() * 7 * 24 * 60 * 60 * 1000).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                    </strong>
+                  </div>
+                </div>
+
+                <p className="text-xs text-gray-400">
+                  Snap your first meal to get started. TrimTrack knows Nigerian food.
+                </p>
+              </div>
+
+              <style>{`
+                @keyframes bounce {
+                  0%, 100% { transform: translateY(0); }
+                  50% { transform: translateY(-8px); }
+                }
+              `}</style>
+            </motion.div>
+          )}
+
         <div className="flex justify-between items-center mt-6">
-          {step > 0 ? (
+          {step > 0 && step < 4 ? (
             <button onClick={() => setStep(s => s - 1)} className="btn-secondary">← Back</button>
           ) : <div />}
 
-          {step < totalSteps - 1 ? (
+          {step < 3 ? (
             <button onClick={() => setStep(s => s + 1)} className="btn-primary">Continue →</button>
+          ) : step === 3 ? (
+            <button onClick={() => setStep(4)} className="btn-primary">See my plan →</button>
           ) : (
-            <button onClick={handleFinish} className="btn-primary">View my dashboard →</button>
+            <button onClick={handleFinish} disabled={saving} className="btn-primary w-full py-4 text-base">
+              {saving ? 'Setting up...' : '🚀 Start tracking now'}
+            </button>
           )}
         </div>
       </div>
