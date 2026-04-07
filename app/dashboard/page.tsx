@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -150,7 +150,7 @@ export default function DashboardPage() {
             {Math.abs(remain).toLocaleString()}
           </div>
           <div className="text-green-200 text-xs mb-3">
-            {remain < 0 ? 'kcal over goal' : `kcal left · ${eaten.toLocaleString()} eaten of ${goal.toLocaleString()}`}
+            {remain < 0 ? 'kcal over goal' : `kcal left Â· ${eaten.toLocaleString()} eaten of ${goal.toLocaleString()}`}
           </div>
           <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
             <motion.div className="h-full rounded-full"
@@ -171,7 +171,7 @@ export default function DashboardPage() {
               <button key={m.key} onClick={() => setActiveMeal(m.key)}
                 className="flex-1 py-2 rounded-xl text-xs font-bold transition-all"
                 style={activeMeal === m.key ? { background: m.color, color: '#fff' } : { background: '#f3f4f6', color: '#6b7280' }}>
-                {m.label.slice(0, 3)}
+                {m.label}
               </button>
             ))}
           </div>
@@ -223,7 +223,7 @@ export default function DashboardPage() {
                         <div key={ii} className="flex items-center gap-2">
                           <span className="flex-1 text-sm text-gray-600 truncate">{it.foodName}</span>
                           <span className="text-xs text-gray-400">{it.kcal} kcal</span>
-                          <button onClick={() => removeFood(m.key, ii)} className="text-gray-300 hover:text-red-400 text-lg leading-none ml-1">×</button>
+                          <button onClick={() => removeFood(m.key, ii)} className="text-gray-300 hover:text-red-400 text-lg leading-none ml-1">Ã—</button>
                         </div>
                       ))}
                     </div>
@@ -280,9 +280,9 @@ export default function DashboardPage() {
                     onClick={() => setExDone(d => ({ ...d, [i]: !d[i] }))}>
                     <div className="flex-1">
                       <div className="font-semibold text-sm text-gray-800">{ex.title}</div>
-                      <div className="text-xs text-green-600 font-semibold">~{ex.burn} kcal · {ex.duration}</div>
+                      <div className="text-xs text-green-600 font-semibold">~{ex.burn} kcal Â· {ex.duration}</div>
                     </div>
-                    <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center text-xs ${exDone[i] ? 'bg-green-700 border-green-700 text-white' : 'border-gray-300 text-transparent'}`}>✓</div>
+                    <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center text-xs ${exDone[i] ? 'bg-green-700 border-green-700 text-white' : 'border-gray-300 text-transparent'}`}>âœ“</div>
                   </div>
                 ))}
               </div>
@@ -295,7 +295,7 @@ export default function DashboardPage() {
         {activeTab === 'plan' && (
           <div className="space-y-4">
             <div className="bg-white rounded-3xl border border-gray-100 p-5 shadow-sm">
-              <div className="font-extrabold text-gray-900 mb-4">Today's meal plan · {profile.country || 'Global'}</div>
+              <div className="font-extrabold text-gray-900 mb-4">Today's meal plan Â· {profile.country || 'Global'}</div>
               <div className="space-y-3">
                 {MEAL_DEFS.map(m => (
                   <div key={m.key} className="flex gap-3">
