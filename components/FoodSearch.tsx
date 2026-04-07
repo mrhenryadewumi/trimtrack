@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { searchOpenFoodFacts, getFoodByBarcode } from '@/lib/openfoodfacts'
@@ -48,7 +48,7 @@ export default function FoodSearch({ activeMeal, onAdd }: FoodSearchProps) {
     // Search OpenFoodFacts
     const online = await searchOpenFoodFacts(q)
 
-    // Merge — local Nigerian foods first, then online results
+    // Merge â€” local Nigerian foods first, then online results
     const merged = [
       ...local.slice(0, 4),
       ...online.filter(o => !local.some(l => l.name.toLowerCase() === o.name.toLowerCase())),
@@ -155,7 +155,7 @@ export default function FoodSearch({ activeMeal, onAdd }: FoodSearchProps) {
       {query.length >= 2 && !loading && (
         <div className="text-xs text-gray-400 mb-2 px-1">
           {results.filter(r => r.source === 'local').length > 0 && (
-            <span className="text-green-600 font-semibold">Nigerian foods · </span>
+            <span className="text-green-600 font-semibold">Nigerian foods Â· </span>
           )}
           <span>Global database</span>
         </div>
@@ -178,15 +178,15 @@ export default function FoodSearch({ activeMeal, onAdd }: FoodSearchProps) {
               <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 ${
                 food.source === 'local' ? 'bg-green-100 text-green-700' : 'bg-gray-200 text-gray-500'
               }`}>
-                {food.source === 'local' ? '🇳🇬' : '🌍'}
+                {food.source === 'local' ? 'ðŸ‡³ðŸ‡¬' : 'ðŸŒ'}
               </div>
             )}
             <div className="flex-1 min-w-0">
               <div className="text-sm font-semibold text-gray-800 truncate">{food.name}</div>
               <div className="text-xs text-gray-400 truncate">
-                {food.brand && <span className="text-gray-500">{food.brand} · </span>}
-                {food.protein}g P · {food.carbs}g C · {food.fat}g F
-                {food.serving && <span className="text-gray-300"> · {food.serving}</span>}
+                {food.brand && <span className="text-gray-500">{food.brand} Â· </span>}
+                {food.protein}g P Â· {food.carbs}g C Â· {food.fat}g F
+                {food.serving && <span className="text-gray-300"> Â· {food.serving}</span>}
               </div>
             </div>
             <div className="flex-shrink-0 text-right">
@@ -210,7 +210,7 @@ export default function FoodSearch({ activeMeal, onAdd }: FoodSearchProps) {
           <div className="fixed inset-0 z-50 bg-black flex flex-col">
             <div className="flex items-center justify-between px-5 py-4">
               <div className="text-white font-bold">Scan barcode</div>
-              <button onClick={stopScanner} className="text-white text-2xl">×</button>
+              <button onClick={stopScanner} className="text-white text-2xl">Ã—</button>
             </div>
 
             {/* Camera view */}
@@ -232,7 +232,7 @@ export default function FoodSearch({ activeMeal, onAdd }: FoodSearchProps) {
             {/* Manual barcode input */}
             <div className="bg-gray-900 px-5 py-4">
               <p className="text-gray-400 text-xs mb-3 text-center">
-                Point camera at barcode · or type barcode number below
+                Point camera at barcode Â· or type barcode number below
               </p>
               <div className="flex gap-2">
                 <input
