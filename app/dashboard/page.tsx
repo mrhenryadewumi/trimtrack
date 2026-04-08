@@ -29,6 +29,9 @@ export default function DashboardPage() {
   const [exDone, setExDone] = useState<Record<number, boolean>>({})
   const [activeMeal, setActiveMeal] = useState<MealType>('breakfast')
   const [showUpgrade, setShowUpgrade] = useState(false);
+  const [showUpgrade, setShowUpgrade] = useState(false)
+  const [scansLeft, setScansLeft] = useState(3)
+  const [isPremium, setIsPremium] = useState(false)
   const [activeTab, setActiveTab] = useState<'log' | 'progress' | 'plan'>('log')
 
   const saveMealsLocal = useCallback((m: Record<MealType, MealEntry[]>) => {
