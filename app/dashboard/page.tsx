@@ -28,7 +28,6 @@ export default function DashboardPage() {
   const [wtInput, setWtInput] = useState('')
   const [exDone, setExDone] = useState<Record<number, boolean>>({})
   const [activeMeal, setActiveMeal] = useState<MealType>('breakfast')
-  const [showUpgrade, setShowUpgrade] = useState(false);
   const [showUpgrade, setShowUpgrade] = useState(false)
   const [scansLeft, setScansLeft] = useState(3)
   const [isPremium, setIsPremium] = useState(false)
