@@ -6,6 +6,8 @@ import { getCalorieStatus, getStatusColour, getStatusMessage, getDailyPlan, getE
 import { FOODS } from '@/lib/foods'
 import { saveMeal, deleteMeal, saveWeight, fetchWeights, fetchMeals } from '@/lib/api-client'
 import PhotoScanner from '@/components/PhotoScanner'
+import UpgradeModal from '@/components/UpgradeModal'
+import ScanGate from '@/components/ScanGate'
 import StepCounter from '@/components/StepCounter'
 import FoodSearch from '@/components/FoodSearch'
 import type { UserProfile, MealEntry, WeightEntry } from '@/types'
@@ -26,6 +28,8 @@ export default function DashboardPage() {
   const [wtInput, setWtInput] = useState('')
   const [exDone, setExDone] = useState<Record<number, boolean>>({})
   const [activeMeal, setActiveMeal] = useState<MealType>('breakfast')
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const const [showUpgrade, setShowUpgrade] = useState(false)
   const [activeTab, setActiveTab] = useState<'log' | 'progress' | 'plan'>('log')
 
   const saveMealsLocal = useCallback((m: Record<MealType, MealEntry[]>) => {
@@ -129,7 +133,7 @@ export default function DashboardPage() {
                 <circle cx="14" cy="6" r="2" fill="#b5f23d"/>
               </svg>
             </div>
-            <span className="font-extrabold text-green-800">TrimTrack</span>
+            <a href="/" style={{ textDecoration: "none" }}><span className="font-extrabold text-green-800">TrimTrack</span></a>
           </div>
           <button onClick={() => router.push('/onboarding')} className="text-xs text-gray-400 border border-gray-200 rounded-full px-3 py-1.5">
             Edit profile
@@ -177,7 +181,44 @@ export default function DashboardPage() {
           </div>
           <div className="flex gap-2">
             <div className="flex-1">
-              <PhotoScanner onAdd={handlePhotoAdd} mealType={activeMeal} />
+              <div>
+              {showUpgrade && (
+                <UpgradeModal
+                  onClose={() => setShowUpgrade(false)}
+                  sessionId={typeof window !== "undefined" ? localStorage.getItem("sessionId") || "" : ""}
+                />
+              )}
+              {scansLeft > 0 || isPremium ? (
+                <PhotoScanner onAdd={async (meal) => {
+                  const sid = typeof window !== "undefined" ? localStorage.getItem("sessionId") || "" : "";
+                  const res = await fetch("/api/subscription", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ sessionId: sid }),
+                  });
+                  const data = await res.json();
+                  if (data.limitReached) { setShowUpgrade(true); return; }
+                  setScansLeft(data.scansLeft);
+                  handlePhotoAdd(meal);
+                }} mealType={activeMeal} />
+              ) : (
+                <button
+                  onClick={() => setShowUpgrade(true)}
+                  style={{
+                    width: "100%", padding: "14px", background: "#1a5c38",
+                    color: "#b5f23d", border: "none", borderRadius: "14px",
+                    fontSize: "16px", fontWeight: "700", cursor: "pointer"
+                  }}
+                >
+                  Scan Food (0 scans left - Upgrade)
+                </button>
+              )}
+              {!isPremium && (
+                <div style={{ textAlign: "center", fontSize: "12px", color: "#888", marginTop: "6px" }}>
+                  {scansLeft} free scan{scansLeft !== 1 ? "s" : ""} remaining today
+                </div>
+              )}
+            </div>
             </div>
           </div>
           <div className="mt-3">
