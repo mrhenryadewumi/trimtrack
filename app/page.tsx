@@ -1,36 +1,36 @@
-'use client'
+﻿'use client'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 
 const features = [
   {
-    icon: '📊',
+    icon: 'ðŸ“Š',
     title: 'Real-time calorie tracking',
-    desc: 'Log meals with a tap. Watch your daily ring fill — green means good, yellow means careful, red means stop.',
+    desc: 'Log meals with a tap. Watch your daily ring fill â€” green means good, yellow means careful, red means stop.',
   },
   {
-    icon: '🍽️',
+    icon: 'ðŸ½ï¸',
     title: 'Meals built around your food',
-    desc: 'Tell us your country and food culture. TrimTrack builds your plan around food you actually enjoy — not salads you will never eat.',
+    desc: 'Tell us your country and food culture. TrimTrack builds your plan around food you actually enjoy â€” not salads you will never eat.',
   },
   {
-    icon: '🔔',
+    icon: 'ðŸ””',
     title: 'Daily reminders that actually help',
-    desc: 'Subscribers get a morning message with today\'s meal plan and an evening check-in. You don\'t have to remember — we do.',
+    desc: 'Subscribers get a morning message with today\'s meal plan and an evening check-in. You don\'t have to remember â€” we do.',
   },
   {
-    icon: '⚖️',
+    icon: 'âš–ï¸',
     title: 'Weight progress tracker',
     desc: 'Log your weight daily. Watch your progress chart trend downward week by week toward your goal.',
   },
   {
-    icon: '🏃',
+    icon: 'ðŸƒ',
     title: 'Exercise recommendations',
-    desc: 'Daily exercises matched to your fitness level — from gentle walks to HIIT — with calories burned counted toward your day.',
+    desc: 'Daily exercises matched to your fitness level â€” from gentle walks to HIIT â€” with calories burned counted toward your day.',
   },
   {
-    icon: '🚫',
+    icon: 'ðŸš«',
     title: 'Daily foods to avoid',
     desc: 'Every day you get a short list of what to skip and why. Know exactly what\'s working against your goal.',
   },
@@ -109,7 +109,7 @@ export default function HomePage() {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="inline-flex items-center gap-2 bg-lime-400 text-green-800 text-sm font-bold px-4 py-1.5 rounded-full mb-6">
-              🌿 Your weight loss companion
+              ðŸŒ¿ Your weight loss companion
             </div>
             <h1 className="text-5xl lg:text-6xl font-extrabold leading-[1.08] tracking-tight text-gray-900 mb-5">
               Lose weight eating{' '}
@@ -120,12 +120,12 @@ export default function HomePage() {
             </h1>
             <p className="text-lg text-gray-600 leading-relaxed mb-8 max-w-lg">
               TrimTrack gives you personalised daily meal plans, real-time calorie tracking,
-              and gentle reminders — so you never have to guess what to eat again.
+              and gentle reminders â€” so you never have to guess what to eat again.
             </p>
 
             {submitted ? (
               <div className="bg-green-50 border border-green-200 rounded-2xl p-4 text-green-700 font-medium">
-                ✓ You're on the list! We'll be in touch when we launch.
+                âœ“ You're on the list! We'll be in touch when we launch.
               </div>
             ) : (
               <form onSubmit={handleWaitlist} className="flex flex-wrap gap-3 mb-5">
@@ -156,7 +156,7 @@ export default function HomePage() {
 
             <div className="mt-8">
               <Link href="/onboarding" className="btn-primary inline-flex items-center gap-2">
-                Build my free plan →
+                Build my free plan â†’
               </Link>
             </div>
           </motion.div>
@@ -172,7 +172,7 @@ export default function HomePage() {
             <div className="flex justify-between items-start mb-5">
               <div>
                 <div className="text-xs text-gray-400">Good morning,</div>
-                <div className="text-lg font-extrabold text-gray-900 mt-0.5">Sarah 👋</div>
+                <div className="text-lg font-extrabold text-gray-900 mt-0.5">Sarah ðŸ‘‹</div>
               </div>
               <div className="bg-lime-400 rounded-xl px-3 py-2 text-center">
                 <div className="text-xl font-extrabold text-green-800 leading-none">7</div>
@@ -203,9 +203,9 @@ export default function HomePage() {
             </div>
 
             {[
-              { dot: 'bg-green-600',  name: 'Breakfast — Akara + Pap',        cal: '380 kcal' },
-              { dot: 'bg-blue-500',   name: 'Lunch — Brown Rice + Egusi',      cal: '480 kcal' },
-              { dot: 'bg-yellow-500', name: 'Snack — Roasted Plantain',        cal: '380 kcal' },
+              { dot: 'bg-green-600',  name: 'Breakfast â€” Akara + Pap',        cal: '380 kcal' },
+              { dot: 'bg-blue-500',   name: 'Lunch â€” Brown Rice + Egusi',      cal: '480 kcal' },
+              { dot: 'bg-yellow-500', name: 'Snack â€” Roasted Plantain',        cal: '380 kcal' },
             ].map(m => (
               <div key={m.name} className="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-gray-100 bg-gray-50 mb-2">
                 <div className={`w-2 h-2 rounded-full ${m.dot}`}/>
@@ -215,8 +215,8 @@ export default function HomePage() {
             ))}
 
             <div className="bg-yellow-50 border border-yellow-200 rounded-xl px-3 py-2.5 flex items-center gap-2 mt-1">
-              <span className="text-yellow-500 text-sm">⚠️</span>
-              <span className="text-xs font-medium text-yellow-800">Almost at your limit — keep dinner light!</span>
+              <span className="text-yellow-500 text-sm">âš ï¸</span>
+              <span className="text-xs font-medium text-yellow-800">Almost at your limit â€” keep dinner light!</span>
             </div>
           </motion.div>
         </div>
@@ -227,7 +227,7 @@ export default function HomePage() {
         <div className="section-badge mb-5">Features</div>
         <div className="max-w-xl mb-12">
           <h2 className="text-4xl font-extrabold tracking-tight text-gray-900 mb-3">Everything you need to hit your goal</h2>
-          <p className="text-gray-500 text-lg">Smart tracking, personalised meal planning, and timely nudges — all in one app.</p>
+          <p className="text-gray-500 text-lg">Smart tracking, personalised meal planning, and timely nudges â€” all in one app.</p>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
           {features.map((f, i) => (
@@ -252,7 +252,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-10">
             {[
               { n: '1', title: 'Tell us about yourself', desc: 'Enter your weight, goal, country, food preferences, and activity level. Takes 3 minutes.' },
-              { n: '2', title: 'Get your personalised plan', desc: 'TrimTrack generates a full day-by-day meal plan using foods from your food culture — with calorie counts for every meal.' },
+              { n: '2', title: 'Get your personalised plan', desc: 'TrimTrack generates a full day-by-day meal plan using foods from your food culture â€” with calorie counts for every meal.' },
               { n: '3', title: 'Track, eat, and trim', desc: 'Log meals as you go. Watch the ring fill. Get reminders. Hit your targets. Watch the numbers drop each week.' },
             ].map(s => (
               <div key={s.n} className="flex flex-col gap-4">
@@ -272,7 +272,7 @@ export default function HomePage() {
         <div className="grid md:grid-cols-3 gap-6">
           {testimonials.map(t => (
             <div key={t.name} className="card hover:-translate-y-1 transition-transform">
-              <div className="text-yellow-400 text-sm mb-3">★★★★★</div>
+              <div className="text-yellow-400 text-sm mb-3">â˜…â˜…â˜…â˜…â˜…</div>
               <p className="text-sm text-gray-600 italic leading-relaxed mb-5">"{t.text}"</p>
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-sm">{t.initials}</div>
@@ -292,7 +292,7 @@ export default function HomePage() {
           <h2 className="text-4xl font-extrabold text-white tracking-tight mb-4">Start your journey today</h2>
           <p className="text-white/60 text-lg mb-10">Free to join. No credit card. Your personalised plan in minutes.</p>
           <Link href="/onboarding" className="inline-flex items-center gap-2 bg-lime-400 text-green-800 font-extrabold text-base px-8 py-4 rounded-full hover:bg-lime-300 transition-colors">
-            Build my free plan →
+            Build my free plan â†’
           </Link>
           <div className="text-white/30 text-sm mt-4">No spam. Unsubscribe anytime.</div>
         </div>
@@ -301,7 +301,7 @@ export default function HomePage() {
       {/* FOOTER */}
       <footer className="border-t border-green-100 py-8 px-6 max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-4">
         <span className="font-extrabold text-green-700 text-lg">TrimTrack</span>
-        <span className="text-sm text-gray-400">© 2026 TrimTrack. All rights reserved.</span>
+        <span className="text-sm text-gray-400">Â© 2026 TrimTrack. All rights reserved.</span>
         <div className="flex gap-5 text-sm text-gray-400">
           <a href="#" className="hover:text-green-600 transition-colors">Privacy</a>
           <a href="#" className="hover:text-green-600 transition-colors">Terms</a>
