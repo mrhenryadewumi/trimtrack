@@ -136,9 +136,12 @@ export default function DashboardPage() {
             </div>
             <a href="/" style={{ textDecoration: "none" }}><span className="font-extrabold text-green-800">TrimTrack</span></a>
           </div>
-          <button onClick={() => router.push('/onboarding')} className="text-xs text-gray-400 border border-gray-200 rounded-full px-3 py-1.5">
-            Edit profile
-          </button>
+          <div style={{display:"flex",gap:"8px",alignItems:"center"}}>
+            <a href="/login" style={{fontSize:"12px",color:"#1a5c38",fontWeight:"600",textDecoration:"none"}}>Login</a>
+            <button onClick={() => router.push('/onboarding')} className="text-xs text-gray-400 border border-gray-200 rounded-full px-3 py-1.5">
+              Edit profile
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -265,7 +268,7 @@ export default function DashboardPage() {
                         <div key={ii} className="flex items-center gap-2">
                           <span className="flex-1 text-sm text-gray-600 truncate">{it.foodName}</span>
                           <span className="text-xs text-gray-400">{it.kcal} kcal</span>
-                          <button onClick={() => removeFood(m.key, ii)} className="text-gray-300 hover:text-red-400 text-lg leading-none ml-1">Ã—</button>
+                          <button onClick={() => removeFood(m.key, ii)} className="text-gray-300 hover:text-red-400 text-lg leading-none ml-1">Ãƒâ€”</button>
                         </div>
                       ))}
                     </div>
@@ -322,9 +325,9 @@ export default function DashboardPage() {
                     onClick={() => setExDone(d => ({ ...d, [i]: !d[i] }))}>
                     <div className="flex-1">
                       <div className="font-semibold text-sm text-gray-800">{ex.title}</div>
-                      <div className="text-xs text-green-600 font-semibold">~{ex.burn} kcal Â· {ex.duration}</div>
+                      <div className="text-xs text-green-600 font-semibold">~{ex.burn} kcal Ã‚Â· {ex.duration}</div>
                     </div>
-                    <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center text-xs ${exDone[i] ? 'bg-green-700 border-green-700 text-white' : 'border-gray-300 text-transparent'}`}>âœ“</div>
+                    <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center text-xs ${exDone[i] ? 'bg-green-700 border-green-700 text-white' : 'border-gray-300 text-transparent'}`}>Ã¢Å“â€œ</div>
                   </div>
                 ))}
               </div>
@@ -337,7 +340,7 @@ export default function DashboardPage() {
         {activeTab === 'plan' && (
           <div className="space-y-4">
             <div className="bg-white rounded-3xl border border-gray-100 p-5 shadow-sm">
-              <div className="font-extrabold text-gray-900 mb-4">Today's meal plan Â· {profile.country || 'Global'}</div>
+              <div className="font-extrabold text-gray-900 mb-4">Today's meal plan Ã‚Â· {profile.country || 'Global'}</div>
               <div className="space-y-3">
                 {MEAL_DEFS.map(m => (
                   <div key={m.key} className="flex gap-3">
