@@ -1,4 +1,4 @@
-﻿import { NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { "Authorization": "Bearer " + RESEND_API_KEY, "Content-Type": "application/json" },
-      body: JSON.stringify({ from: "TrimTrack <onboarding@resend.dev>", to: [email], subject, html }),
+      body: JSON.stringify({ from: "TrimTrack <hello@contact.trimtrack.fit>", to: [email], subject, html }),
     })
     if (!res.ok) throw new Error("Resend error")
     const result = await res.json()
