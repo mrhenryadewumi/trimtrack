@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -78,7 +78,7 @@ export default function OnboardingPage() {
       })
     } catch (e) { console.error(e) }
     setSaving(false)
-    router.push('/trial')
+    router.push('/dashboard')
   }
 
   const steps = ['About you', 'Your weight', 'Lifestyle', 'Review', 'Ready']
@@ -106,7 +106,7 @@ export default function OnboardingPage() {
           ))}
         </div>
         <div className="text-xs text-green-600 font-semibold mb-6 text-center uppercase tracking-wide">
-          Step {step + 1} of {totalSteps} Ã¢â€ {steps[step]}
+          Step {step + 1} of {totalSteps} - {steps[step]}
         </div>
 
         <AnimatePresence mode="wait">
@@ -235,7 +235,7 @@ export default function OnboardingPage() {
                   <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-2">Daily reminders?</label>
                   <div className="flex gap-2">
                     <button onClick={() => update('reminders', true)}
-                      className={`pill ${profile.reminders ? 'pill-active' : ''}`}>Yes Ã¢â€ morning + evening</button>
+                      className={`pill ${profile.reminders ? 'pill-active' : ''}`}>Yes - morning + evening</button>
                     <button onClick={() => update('reminders', false)}
                       className={`pill ${!profile.reminders ? 'pill-active' : ''}`}>No thanks</button>
                   </div>
@@ -244,11 +244,11 @@ export default function OnboardingPage() {
             </motion.div>
           )}
 
-          {/* STEP 3 Ã¢â€ REVIEW */}
+          {/* STEP 3 - REVIEW */}
           {step === 3 && (
             <motion.div key="s3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
               <div className="card">
-                <h2 className="text-2xl font-extrabold text-gray-900 mb-1">Your personalised plan is ready Ã¢Å“â€œ</h2>
+                <h2 className="text-2xl font-extrabold text-gray-900 mb-1">Your personalised plan is ready ✓</h2>
                 <p className="text-sm text-gray-500 mb-6">Here's what TrimTrack calculated for you.</p>
 
                 <div className="grid grid-cols-2 gap-3 mb-5">
@@ -282,7 +282,7 @@ export default function OnboardingPage() {
                 {/* Celebration icon */}
                 <div className="w-20 h-20 bg-lime-400 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl"
                   style={{ animation: 'bounce 1s ease infinite' }}>
-                  
+                  🎯
                 </div>
 
                 <h2 className="text-2xl font-extrabold text-gray-900 mb-2">
@@ -316,13 +316,13 @@ export default function OnboardingPage() {
                   <div className="bg-green-50 rounded-2xl p-4 text-left">
                     <div className="text-xs text-gray-400 font-medium mb-1">Meal culture</div>
                     <div className="text-lg font-extrabold text-gray-900">
-                      {profile.country || 'Global'} Ã°Å¸Â½Ã¯Â¸
+                      {profile.country || 'Global'} 🍽️
                     </div>
                   </div>
                   <div className="bg-green-50 rounded-2xl p-4 text-left">
                     <div className="text-xs text-gray-400 font-medium mb-1">Reminders</div>
                     <div className="text-lg font-extrabold text-gray-900">
-                      {profile.reminders ? 'Ã¢Å“â€œ Morning + evening' : 'Off'}
+                      {profile.reminders ? 'Yes - Morning + evening' : 'Off'}
                     </div>
                   </div>
                 </div>
@@ -353,16 +353,16 @@ export default function OnboardingPage() {
 
         <div className="flex justify-between items-center mt-6">
           {step > 0 && step < 4 ? (
-            <button onClick={() => setStep(s => s - 1)} className="btn-secondary">Ã¢â€ <- Back</button>
+            <button onClick={() => setStep(s => s - 1)} className="btn-secondary"><- Back</button>
           ) : <div />}
 
           {step < 3 ? (
-            <button onClick={() => setStep(s => s + 1)} className="btn-primary">Continue ->Ã¢â€ â€™</button>
+            <button onClick={() => setStep(s => s + 1)} className="btn-primary">Continue -></button>
           ) : step === 3 ? (
-            <button onClick={() => setStep(4)} className="btn-primary">See my plan Ã¢â€ â€™</button>
+            <button onClick={() => setStep(4)} className="btn-primary">See my plan -></button>
           ) : (
             <button onClick={handleFinish} disabled={saving} className="btn-primary w-full py-4 text-base">
-              {saving ? 'Setting up...' : 'Ã°Å¸Å¡ Start tracking now'}
+              {saving ? 'Setting up...' : 'Start tracking now'}
             </button>
           )}
         </div>
