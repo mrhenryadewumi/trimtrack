@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -155,7 +155,7 @@ export default function DashboardPage() {
             {Math.abs(remain).toLocaleString()}
           </div>
           <div className="text-green-200 text-xs mb-3">
-            {remain < 0 ? 'kcal over goal' : `kcal left Â· ${eaten.toLocaleString()} eaten of ${goal.toLocaleString()}`}
+            {remain < 0 ? 'kcal over goal' : `kcal left - {eaten.toLocaleString()} eaten of ${goal.toLocaleString()}`}
           </div>
           <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
             <motion.div className="h-full rounded-full"
