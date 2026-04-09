@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'TrimTrack — Your Weight Loss Journey, Simplified',
-  description: 'The only calorie tracker that knows Nigerian food. AI-powered meal scanning, personalised plans, and daily reminders.',
-  keywords: ['weight loss', 'calorie tracker', 'Nigerian food', 'African food', 'diet app'],
+  title: 'TrimTrack - The calorie tracker that understands your food',
+  description: 'AI-powered calorie tracking built for Nigerian and African food. Scan your meal, get instant calories, and lose weight eating food you love. Free 30-day trial.',
+  keywords: ['calorie tracker', 'Nigerian food', 'African food', 'weight loss app', 'AI food scanner', 'jollof rice calories', 'egusi calories', 'Nigerian diet'],
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
@@ -12,9 +12,23 @@ export const metadata: Metadata = {
     title: 'TrimTrack',
   },
   openGraph: {
-    title: 'TrimTrack — Calorie tracking for Nigerian food',
-    description: 'The only calorie tracker that knows Nigerian food.',
+    title: 'TrimTrack - The calorie tracker that understands your food',
+    description: 'AI-powered calorie tracking built for Nigerian and African food. Free 30-day trial. No credit card.',
     type: 'website',
+    url: 'https://www.trimtrack.fit',
+    siteName: 'TrimTrack',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'TrimTrack - The calorie tracker that understands your food',
+    description: 'AI-powered calorie tracking built for Nigerian and African food. Free 30-day trial.',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: 'https://www.trimtrack.fit',
   },
 }
 
