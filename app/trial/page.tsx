@@ -1,28 +1,39 @@
 ﻿"use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 export default function TrialPage() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
   const [sessionId, setSessionId] = useState("");
-  const router = useRouter();
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const sid = localStorage.getItem("sessionId") || "";
+    let sid = localStorage.getItem("sessionId");
+    if (!sid) {
+      sid = crypto.randomUUID();
+      localStorage.setItem("sessionId", sid);
+    }
     setSessionId(sid);
-    
+
     const profile = localStorage.getItem("trimtrack_profile");
     if (profile) {
-      const p = JSON.parse(profile);
-      if (p.name) setName(p.name);
+      try {
+        const p = JSON.parse(profile);
+        if (p.name) setName(p.name);
+      } catch {}
     }
+    setReady(true);
   }, []);
 
   const handleSubmit = async () => {
-    if (!email || !sessionId) return;
+    setError("");
+    if (!email) { setError("Please enter your email address."); return; }
+    if (!email.includes("@")) { setError("Please enter a valid email address."); return; }
+    if (!sessionId) { setError("Session error. Please refresh the page."); return; }
+
     setLoading(true);
     try {
       const res = await fetch("/api/trial", {
@@ -31,7 +42,13 @@ export default function TrialPage() {
         body: JSON.stringify({ email, name, sessionId }),
       });
       const data = await res.json();
-      if (data.ok) setSent(true);
+      if (data.ok) {
+        setSent(true);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+    } catch (err) {
+      setError("Network error. Please check your connection and try again.");
     } finally {
       setLoading(false);
     }
@@ -44,19 +61,18 @@ export default function TrialPage() {
     }}>
       <div style={{ textAlign: "center", maxWidth: "400px" }}>
         <div style={{
-          width: "80px", height: "80px", background: "#1a5c38",
-          borderRadius: "20px", display: "flex", alignItems: "center",
-          justifyContent: "center", margin: "0 auto 24px", fontSize: "36px"
-        }}>✉️</div>
-        <h1 style={{ fontSize: "24px", fontWeight: "700", color: "#0f1f14", marginBottom: "12px" }}>
+          width: "72px", height: "72px", background: "#1a5c38",
+          borderRadius: "18px", display: "flex", alignItems: "center",
+          justifyContent: "center", margin: "0 auto 24px", fontSize: "32px"
+        }}>✉</div>
+        <h1 style={{ fontSize: "24px", fontWeight: "800", color: "#0f1f14", marginBottom: "12px" }}>
           Check your email
         </h1>
-        <p style={{ color: "#666", lineHeight: "1.6", marginBottom: "24px" }}>
-          We sent a confirmation link to <strong>{email}</strong>.
-          Click it to start your 30-day free trial.
+        <p style={{ color: "#555", lineHeight: "1.7", marginBottom: "8px" }}>
+          We sent a confirmation link to <strong style={{ color: "#1a5c38" }}>{email}</strong>
         </p>
-        <p style={{ color: "#888", fontSize: "13px" }}>
-          No card needed. Cancel anytime after your trial.
+        <p style={{ color: "#888", fontSize: "14px", lineHeight: "1.6" }}>
+          Click the link in the email to activate your 30-day free trial. Check your spam folder if you do not see it within 2 minutes.
         </p>
       </div>
     </div>
@@ -68,27 +84,22 @@ export default function TrialPage() {
       display: "flex", alignItems: "center", justifyContent: "center", padding: "24px"
     }}>
       <div style={{ maxWidth: "420px", width: "100%" }}>
-        <div style={{
-          background: "#1a5c38", borderRadius: "20px", padding: "28px",
-          textAlign: "center", marginBottom: "28px"
-        }}>
-          <h1 style={{ color: "#b5f23d", fontSize: "28px", fontWeight: "800", margin: "0 0 8px" }}>
-            TrimTrack
-          </h1>
-          <p style={{ color: "#a8d5b5", margin: 0, fontSize: "15px" }}>
-            30-day free trial - no card needed
-          </p>
+
+        <div style={{ textAlign: "center", marginBottom: "28px" }}>
+          <a href="/" style={{ textDecoration: "none" }}>
+            <span style={{ fontWeight: 800, fontSize: "22px", color: "#1a5c38" }}>TrimTrack</span>
+          </a>
         </div>
 
         <div style={{
-          background: "white", borderRadius: "20px", padding: "28px",
+          background: "white", borderRadius: "20px", padding: "32px",
           border: "1px solid #e5e7eb"
         }}>
-          <h2 style={{ fontSize: "20px", fontWeight: "700", color: "#0f1f14", marginBottom: "6px" }}>
+          <h2 style={{ fontSize: "22px", fontWeight: "800", color: "#0f1f14", marginBottom: "8px" }}>
             Start your free trial
           </h2>
-          <p style={{ color: "#666", fontSize: "14px", marginBottom: "24px", lineHeight: "1.5" }}>
-            Get 30 days of unlimited AI food scanning, reminders, and everything TrimTrack offers. Free.
+          <p style={{ color: "#666", fontSize: "14px", marginBottom: "28px", lineHeight: "1.6" }}>
+            30 days of full access. No credit card needed. Cancel anytime.
           </p>
 
           <div style={{ marginBottom: "16px" }}>
@@ -102,8 +113,8 @@ export default function TrialPage() {
               placeholder="Henry"
               style={{
                 width: "100%", padding: "12px 14px", borderRadius: "10px",
-                border: "1.5px solid #e5e7eb", fontSize: "15px", outline: "none",
-                boxSizing: "border-box"
+                border: "1.5px solid #e5e7eb", fontSize: "15px",
+                outline: "none", boxSizing: "border-box", color: "#0f1f14"
               }}
             />
           </div>
@@ -115,40 +126,55 @@ export default function TrialPage() {
             <input
               type="email"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={e => { setEmail(e.target.value); setError(""); }}
+              onKeyDown={e => e.key === "Enter" && handleSubmit()}
               placeholder="you@email.com"
               style={{
                 width: "100%", padding: "12px 14px", borderRadius: "10px",
-                border: "1.5px solid #e5e7eb", fontSize: "15px", outline: "none",
-                boxSizing: "border-box"
+                border: error ? "1.5px solid #dc2626" : "1.5px solid #e5e7eb",
+                fontSize: "15px", outline: "none", boxSizing: "border-box", color: "#0f1f14"
               }}
             />
+            {error && (
+              <p style={{ color: "#dc2626", fontSize: "13px", marginTop: "6px" }}>{error}</p>
+            )}
           </div>
 
           <button
             onClick={handleSubmit}
-            disabled={loading || !email}
+            disabled={loading || !ready}
             style={{
-              width: "100%", padding: "16px", background: loading || !email ? "#ccc" : "#1a5c38",
+              width: "100%", padding: "15px",
+              background: loading ? "#2d8a56" : "#1a5c38",
               color: "#b5f23d", border: "none", borderRadius: "12px",
-              fontSize: "16px", fontWeight: "700", cursor: loading || !email ? "not-allowed" : "pointer",
-              marginBottom: "16px"
+              fontSize: "16px", fontWeight: "700",
+              cursor: loading ? "not-allowed" : "pointer",
+              marginBottom: "20px", transition: "background 0.15s"
             }}
           >
             {loading ? "Sending..." : "Send confirmation email"}
           </button>
 
-          <div style={{ textAlign: "center" }}>
-            {["Unlimited AI food scanning", "Morning and evening reminders", "30 days completely free", "No credit card required"].map(f => (
-              <div key={f} style={{ fontSize: "13px", color: "#555", padding: "3px 0" }}>
-                ✓ {f}
+          <div style={{ borderTop: "1px solid #f0f0f0", paddingTop: "16px" }}>
+            {[
+              "Unlimited AI food scanning",
+              "Morning and evening reminders",
+              "Barcode scanner",
+              "30 days completely free",
+              "No credit card required",
+            ].map(f => (
+              <div key={f} style={{
+                fontSize: "13px", color: "#555", padding: "4px 0",
+                display: "flex", alignItems: "center", gap: "8px"
+              }}>
+                <span style={{ color: "#1a5c38", fontWeight: "700" }}>+</span> {f}
               </div>
             ))}
           </div>
         </div>
 
         <p style={{ textAlign: "center", color: "#888", fontSize: "12px", marginTop: "16px" }}>
-          After 30 days, continue for £2.99/month or £19.99/year. Cancel anytime.
+          After 30 days, continue for just £2.99/month or £19.99/year.
         </p>
       </div>
     </div>

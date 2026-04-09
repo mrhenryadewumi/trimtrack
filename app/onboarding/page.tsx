@@ -338,7 +338,7 @@ export default function OnboardingPage() {
                 </div>
 
                 <p className="text-xs text-gray-400">
-                  Snap your first meal to get started. TrimTrack knows Nigerian food.
+                  Snap your first meal to get started. TrimTrack understands your food.
                 </p>
               </div>
 
