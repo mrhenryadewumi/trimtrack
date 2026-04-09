@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState } from "react";
 import Link from "next/link";
 
@@ -298,7 +298,7 @@ export default function HomePage() {
         background: "#0f1f14", padding: "24px", textAlign: "center"
       }}>
         <p style={{ color: "#666", fontSize: "13px", margin: 0 }}>
-          © 2026 TrimTrack. All rights reserved. · trimtrack.fit
+          © 2026 TrimTrack. All rights reserved. · trimtrack.fit · <a href='/privacy' style={{color:'#888',textDecoration:'none'}}>Privacy</a> · <a href='/terms' style={{color:'#888',textDecoration:'none'}}>Terms</a>
         </p>
       </footer>
     </div>
