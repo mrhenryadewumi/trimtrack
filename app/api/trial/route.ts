@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
     }
 
     const { data: emailData, error: emailError } = await resend.emails.send({
-      from: "TrimTrack <hello@contact.trimtrack.fit>",
+      from: "TrimTrack <hello@trimtrack.fit>",
       to: email,
       subject: "Confirm your TrimTrack free trial",
       html: `
