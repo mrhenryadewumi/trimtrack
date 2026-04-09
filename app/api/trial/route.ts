@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
-import { randomUUID } from "crypto";
+
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     const { email, name, sessionId } = await req.json();
     if (!email || !sessionId) return NextResponse.json({ error: "Missing fields" }, { status: 400 });
 
-    const confirmToken = randomUUID();
+    const confirmToken = Math.random().toString(36).slice(2) + Date.now().toString(36);
     const trialEndsAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
     const appUrl = process.env.NEXT_PUBLIC_APP_URL;
 
