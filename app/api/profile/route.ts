@@ -9,7 +9,6 @@ const supabase = createClient(
 
 export async function GET(req: NextRequest) {
   try {
-    // Read session from cookie or query param
     const cookieSession = req.cookies.get("trimtrack_session")?.value;
     const querySession = req.nextUrl.searchParams.get("session_id");
     const sessionId = cookieSession || querySession;
@@ -18,31 +17,32 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    // Get subscription data (email, name, plan)
+    // Get subscription data by session_id
     const { data: sub } = await supabase
       .from("subscriptions")
-      .select("email, name, plan, status, trial_ends_at")
+      .select("email, name, plan, status, trial_ends_at, session_id")
       .eq("session_id", sessionId)
       .single();
 
-    // Get profile data
+    if (!sub) {
+      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+    }
+
+    // Get profile data by session_id (profiles table uses session_id too)
     const { data: profile } = await supabase
       .from("profiles")
       .select("*")
       .eq("session_id", sessionId)
-      .single();
-
-    if (!sub && !profile) {
-      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
-    }
+      .maybeSingle();
 
     return NextResponse.json({
       ...(profile || {}),
-      email: sub?.email,
-      name: profile?.name || sub?.name,
-      plan: sub?.plan,
-      status: sub?.status,
-      trial_ends_at: sub?.trial_ends_at,
+      email: sub.email,
+      name: profile?.name || sub.name,
+      plan: sub.plan,
+      status: sub.status,
+      trial_ends_at: sub.trial_ends_at,
+      session_id: sessionId,
     });
   } catch (err: any) {
     console.error("Profile GET error:", err);
@@ -54,8 +54,8 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const { session_id, ...profile } = body;
-
     const sid = session_id || req.cookies.get("trimtrack_session")?.value;
+
     if (!sid) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
     const { error } = await supabase.from("profiles").upsert({
