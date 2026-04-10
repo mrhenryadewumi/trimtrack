@@ -79,7 +79,7 @@ export default function DashboardPage() {
 
   const allMeals = Object.values(meals).flat()
   const eaten = (allMeals ?? []).reduce((s, m) => s + (m.kcal || 0), 0)
-  const goal = profile?.dailyCalorieGoal || profile?.goal_weight || 1500
+  const goal = profile?.dailyCalorieGoal || profile?.goalWeight || 1500
   const remain = (goal || 1500) - (eaten || 0)
   const pct = goal > 0 ? Math.min(100, Math.round(((eaten || 0) / goal) * 100)) : 0
   const status = getCalorieStatus(eaten, goal)
