@@ -3,12 +3,12 @@ import { useState } from "react";
 import Link from "next/link";
 
 const features = [
-  { icon: "📊", title: "Real-time calorie tracking", desc: "Log meals with a tap. Watch your daily ring fill - green means good, yellow means careful, red means stop." },
-  { icon: "🍽️", title: "Meals built around your food", desc: "Tell us your food culture. TrimTrack builds your plan around food you actually enjoy - not salads you will never eat." },
-  { icon: "🔔", title: "Daily reminders that actually help", desc: "Get a morning message with your meal plan and an evening check-in. You do not have to remember - we do." },
-  { icon: "⚖️", title: "Weight progress tracker", desc: "Log your weight daily. Watch your progress chart trend downward week by week toward your goal." },
-  { icon: "🏃", title: "Exercise recommendations", desc: "Daily exercises matched to your fitness level - from gentle walks to HIIT - with calories burned counted toward your day." },
-  { icon: "🚫", title: "Daily foods to avoid", desc: "Every day you get a short list of what to skip and why. Know exactly what is working against your goal." },
+  { icon: "ðŸ“Š", title: "Real-time calorie tracking", desc: "Log meals with a tap. Watch your daily ring fill - green means good, yellow means careful, red means stop." },
+  { icon: "ðŸ½ï¸", title: "Meals built around your food", desc: "Tell us your food culture. TrimTrack builds your plan around food you actually enjoy - not salads you will never eat." },
+  { icon: "ðŸ””", title: "Daily reminders that actually help", desc: "Get a morning message with your meal plan and an evening check-in. You do not have to remember - we do." },
+  { icon: "âš–ï¸", title: "Weight progress tracker", desc: "Log your weight daily. Watch your progress chart trend downward week by week toward your goal." },
+  { icon: "ðŸƒ", title: "Exercise recommendations", desc: "Daily exercises matched to your fitness level - from gentle walks to HIIT - with calories burned counted toward your day." },
+  { icon: "ðŸš«", title: "Daily foods to avoid", desc: "Every day you get a short list of what to skip and why. Know exactly what is working against your goal." },
 ];
 
 const testimonials = [
@@ -59,7 +59,7 @@ export default function HomePage() {
         <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
           <a href="#features" style={{ color: "#444", textDecoration: "none", fontSize: "14px" }}>Features</a>
           <a href="#how" style={{ color: "#444", textDecoration: "none", fontSize: "14px" }}>How it works</a>
-          <Link href="/onboarding" style={{
+          <Link href="/trial" style={{
             background: "#1a5c38", color: "#b5f23d", padding: "8px 18px",
             borderRadius: "8px", textDecoration: "none", fontSize: "14px", fontWeight: "700"
           }}>Start free</Link>
@@ -84,12 +84,12 @@ export default function HomePage() {
               TrimTrack gives you personalised daily meal plans, real-time calorie tracking, and gentle reminders - so you never have to guess what to eat again.
             </p>
             <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-              <Link href="/onboarding" style={{
+              <Link href="/trial" style={{
                 background: "#1a5c38", color: "#b5f23d", padding: "16px 28px",
                 borderRadius: "12px", textDecoration: "none", fontWeight: "700",
                 fontSize: "16px", display: "inline-block"
               }}>
-                Build my free plan →
+                Build my free plan â†’
               </Link>
               <a href="#how" style={{
                 background: "white", color: "#1a5c38", padding: "16px 28px",
@@ -172,7 +172,7 @@ export default function HomePage() {
             <div style={{ color: "#888", fontSize: "13px" }}>Join them - free for 30 days</div>
           </div>
           <div style={{ marginLeft: "auto", display: "flex", gap: "4px" }}>
-            {"★★★★★".split("").map((s, i) => (
+            {"â˜…â˜…â˜…â˜…â˜…".split("").map((s, i) => (
               <span key={i} style={{ color: "#f59e0b", fontSize: "18px" }}>{s}</span>
             ))}
           </div>
@@ -249,7 +249,7 @@ export default function HomePage() {
                 border: "1px solid #e5e7eb"
               }}>
                 <div style={{ display: "flex", gap: "4px", marginBottom: "16px" }}>
-                  {"★★★★★".split("").map((s, i) => (
+                  {"â˜…â˜…â˜…â˜…â˜…".split("").map((s, i) => (
                     <span key={i} style={{ color: "#f59e0b", fontSize: "16px" }}>{s}</span>
                   ))}
                 </div>
@@ -280,15 +280,15 @@ export default function HomePage() {
           <p style={{ color: "#a8d5b5", fontSize: "17px", marginBottom: "36px" }}>
             30 days free. No credit card. Cancel anytime.
           </p>
-          <Link href="/onboarding" style={{
+          <Link href="/trial" style={{
             background: "#b5f23d", color: "#1a5c38", padding: "18px 36px",
             borderRadius: "14px", textDecoration: "none", fontWeight: "800",
             fontSize: "18px", display: "inline-block", marginBottom: "16px"
           }}>
-            Build my free plan →
+            Build my free plan â†’
           </Link>
           <p style={{ color: "#a8d5b5", fontSize: "13px" }}>
-            After 30 days, continue for just £2.99/month
+            After 30 days, continue for just Â£2.99/month
           </p>
         </div>
       </section>
@@ -298,7 +298,7 @@ export default function HomePage() {
         background: "#0f1f14", padding: "24px", textAlign: "center"
       }}>
         <p style={{ color: "#666", fontSize: "13px", margin: 0 }}>
-          © 2026 TrimTrack. All rights reserved. · trimtrack.fit · <a href='/privacy' style={{color:'#888',textDecoration:'none'}}>Privacy</a> · <a href='/terms' style={{color:'#888',textDecoration:'none'}}>Terms</a>
+          Â© 2026 TrimTrack. All rights reserved. Â· trimtrack.fit Â· <a href='/privacy' style={{color:'#888',textDecoration:'none'}}>Privacy</a> Â· <a href='/terms' style={{color:'#888',textDecoration:'none'}}>Terms</a>
         </p>
       </footer>
     </div>

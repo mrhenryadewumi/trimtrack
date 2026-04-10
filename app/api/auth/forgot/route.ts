@@ -14,25 +14,28 @@ export async function POST(req: Request) {
     const { email } = await req.json();
     if (!email) return NextResponse.json({ ok: false, error: "Email required" }, { status: 400 });
 
-    const { data: user } = await supabase
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.trimtrack.fit";
+    const resetToken = Math.random().toString(36).slice(2) + Date.now().toString(36);
+
+    const { data: user, error: dbError } = await supabase
       .from("subscriptions")
-      .select("id, name")
+      .select("id, name, email")
       .eq("email", email)
       .single();
 
+    console.log("Forgot password - user lookup:", user, dbError);
+
     if (!user) {
+      console.log("No user found for email:", email);
       return NextResponse.json({ ok: true });
     }
-
-    const resetToken = Math.random().toString(36).slice(2) + Date.now().toString(36);
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.trimtrack.fit";
 
     await supabase.from("subscriptions").update({
       confirm_token: resetToken,
       updated_at: new Date().toISOString(),
     }).eq("email", email);
 
-    await resend.emails.send({
+    const { error: emailError, data: emailData } = await resend.emails.send({
       from: "TrimTrack <hello@trimtrack.fit>",
       to: email,
       subject: "Reset your TrimTrack password",
@@ -57,8 +60,11 @@ export async function POST(req: Request) {
       `,
     });
 
+    console.log("Email send result:", emailData, emailError);
+
     return NextResponse.json({ ok: true });
   } catch (err: any) {
+    console.error("Forgot password error:", err);
     return NextResponse.json({ ok: false, error: err.message }, { status: 500 });
   }
 }
