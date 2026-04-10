@@ -39,22 +39,21 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const saved = localStorage.getItem('trimtrack_profile')
-    if (!saved) {
-      // Try loading from API using session cookie
-      fetch('/api/profile', { method: 'GET', credentials: 'include' })
-        .then(r => r.json())
-        .then(data => {
-          if (data && data.name) {
-            setProfile(data)
-            localStorage.setItem('trimtrack_profile', JSON.stringify(data))
-          } else {
-            router.push('/onboarding')
-          }
-        })
-        .catch(() => router.push('/onboarding'))
-      return
+    if (saved) {
+      setProfile(JSON.parse(saved))
     }
-    setProfile(JSON.parse(saved))
+    // Always sync from API to get latest name and plan
+    fetch('/api/profile', { method: 'GET', credentials: 'include' })
+      .then(r => r.json())
+      .then(data => {
+        if (data && data.name) {
+          setProfile(data)
+          localStorage.setItem('trimtrack_profile', JSON.stringify(data))
+        } else if (!saved) {
+          router.push('/onboarding')
+        }
+      })
+      .catch(() => { if (!saved) router.push('/onboarding') })
     const savedMeals = localStorage.getItem('trimtrack_meals_today')
     if (savedMeals) setMeals(JSON.parse(savedMeals))
     const savedWt = localStorage.getItem('trimtrack_weights')
@@ -172,7 +171,7 @@ export default function DashboardPage() {
             {Math.abs(remain).toLocaleString()}
           </div>
           <div className="text-green-200 text-xs mb-3">
-            {remain < 0 ? 'kcal over goal' : `kcal left - {eaten.toLocaleString()} eaten of ${goal.toLocaleString()}`}
+            {remain < 0 ? 'kcal over goal' : `kcal left - ${eaten.toLocaleString()} eaten of ${goal.toLocaleString()}`}
           </div>
           <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
             <motion.div className="h-full rounded-full"
