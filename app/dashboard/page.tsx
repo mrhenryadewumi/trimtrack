@@ -78,10 +78,10 @@ export default function DashboardPage() {
   }, [router, saveMealsLocal])
 
   const allMeals = Object.values(meals).flat()
-  const eaten = allMeals.reduce((s, m) => s + m.kcal, 0)
-  const goal = profile?.dailyCalorieGoal ?? 1500
-  const remain = goal - eaten
-  const pct = Math.min(100, Math.round((eaten / goal) * 100))
+  const eaten = (allMeals ?? []).reduce((s, m) => s + (m.kcal || 0), 0)
+  const goal = profile?.dailyCalorieGoal || profile?.goal_weight || 1500
+  const remain = (goal || 1500) - (eaten || 0)
+  const pct = goal > 0 ? Math.min(100, Math.round(((eaten || 0) / goal) * 100)) : 0
   const status = getCalorieStatus(eaten, goal)
   const exercises = profile ? getExercises(profile.activity) : []
   const totalBurned = exercises.reduce((s, ex, i) => s + (exDone[i] ? ex.burn : 0), 0)
@@ -168,7 +168,7 @@ export default function DashboardPage() {
       <div className="max-w-lg mx-auto px-4 py-5">
 
         {/* GREETING */}
-        <p className="text-lg font-extrabold text-gray-900 mb-4">{getGreeting(profile.name)}</p>
+        <p className="text-lg font-extrabold text-gray-900 mb-4">{getGreeting(profile?.name || "there")}</p>
 
         {/* HERO */}
         <div className="bg-green-700 rounded-3xl p-5 mb-3 relative overflow-hidden">
