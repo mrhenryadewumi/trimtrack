@@ -1,4 +1,4 @@
-"use client";
+content = '''"use client";
 import { useState } from "react";
 import Link from "next/link";
 
@@ -202,3 +202,12 @@ export default function HomePage() {
     </div>
   );
 }
+'''
+
+with open(r'C:\Users\mrhen\trimtrack\app\page.tsx', 'w', encoding='utf-8') as f:
+    f.write(content)
+
+# Verify no bad chars
+bad = [(i,c) for i,c in enumerate(content) if ord(c) > 127]
+print(f'Bad chars: {len(bad)}')
+print('Done - file is clean!' if not bad else 'WARNING: bad chars found')
