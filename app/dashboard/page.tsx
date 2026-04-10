@@ -40,20 +40,22 @@ export default function DashboardPage() {
   useEffect(() => {
     const saved = localStorage.getItem('trimtrack_profile')
     if (saved) {
-      setProfile(JSON.parse(saved))
+      // Load from localStorage immediately so UI renders
+      try { setProfile(JSON.parse(saved)) } catch(e) {}
     }
-    // Always sync from API to get latest name and plan
+    // Sync from API in background
     fetch('/api/profile', { method: 'GET', credentials: 'include' })
-      .then(r => r.json())
+      .then(r => r.ok ? r.json() : null)
       .then(data => {
         if (data && data.name) {
           setProfile(data)
           localStorage.setItem('trimtrack_profile', JSON.stringify(data))
         } else if (!saved) {
-          router.push('/onboarding')
+          // No local data and no session - redirect to login not onboarding
+          router.push('/login')
         }
       })
-      .catch(() => { if (!saved) router.push('/onboarding') })
+      .catch(() => { if (!saved) router.push('/login') })
     const savedMeals = localStorage.getItem('trimtrack_meals_today')
     if (savedMeals) setMeals(JSON.parse(savedMeals))
     const savedWt = localStorage.getItem('trimtrack_weights')
@@ -125,7 +127,12 @@ export default function DashboardPage() {
 
   if (!profile) return (
     <div className="min-h-screen flex items-center justify-center bg-[#f6fbf8]">
-      <div className="text-green-600 font-semibold animate-pulse">Loading...</div>
+      <div style={{ textAlign: "center" }}>
+        <div className="text-green-600 font-semibold animate-pulse mb-4">Loading...</div>
+        <a href="/login" style={{ fontSize: "13px", color: "#1a5c38", textDecoration: "none" }}>
+          Not loading? Click here to log in
+        </a>
+      </div>
     </div>
   )
 
