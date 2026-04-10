@@ -39,7 +39,21 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const saved = localStorage.getItem('trimtrack_profile')
-    if (!saved) { router.push('/onboarding'); return }
+    if (!saved) {
+      // Try loading from API using session cookie
+      fetch('/api/profile', { method: 'GET', credentials: 'include' })
+        .then(r => r.json())
+        .then(data => {
+          if (data && data.name) {
+            setProfile(data)
+            localStorage.setItem('trimtrack_profile', JSON.stringify(data))
+          } else {
+            router.push('/onboarding')
+          }
+        })
+        .catch(() => router.push('/onboarding'))
+      return
+    }
     setProfile(JSON.parse(saved))
     const savedMeals = localStorage.getItem('trimtrack_meals_today')
     if (savedMeals) setMeals(JSON.parse(savedMeals))
