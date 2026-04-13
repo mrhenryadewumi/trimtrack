@@ -1,4 +1,5 @@
-export const dynamic = "force-dynamic";
+# Fix the profile GET API to return basic data from subscriptions even if profiles table is empty
+content = """export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
@@ -80,3 +81,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
+"""
+
+with open(r'C:\Users\mrhen\trimtrack\app\api\profile\route.ts', 'w', encoding='utf-8') as f:
+    f.write(content)
+print("Done")

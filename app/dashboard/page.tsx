@@ -50,7 +50,7 @@ export default function DashboardPage() {
         const apiProfile = data?.profile ?? data; if (apiProfile?.name) { setProfile(apiProfile)
           localStorage.setItem('trimtrack_profile', JSON.stringify(data))
         } else if (!saved) {
-          router.push('/login')
+          console.log('No profile - staying on dashboard')
         }
       })
       .catch(() => {  })
