@@ -156,7 +156,7 @@ export default function DashboardPage() {
           </div>
           <div style={{display:"flex",gap:"8px",alignItems:"center"}}>
             {!profile && (<a href="/login">Login</a>)}
-            <button onClick={() => router.push('/onboarding')} className="text-xs text-gray-400 border border-gray-200 rounded-full px-3 py-1.5">
+            <button onClick={() => router.push('/profile')} className="text-xs text-gray-400 border border-gray-200 rounded-full px-3 py-1.5">
               Edit profile
             </button>
           </div>
@@ -286,7 +286,11 @@ export default function DashboardPage() {
                         <div key={ii} className="flex items-center gap-2">
                           <span className="flex-1 text-sm text-gray-600 truncate">{it.foodName}</span>
                           <span className="text-xs text-gray-400">{it.kcal} kcal</span>
-                          <button onClick={() => removeFood(m.key, ii)} className="text-gray-300 hover:text-red-400 text-lg leading-none ml-1">‚€</button>
+                          <button onClick={() => removeFood(m.key, ii)} className="text-gray-300 hover:text-red-400 ml-2" style={{background:"none",border:"none",cursor:"pointer",padding:"2px",display:"flex",alignItems:"center"}}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/>
+                          </svg>
+                        </button>
                         </div>
                       ))}
                     </div>
