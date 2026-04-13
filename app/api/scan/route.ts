@@ -1,7 +1,11 @@
+import { createServerClient } from '@/lib/supabase'
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
+  const supabase = createServerClient()
+  
+  if (!supabase) return new Response("Build skip", { status: 200 })
   try {
     const body = await req.json()
     const { image, mediaType } = body
@@ -96,3 +100,12 @@ Important:
     return NextResponse.json({ error: 'Failed to analyse image' }, { status: 500 })
   }
 }
+
+
+
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -38,8 +38,8 @@ export default function DashboardPage() {
   }, [])
 
   useEffect(() => {
-    const saved = localStorage.getItem('trimtrack_profile')
-    if (saved) {
+    const saved = typeof window !== 'undefined' ? null : null
+    if (saved) { try { setProfile(JSON.parse(saved)) } catch(e) {}
       // Load from localStorage immediately so UI renders
       try { setProfile(JSON.parse(saved)) } catch(e) {}
     }
@@ -47,30 +47,29 @@ export default function DashboardPage() {
     fetch('/api/profile', { method: 'GET', credentials: 'include' })
       .then(r => r.ok ? r.json() : null)
       .then(data => {
-        if (data && data.name) {
-          setProfile(data)
+        const apiProfile = data?.profile ?? data; if (apiProfile?.name) { setProfile(apiProfile)
           localStorage.setItem('trimtrack_profile', JSON.stringify(data))
         } else if (!saved) {
           // No local data and no session - redirect to login not onboarding
           router.push('/login')
         }
       })
-      .catch(() => { if (!saved) router.push('/login') })
+      .catch(() => {  })
     const savedMeals = localStorage.getItem('trimtrack_meals_today')
     if (savedMeals) setMeals(JSON.parse(savedMeals))
     const savedWt = localStorage.getItem('trimtrack_weights')
     if (savedWt) setWeightLog(JSON.parse(savedWt))
     fetchMeals().then(res => {
-      if (res?.data?.length) {
+      const mealRows = res?.meals ?? res?.data ?? []; if (mealRows.length) {
         const grouped: Record<MealType, MealEntry[]> = { breakfast: [], lunch: [], snack: [], dinner: [] }
-        res.data.forEach((m: { id: string; meal_type: MealType; food_name: string; kcal: number; protein: number; carbs: number; fat: number }) => {
+        mealRows.forEach((m: { id: string; meal_type: MealType; food_name: string; kcal: number; protein: number; carbs: number; fat: number }) => {
           if (grouped[m.meal_type]) grouped[m.meal_type].push({ id: m.id, userId: 'local', date: new Date().toISOString().split('T')[0], mealType: m.meal_type, foodName: m.food_name, kcal: m.kcal, protein: m.protein, carbs: m.carbs, fat: m.fat })
         })
         setMeals(grouped); saveMealsLocal(grouped)
       }
     }).catch(() => {})
     fetchWeights().then(res => {
-      if (res?.data?.length) {
+      const mealRows = res?.meals ?? res?.data ?? []; if (mealRows.length) {
         const wts = res.data.map((w: { date: string; weight: number }) => ({ userId: 'local', date: w.date, weight: w.weight }))
         setWeightLog(wts); localStorage.setItem('trimtrack_weights', JSON.stringify(wts))
       }
@@ -79,11 +78,11 @@ export default function DashboardPage() {
 
   const allMeals = Object.values(meals).flat()
   const eaten = (allMeals ?? []).reduce((s, m) => s + (m.kcal || 0), 0)
-  const goal = profile?.dailyCalorieGoal || profile?.goalWeight || 1500
+  const goal = profile?.dailyCalorieGoal ?? 1500
   const remain = (goal || 1500) - (eaten || 0)
   const pct = goal > 0 ? Math.min(100, Math.round(((eaten || 0) / goal) * 100)) : 0
   const status = getCalorieStatus(eaten, goal)
-  const exercises = profile ? getExercises(profile.activity) : []
+  const exercises = profile ? getExercises(profile?.activity || 'light') : []
   const totalBurned = exercises.reduce((s, ex, i) => s + (exDone[i] ? ex.burn : 0), 0)
 
   async function addFood(foodIdx: number) {
@@ -125,7 +124,7 @@ export default function DashboardPage() {
 
   
 
-  if (!profile) return (
+  if (!profile && typeof window !== 'undefined') return (
     <div className="min-h-screen flex items-center justify-center bg-[#f6fbf8]">
       <div style={{ textAlign: "center" }}>
         <div className="text-green-600 font-semibold animate-pulse mb-4">Loading...</div>
@@ -136,7 +135,7 @@ export default function DashboardPage() {
     </div>
   )
 
-  const plan = getDailyPlan(profile.country)
+  const plan = getDailyPlan(profile?.country || '')
   const remainColour = remain < 0 ? 'text-red-300' : remain < 200 ? 'text-yellow-300' : 'text-white'
   const alertBg = status === 'good' || status === 'empty' ? 'bg-green-50 text-green-700 border-green-200' :
     status === 'warn' || status === 'critical' ? 'bg-yellow-50 text-yellow-800 border-yellow-200' :
@@ -157,7 +156,7 @@ export default function DashboardPage() {
             <a href="/" style={{ textDecoration: "none" }}><span className="font-extrabold text-green-800">TrimTrack</span></a>
           </div>
           <div style={{display:"flex",gap:"8px",alignItems:"center"}}>
-            <a href="/login" style={{fontSize:"12px",color:"#1a5c38",fontWeight:"600",textDecoration:"none"}}>Login</a>
+            {!profile && (<a href="/login">Login</a>)}
             <button onClick={() => router.push('/onboarding')} className="text-xs text-gray-400 border border-gray-200 rounded-full px-3 py-1.5">
               Edit profile
             </button>
@@ -288,7 +287,7 @@ export default function DashboardPage() {
                         <div key={ii} className="flex items-center gap-2">
                           <span className="flex-1 text-sm text-gray-600 truncate">{it.foodName}</span>
                           <span className="text-xs text-gray-400">{it.kcal} kcal</span>
-                          <button onClick={() => removeFood(m.key, ii)} className="text-gray-300 hover:text-red-400 text-lg leading-none ml-1">Ãƒâ€”</button>
+                          <button onClick={() => removeFood(m.key, ii)} className="text-gray-300 hover:text-red-400 text-lg leading-none ml-1">ÃƒÆ’Ã¢â‚¬â€</button>
                         </div>
                       ))}
                     </div>
@@ -345,9 +344,9 @@ export default function DashboardPage() {
                     onClick={() => setExDone(d => ({ ...d, [i]: !d[i] }))}>
                     <div className="flex-1">
                       <div className="font-semibold text-sm text-gray-800">{ex.title}</div>
-                      <div className="text-xs text-green-600 font-semibold">~{ex.burn} kcal Ã‚Â· {ex.duration}</div>
+                      <div className="text-xs text-green-600 font-semibold">~{ex.burn} kcal Ãƒâ€šÃ‚Â· {ex.duration}</div>
                     </div>
-                    <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center text-xs ${exDone[i] ? 'bg-green-700 border-green-700 text-white' : 'border-gray-300 text-transparent'}`}>Ã¢Å“â€œ</div>
+                    <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center text-xs ${exDone[i] ? 'bg-green-700 border-green-700 text-white' : 'border-gray-300 text-transparent'}`}>ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“</div>
                   </div>
                 ))}
               </div>
@@ -360,7 +359,7 @@ export default function DashboardPage() {
         {activeTab === 'plan' && (
           <div className="space-y-4">
             <div className="bg-white rounded-3xl border border-gray-100 p-5 shadow-sm">
-              <div className="font-extrabold text-gray-900 mb-4">Today's meal plan Ã‚Â· {profile.country || 'Global'}</div>
+              <div className="font-extrabold text-gray-900 mb-4">Today's meal plan - {profile?.country || 'Global'}</div>
               <div className="space-y-3">
                 {MEAL_DEFS.map(m => (
                   <div key={m.key} className="flex gap-3">
@@ -381,7 +380,7 @@ export default function DashboardPage() {
                 ))}
               </div>
             </div>
-            {profile.reminders && (
+            {profile?.reminders && (
               <div className="bg-white rounded-3xl border border-gray-100 p-5 shadow-sm">
                 <div className="font-extrabold text-gray-900 mb-3">Reminders</div>
                 <div className="space-y-2">
@@ -403,3 +402,19 @@ export default function DashboardPage() {
     </div>
   )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

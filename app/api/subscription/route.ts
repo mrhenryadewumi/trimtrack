@@ -1,15 +1,15 @@
+import { createServerClient } from '@/lib/supabase'
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+
 
 const FREE_SCANS_PER_DAY = 3;
 
 export async function GET(req: NextRequest) {
+  const supabase = createServerClient()
+  
+  if (!supabase) return new Response("Build skip", { status: 200 })
   const sessionId = req.nextUrl.searchParams.get("sessionId");
   if (!sessionId) return NextResponse.json({ plan: "free", scansLeft: FREE_SCANS_PER_DAY });
 
@@ -43,6 +43,9 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const supabase = createServerClient()
+  
+  if (!supabase) return new Response("Build skip", { status: 200 })
   const { sessionId } = await req.json();
   if (!sessionId) return NextResponse.json({ ok: false });
 
@@ -72,3 +75,12 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json({ ok: true, scansLeft: FREE_SCANS_PER_DAY - scanCount - 1 });
 }
+
+
+
+
+
+
+
+
+

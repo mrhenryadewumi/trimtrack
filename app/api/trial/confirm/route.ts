@@ -1,13 +1,13 @@
+import { createServerClient } from '@/lib/supabase'
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+
 
 export async function GET(req: NextRequest) {
+  const supabase = createServerClient()
+  
+  if (!supabase) return new Response("Build skip", { status: 200 })
   const token = req.nextUrl.searchParams.get("token");
   const sessionId = req.nextUrl.searchParams.get("sessionId");
   const appUrl = process.env.NEXT_PUBLIC_APP_URL;
@@ -33,3 +33,12 @@ export async function GET(req: NextRequest) {
 
   return NextResponse.redirect(`${appUrl}/dashboard?trial=confirmed`);
 }
+
+
+
+
+
+
+
+
+

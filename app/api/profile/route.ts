@@ -1,73 +1,61 @@
-export const dynamic = "force-dynamic";
-import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+﻿import { NextResponse } from 'next/server'
+import { createServerClient } from '@/lib/supabase'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+export const dynamic = 'force-dynamic'
 
-export async function GET(req: NextRequest) {
+export async function POST(req: Request) {
+  const supabase = createServerClient()
+
+  if (!supabase) {
+    return NextResponse.json({ error: "No supabase" }, { status: 500 })
+  }
+
   try {
-    const cookieSession = req.cookies.get("trimtrack_session")?.value;
-    const querySession = req.nextUrl.searchParams.get("session_id");
-    const sessionId = cookieSession || querySession;
+    const body = await req.json()
+
+    const {
+      sessionId,
+      name,
+      age,
+      weight,
+      height,
+      goal,
+      country,
+      activity
+    } = body
 
     if (!sessionId) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+      return NextResponse.json({ error: "No session" }, { status: 400 })
     }
 
-    // Get subscription data by session_id
-    const { data: sub } = await supabase
-      .from("subscriptions")
-      .select("email, name, plan, status, trial_ends_at, session_id")
-      .eq("session_id", sessionId)
-      .single();
+    const { data: userData, error: userError } = await supabase.auth.getUser(sessionId)
 
-    if (!sub) {
-      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+    if (userError || !userData?.user) {
+      return NextResponse.json({ error: "Invalid session" }, { status: 401 })
     }
 
-    // Get profile data by session_id (profiles table uses session_id too)
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("*")
-      .eq("session_id", sessionId)
-      .maybeSingle();
+    const userId = userData.user.id
 
-    return NextResponse.json({
-      ...(profile || {}),
-      email: sub.email,
-      name: profile?.name || sub.name,
-      plan: sub.plan,
-      status: sub.status,
-      trial_ends_at: sub.trial_ends_at,
-      session_id: sessionId,
-    });
-  } catch (err: any) {
-    console.error("Profile GET error:", err);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
-  }
-}
+    const { error } = await supabase
+      .from('profiles')
+      .upsert({
+        id: userId,
+        name,
+        age,
+        weight,
+        height,
+        goal,
+        country,
+        activity
+      })
 
-export async function POST(req: NextRequest) {
-  try {
-    const body = await req.json();
-    const { session_id, ...profile } = body;
-    const sid = session_id || req.cookies.get("trimtrack_session")?.value;
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 400 })
+    }
 
-    if (!sid) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    return NextResponse.json({ success: true })
 
-    const { error } = await supabase.from("profiles").upsert({
-      session_id: sid,
-      ...profile,
-      updated_at: new Date().toISOString(),
-    }, { onConflict: "session_id" });
-
-    if (error) throw error;
-    return NextResponse.json({ ok: true });
-  } catch (err: any) {
-    console.error("Profile POST error:", err);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  } catch (err) {
+    return NextResponse.json({ error: "Failed to save profile" }, { status: 500 })
   }
 }
