@@ -102,7 +102,7 @@ export default function TrialPage() {
           <a href="/login" style={{ color: "#1a5c38", fontWeight: "600", textDecoration: "none" }}>Log in</a>
         </p>
         <p style={{ textAlign: "center", color: "#888", fontSize: "12px", marginTop: "8px" }}>
-          After 30 days, continue for just £2.99/month or £19.99/year.
+          After 30 days, continue for just 2.99/month or 19.99/year.
         </p>
       </div>
     </div>

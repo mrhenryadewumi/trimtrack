@@ -122,11 +122,11 @@ const EXERCISES: Record<Activity, ExerciseItem[]> = {
   ],
   light: [
     { title: '30-min brisk walk', detail: 'Maintain a pace where you can just hold a conversation', burn: 150, duration: '30 min' },
-    { title: '20-min bodyweight circuit', detail: 'Squats ×15, push-ups ×10, lunges ×10 — repeat 2 rounds', burn: 120, duration: '20 min' },
+    { title: '20-min bodyweight circuit', detail: 'Squats 15, push-ups 10, lunges 10 — repeat 2 rounds', burn: 120, duration: '20 min' },
   ],
   moderate: [
     { title: '30-min HIIT session', detail: 'YouTube: 30 seconds on / 30 seconds off — full intensity', burn: 300, duration: '30 min' },
-    { title: '20-min strength circuit', detail: '3 rounds: squats ×20, push-ups ×15, plank 45sec, burpees ×10', burn: 180, duration: '20 min' },
+    { title: '20-min strength circuit', detail: '3 rounds: squats 20, push-ups 15, plank 45sec, burpees 10', burn: 180, duration: '20 min' },
   ],
   active: [
     { title: '45-min run or cycle', detail: 'Moderate to high intensity sustained cardio', burn: 400, duration: '45 min' },
