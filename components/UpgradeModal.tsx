@@ -66,9 +66,9 @@ export default function UpgradeModal({ onClose, sessionId }: UpgradeModalProps) 
           >
             {loading === "annual" ? "Loading..." : (
               <>
-                <div>Annual - £19.99/year</div>
+                <div>Annual - GBP19.99/year</div>
                 <div style={{ fontSize: "13px", opacity: 0.85, fontWeight: "400", marginTop: "2px" }}>
-                  Just £1.67/month - Best value
+                  Just GBP1.67/month - Best value
                 </div>
                 <div style={{
                   position: "absolute", top: "-10px", right: "12px",
@@ -90,7 +90,7 @@ export default function UpgradeModal({ onClose, sessionId }: UpgradeModalProps) 
           >
             {loading === "monthly" ? "Loading..." : (
               <>
-                <div>Monthly - £2.99/month</div>
+                <div>Monthly - GBP2.99/month</div>
                 <div style={{ fontSize: "13px", color: "#666", fontWeight: "400", marginTop: "2px" }}>
                   Cancel anytime
                 </div>

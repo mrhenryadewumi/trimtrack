@@ -120,7 +120,7 @@ export default function PhotoScanner({ onAdd, mealType }: PhotoScannerProps) {
                 </div>
                 <button onClick={() => { setOpen(false); reset(); }}
                   className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200">
-                  ×
+                  x
                 </button>
               </div>
 

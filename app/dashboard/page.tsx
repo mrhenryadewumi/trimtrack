@@ -286,7 +286,7 @@ export default function DashboardPage() {
                         <div key={ii} className="flex items-center gap-2">
                           <span className="flex-1 text-sm text-gray-600 truncate">{it.foodName}</span>
                           <span className="text-xs text-gray-400">{it.kcal} kcal</span>
-                          <button onClick={() => removeFood(m.key, ii)} className="text-gray-300 hover:text-red-400 text-lg leading-none ml-1">ÃƒÆ’Ã¢â‚¬â€</button>
+                          <button onClick={() => removeFood(m.key, ii)} className="text-gray-300 hover:text-red-400 text-lg leading-none ml-1">‚€</button>
                         </div>
                       ))}
                     </div>
@@ -343,9 +343,9 @@ export default function DashboardPage() {
                     onClick={() => setExDone(d => ({ ...d, [i]: !d[i] }))}>
                     <div className="flex-1">
                       <div className="font-semibold text-sm text-gray-800">{ex.title}</div>
-                      <div className="text-xs text-green-600 font-semibold">~{ex.burn} kcal Ãƒâ€šÃ‚Â· {ex.duration}</div>
+                      <div className="text-xs text-green-600 font-semibold">~{ex.burn} kcal  {ex.duration}</div>
                     </div>
-                    <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center text-xs ${exDone[i] ? 'bg-green-700 border-green-700 text-white' : 'border-gray-300 text-transparent'}`}>ÃƒÂ¢Ã…â€œÃ¢â‚¬Å“</div>
+                    <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center text-xs ${exDone[i] ? 'bg-green-700 border-green-700 text-white' : 'border-gray-300 text-transparent'}`}>€œ</div>
                   </div>
                 ))}
               </div>
