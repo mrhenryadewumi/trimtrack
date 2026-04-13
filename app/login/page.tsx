@@ -22,7 +22,13 @@ function LoginForm() {
       });
       const data = await res.json();
       if (data.ok) {
-        if (data.sessionId) localStorage.setItem("sessionId", data.sessionId);
+        if (data.sessionId) {
+          localStorage.setItem("sessionId", data.sessionId);
+          localStorage.setItem("trimtrack_session_id", data.sessionId);
+        }
+        if (data.name) {
+          localStorage.setItem("trimtrack_profile", JSON.stringify({ name: data.name, plan: data.plan }));
+        }
         router.push("/dashboard");
       } else {
         setError(data.error || "Login failed. Please try again.");

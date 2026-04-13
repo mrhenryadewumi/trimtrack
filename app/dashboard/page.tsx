@@ -50,7 +50,6 @@ export default function DashboardPage() {
         const apiProfile = data?.profile ?? data; if (apiProfile?.name) { setProfile(apiProfile)
           localStorage.setItem('trimtrack_profile', JSON.stringify(data))
         } else if (!saved) {
-          // No local data and no session - redirect to login not onboarding
           router.push('/login')
         }
       })
