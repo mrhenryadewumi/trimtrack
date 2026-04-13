@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
     const passwordHash = await bcrypt.hash(password, 12);
     const confirmToken = Math.random().toString(36).slice(2) + Date.now().toString(36);
-    const sid = sessionId || Math.random().toString(36).slice(2);
+    const sid = Math.random().toString(36).slice(2) + Date.now().toString(36);
     const trialEndsAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.trimtrack.fit";
 
