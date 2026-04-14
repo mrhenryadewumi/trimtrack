@@ -218,7 +218,7 @@ export default function DashboardPage() {
               <circle cx="14" cy="6" r="2" fill="#b5f23d"/>
             </svg>
           </div>
-          <a href="/" style={{ textDecoration: 'none', fontWeight: 800, fontSize: '18px', color: '#1a5c38' }}>TrimTrack</a>
+          <a href="/dashboard" style={{ textDecoration: 'none', fontWeight: 800, fontSize: '18px', color: '#1a5c38' }}>TrimTrack</a>
         </div>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
           {profile ? (
