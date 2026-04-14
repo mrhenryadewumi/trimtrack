@@ -2,7 +2,21 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-const COUNTRIES = ["Nigeria","UK","USA","Canada","Ghana","South Africa","Australia","Germany","Other"];
+const COUNTRIES = [
+  "Nigeria", "Ghana", "Kenya", "South Africa", "Ethiopia", "Tanzania", "Uganda",
+  "Rwanda", "Cameroon", "Ivory Coast", "Senegal", "Mali", "Burkina Faso", "Niger",
+  "Chad", "Sudan", "Somalia", "Mozambique", "Madagascar", "Zimbabwe", "Zambia",
+  "Malawi", "Botswana", "Namibia", "Angola", "Democratic Republic of Congo",
+  "Republic of Congo", "Gabon", "Equatorial Guinea", "Benin", "Togo", "Sierra Leone",
+  "Liberia", "Guinea", "Guinea-Bissau", "Gambia", "Cape Verde", "Mauritania",
+  "Morocco", "Algeria", "Tunisia", "Libya", "Egypt", "Eritrea", "Djibouti",
+  "Comoros", "Seychelles", "Mauritius", "Sao Tome and Principe", "Lesotho", "Eswatini",
+  "UK", "USA", "Canada", "Australia", "Germany", "France", "Italy", "Spain",
+  "Netherlands", "Belgium", "Sweden", "Norway", "Denmark", "Finland", "Switzerland",
+  "Austria", "Portugal", "Ireland", "New Zealand", "Brazil", "Jamaica", "Trinidad",
+  "Barbados", "Guyana", "UAE", "Saudi Arabia", "Qatar", "Kuwait", "Bahrain",
+  "India", "China", "Japan", "South Korea", "Singapore", "Malaysia", "Other"
+];
 const ACTIVITIES = [
   { value: "sedentary", label: "Mostly sitting" },
   { value: "light", label: "Light walking" },
