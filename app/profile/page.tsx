@@ -83,7 +83,7 @@ export default function ProfilePage() {
   return (
     <div style={{ minHeight: "100vh", background: "#f6fbf8" }}>
       <nav style={{ background: "rgba(246,251,248,0.97)", borderBottom: "1px solid #e8f5ee", padding: "0 20px", display: "flex", alignItems: "center", justifyContent: "space-between", height: "56px", position: "sticky", top: 0, zIndex: 50 }}>
-        <a href="/" style={{ textDecoration: "none", fontWeight: 800, fontSize: "18px", color: "#1a5c38" }}>TrimTrack</a>
+        <a href="/dashboard" style={{ textDecoration: "none", fontWeight: 800, fontSize: "18px", color: "#1a5c38" }}>TrimTrack</a>
         <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
           <a href="/dashboard" style={{ fontSize: "14px", color: "#1a5c38", textDecoration: "none", fontWeight: 600 }}>Dashboard</a>
           <button onClick={handleLogout} style={{ fontSize: "13px", color: "#dc2626", background: "none", border: "1px solid #fecaca", borderRadius: "20px", padding: "5px 14px", cursor: "pointer", fontWeight: 600 }}>Log out</button>
