@@ -1,160 +1,13 @@
-'use client'
-import { useState, useEffect, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
-import { getCalorieStatus, getStatusColour, getStatusMessage, getDailyPlan, getExercises, getGreeting } from '@/lib/calculations'
-import { FOODS } from '@/lib/foods'
-import { saveMeal, deleteMeal, saveWeight, fetchWeights, fetchMeals } from '@/lib/api-client'
-import PhotoScanner from '@/components/PhotoScanner'
-import UpgradeModal from '@/components/UpgradeModal'
-import ScanGate from '@/components/ScanGate'
-import StepCounter from '@/components/StepCounter'
-import FoodSearch from '@/components/FoodSearch'
-import type { UserProfile, MealEntry, WeightEntry } from '@/types'
+with open(r'C:\Users\mrhen\trimtrack\app\dashboard\page.tsx', 'r', encoding='utf-8') as f:
+    old = f.read()
 
-type MealType = 'breakfast' | 'lunch' | 'snack' | 'dinner'
-const MEAL_DEFS: { key: MealType; label: string; color: string }[] = [
-  { key: 'breakfast', label: 'Breakfast', color: '#166534' },
-  { key: 'lunch',     label: 'Lunch',     color: '#1d4ed8' },
-  { key: 'snack',     label: 'Snack',     color: '#b45309' },
-  { key: 'dinner',    label: 'Dinner',    color: '#6d28d9' },
-]
+if old.startswith('\ufeff'):
+    old = old[1:]
 
-const TrashIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="3 6 5 6 21 6"/>
-    <path d="M19 6l-1 14H6L5 6"/>
-    <path d="M10 11v6"/>
-    <path d="M14 11v6"/>
-    <path d="M9 6V4h6v2"/>
-  </svg>
-)
+# Keep everything up to the main return
+logic_part = old[:8197]
 
-const CheckIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="20 6 9 17 4 12"/>
-  </svg>
-)
-
-export default function DashboardPage() {
-  const router = useRouter()
-  const [profile, setProfile] = useState<UserProfile | null>(null)
-  const [meals, setMeals] = useState<Record<MealType, MealEntry[]>>({ breakfast: [], lunch: [], snack: [], dinner: [] })
-  const [weightLog, setWeightLog] = useState<WeightEntry[]>([])
-  const [wtInput, setWtInput] = useState('')
-  const [exDone, setExDone] = useState<Record<number, boolean>>({})
-  const [activeMeal, setActiveMeal] = useState<MealType>('breakfast')
-  const [showUpgrade, setShowUpgrade] = useState(false)
-  const [scansLeft, setScansLeft] = useState(3)
-  const [isPremium, setIsPremium] = useState(false)
-  const [activeTab, setActiveTab] = useState<'log' | 'progress' | 'plan'>('log')
-
-  const saveMealsLocal = useCallback((m: Record<MealType, MealEntry[]>) => {
-    localStorage.setItem('trimtrack_meals_today', JSON.stringify(m))
-  }, [])
-
-  useEffect(() => {
-    const saved = localStorage.getItem('trimtrack_profile')
-    if (saved) { try { setProfile(JSON.parse(saved)) } catch(e) {} }
-    const savedMeals = localStorage.getItem('trimtrack_meals_today')
-    if (savedMeals) { try { setMeals(JSON.parse(savedMeals)) } catch(e) {} }
-    const savedWt = localStorage.getItem('trimtrack_weights')
-    if (savedWt) { try { setWeightLog(JSON.parse(savedWt)) } catch(e) {} }
-
-    fetch('/api/profile', { method: 'GET', credentials: 'include' })
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        const apiProfile = data?.profile ?? data
-        if (apiProfile?.name) {
-          setProfile(apiProfile)
-          localStorage.setItem('trimtrack_profile', JSON.stringify(apiProfile))
-        }
-      })
-      .catch(() => {})
-
-    fetchMeals().then(res => {
-      const mealRows = res?.meals ?? res?.data ?? []
-      if (mealRows.length) {
-        const grouped: Record<MealType, MealEntry[]> = { breakfast: [], lunch: [], snack: [], dinner: [] }
-        mealRows.forEach((m: { id: string; meal_type: MealType; food_name: string; kcal: number; protein: number; carbs: number; fat: number }) => {
-          if (grouped[m.meal_type]) grouped[m.meal_type].push({ id: m.id, userId: 'local', date: new Date().toISOString().split('T')[0], mealType: m.meal_type, foodName: m.food_name, kcal: m.kcal, protein: m.protein, carbs: m.carbs, fat: m.fat })
-        })
-        setMeals(grouped); saveMealsLocal(grouped)
-      }
-    }).catch(() => {})
-
-    fetchWeights().then(res => {
-      const rows = res?.data ?? []
-      if (rows.length) {
-        const wts = rows.map((w: { date: string; weight: number }) => ({ userId: 'local', date: w.date, weight: w.weight }))
-        setWeightLog(wts); localStorage.setItem('trimtrack_weights', JSON.stringify(wts))
-      }
-    }).catch(() => {})
-  }, [router, saveMealsLocal])
-
-  const allMeals = Object.values(meals).flat()
-  const eaten = allMeals.reduce((s, m) => s + (m.kcal || 0), 0)
-  const goal = profile?.dailyCalorieGoal ?? 1500
-  const remain = goal - eaten
-  const pct = goal > 0 ? Math.min(100, Math.round((eaten / goal) * 100)) : 0
-  const status = getCalorieStatus(eaten, goal)
-  const exercises = profile ? getExercises(profile?.activity || 'light') : []
-  const totalBurned = exercises.reduce((s, ex, i) => s + (exDone[i] ? ex.burn : 0), 0)
-
-  async function addFood(foodIdx: number) {
-    const food = FOODS[foodIdx]
-    const entry: MealEntry = { userId: 'local', date: new Date().toISOString().split('T')[0], mealType: activeMeal, foodName: food.name, kcal: food.kcal, protein: food.protein, carbs: food.carbs, fat: food.fat }
-    const updated = { ...meals, [activeMeal]: [...meals[activeMeal], entry] }
-    setMeals(updated); saveMealsLocal(updated)
-    try {
-      const result = await saveMeal({ meal_type: activeMeal, food_name: food.name, kcal: food.kcal, protein: food.protein, carbs: food.carbs, fat: food.fat })
-      if (result?.data?.id) {
-        const withId = { ...updated, [activeMeal]: updated[activeMeal].map((e, i) => i === updated[activeMeal].length - 1 ? { ...e, id: result.data.id } : e) }
-        setMeals(withId); saveMealsLocal(withId)
-      }
-    } catch (e) { console.error(e) }
-  }
-
-  async function removeFood(mealType: MealType, idx: number) {
-    const entry = meals[mealType][idx]
-    const updated = { ...meals, [mealType]: meals[mealType].filter((_, i) => i !== idx) }
-    setMeals(updated); saveMealsLocal(updated)
-    if (entry?.id) { try { await deleteMeal(entry.id) } catch (e) { console.error(e) } }
-  }
-
-  async function handlePhotoAdd(food: { food_name: string; kcal: number; protein: number; carbs: number; fat: number }) {
-    const entry: MealEntry = { userId: 'local', date: new Date().toISOString().split('T')[0], mealType: activeMeal, foodName: food.food_name, kcal: food.kcal, protein: food.protein, carbs: food.carbs, fat: food.fat }
-    const updated = { ...meals, [activeMeal]: [...meals[activeMeal], entry] }
-    setMeals(updated); saveMealsLocal(updated)
-    try { await saveMeal({ meal_type: activeMeal, food_name: food.food_name, kcal: food.kcal, protein: food.protein, carbs: food.carbs, fat: food.fat }) } catch (e) { console.error(e) }
-  }
-
-  async function logWeight() {
-    const val = parseFloat(wtInput)
-    if (isNaN(val) || val < 30 || val > 300) return
-    const entry: WeightEntry = { userId: 'local', date: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }), weight: val }
-    const updated = [entry, ...weightLog]
-    setWeightLog(updated); localStorage.setItem('trimtrack_weights', JSON.stringify(updated)); setWtInput('')
-    try { await saveWeight(val) } catch (e) { console.error(e) }
-  }
-
-  if (!profile && typeof window !== 'undefined') return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f6fbf8' }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{ color: '#1a5c38', fontWeight: 600, marginBottom: '12px' }}>Loading...</div>
-        <a href="/login" style={{ fontSize: '13px', color: '#888', textDecoration: 'none' }}>Not loading? Log in</a>
-      </div>
-    </div>
-  )
-
-  const plan = getDailyPlan(profile?.country || '')
-  const remainColour = remain < 0 ? '#fca5a5' : remain < 200 ? '#fde047' : '#b5f23d'
-  const alertBg = status === 'good' || status === 'empty'
-    ? { bg: '#f0fdf4', text: '#15803d', border: '#bbf7d0' }
-    : status === 'warn' || status === 'critical'
-    ? { bg: '#fefce8', text: '#92400e', border: '#fde68a' }
-    : { bg: '#fef2f2', text: '#dc2626', border: '#fecaca' }
-
+new_jsx = """
   return (
     <div style={{ minHeight: '100vh', background: '#f6fbf8' }}>
 
@@ -443,3 +296,15 @@ export default function DashboardPage() {
     </div>
   )
 }
+"""
+
+new_content = logic_part + new_jsx
+
+# Verify no bad chars
+import re
+bad = re.findall(r'[\x80-\xff]', new_content)
+print(f"Bad chars in new content: {len(bad)}")
+
+with open(r'C:\Users\mrhen\trimtrack\app\dashboard\page.tsx', 'w', encoding='utf-8') as f:
+    f.write(new_content)
+print(f"Written: {len(new_content)} chars, {len(new_content.splitlines())} lines")
