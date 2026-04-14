@@ -12,10 +12,7 @@ export async function GET(req: NextRequest) {
     const cookieSession = req.cookies.get("trimtrack_session")?.value;
     const querySession = req.nextUrl.searchParams.get("session_id");
     const sessionId = cookieSession || querySession;
-
-    if (!sessionId) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
+    if (!sessionId) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
     const { data: sub } = await supabase
       .from("subscriptions")
@@ -23,9 +20,7 @@ export async function GET(req: NextRequest) {
       .eq("session_id", sessionId)
       .single();
 
-    if (!sub) {
-      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
-    }
+    if (!sub) return NextResponse.json({ error: "Profile not found" }, { status: 404 });
 
     const { data: profile } = await supabase
       .from("profiles")
@@ -33,7 +28,6 @@ export async function GET(req: NextRequest) {
       .eq("session_id", sessionId)
       .maybeSingle();
 
-    // Return combined data - works even if profiles table has no record yet
     return NextResponse.json({
       name: profile?.name || sub.name || "there",
       email: sub.email,
@@ -62,21 +56,45 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { session_id, ...profile } = body;
-    const sid = session_id || req.cookies.get("trimtrack_session")?.value;
-
+    const sid = body.session_id || req.cookies.get("trimtrack_session")?.value;
     if (!sid) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
-    const { error } = await supabase.from("profiles").upsert({
+    // Map camelCase frontend fields to snake_case DB columns
+    const dbRecord: any = {
       session_id: sid,
-      ...profile,
       updated_at: new Date().toISOString(),
-    }, { onConflict: "session_id" });
+    };
 
-    if (error) throw error;
+    if (body.name !== undefined) dbRecord.name = body.name;
+    if (body.age !== undefined) dbRecord.age = body.age;
+    if (body.gender !== undefined) dbRecord.gender = body.gender;
+    if (body.country !== undefined) dbRecord.country = body.country;
+    if (body.height !== undefined) dbRecord.height = body.height;
+    if (body.activity !== undefined) dbRecord.activity = body.activity;
+    if (body.drink !== undefined) dbRecord.drink = body.drink;
+    if (body.reminders !== undefined) dbRecord.reminders = body.reminders;
+    if (body.avoidFoods !== undefined) dbRecord.avoid_foods = body.avoidFoods;
+    if (body.startWeight !== undefined) dbRecord.start_weight = body.startWeight;
+    if (body.goalWeight !== undefined) dbRecord.goal_weight = body.goalWeight;
+    if (body.dailyCalorieGoal !== undefined) dbRecord.daily_calorie_goal = body.dailyCalorieGoal;
+
+    // Also update name in subscriptions table
+    if (body.name) {
+      await supabase.from("subscriptions").update({ name: body.name }).eq("session_id", sid);
+    }
+
+    const { error } = await supabase
+      .from("profiles")
+      .upsert(dbRecord, { onConflict: "session_id" });
+
+    if (error) {
+      console.error("Profile upsert error:", error);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
     return NextResponse.json({ ok: true });
   } catch (err: any) {
     console.error("Profile POST error:", err);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
