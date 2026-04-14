@@ -48,6 +48,9 @@ export default function DashboardPage() {
   const [scansLeft, setScansLeft] = useState(3)
   const [isPremium, setIsPremium] = useState(false)
   const [activeTab, setActiveTab] = useState<'log' | 'progress' | 'plan'>('log')
+  const [motivation, setMotivation] = useState<string>("")
+  const [today, setToday] = useState<string>("")
+  const [userTimezone, setUserTimezone] = useState<string>("UTC")
 
   const saveMealsLocal = useCallback((m: Record<MealType, MealEntry[]>) => {
     localStorage.setItem('trimtrack_meals_today', JSON.stringify(m))
@@ -83,6 +86,23 @@ export default function DashboardPage() {
       }
     }).catch(() => {})
 
+    // Detect timezone and set today's date
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+    setUserTimezone(tz)
+    const todayStr = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
+    setToday(todayStr)
+
+    // Schedule midnight reset
+    const now = new Date()
+    const midnight = new Date(now)
+    midnight.setHours(24, 0, 0, 0)
+    const msToMidnight = midnight.getTime() - now.getTime()
+    const midnightTimer = setTimeout(() => {
+      setMeals({ breakfast: [], lunch: [], snack: [], dinner: [] })
+      localStorage.removeItem('trimtrack_meals_today')
+      window.location.reload()
+    }, msToMidnight)
+
     fetchWeights().then(res => {
       const rows = res?.data ?? []
       if (rows.length) {
@@ -90,6 +110,7 @@ export default function DashboardPage() {
         setWeightLog(wts); localStorage.setItem('trimtrack_weights', JSON.stringify(wts))
       }
     }).catch(() => {})
+    return () => clearTimeout(midnightTimer)
   }, [router, saveMealsLocal])
 
   const allMeals = Object.values(meals).flat()
@@ -98,6 +119,36 @@ export default function DashboardPage() {
   const remain = goal - eaten
   const pct = goal > 0 ? Math.min(100, Math.round((eaten / goal) * 100)) : 0
   const status = getCalorieStatus(eaten, goal)
+
+  useEffect(() => {
+    fetch(`/api/motivation?eaten=${eaten}&goal=${goal}`)
+      .then(r => r.json())
+      .then(data => setMotivation(data.message || ""))
+      .catch(() => {})
+  }, [eaten, goal])
+
+  // Save daily statement when meals change
+  useEffect(() => {
+    if (eaten === 0 || !profile) return
+    const sessionId = typeof window !== 'undefined' ? localStorage.getItem('sessionId') || '' : ''
+    if (!sessionId) return
+    const allM = Object.values(meals).flat()
+    fetch('/api/statements', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        session_id: sessionId,
+        date: new Date().toISOString().split('T')[0],
+        timezone: userTimezone,
+        total_kcal: eaten,
+        total_protein: Math.round(allM.reduce((s, m) => s + m.protein, 0)),
+        total_carbs: Math.round(allM.reduce((s, m) => s + m.carbs, 0)),
+        total_fat: Math.round(allM.reduce((s, m) => s + m.fat, 0)),
+        goal_kcal: goal,
+        meals_count: allM.length,
+      })
+    }).catch(() => {})
+  }, [eaten])
   const exercises = profile ? getExercises(profile?.activity || 'light') : []
   const totalBurned = exercises.reduce((s, ex, i) => s + (exDone[i] ? ex.burn : 0), 0)
 
