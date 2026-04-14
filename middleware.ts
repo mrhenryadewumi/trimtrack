@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
   response.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
   response.headers.set(
     "Content-Security-Policy",
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' https://api.anthropic.com https://*.supabase.co https://world.openfoodfacts.org https://api.stripe.com https://api.resend.com https://*.vercel.app; frame-src https://js.stripe.com; font-src 'self';"
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://api.anthropic.com https://*.supabase.co https://world.openfoodfacts.org https://api.stripe.com https://api.resend.com https://*.vercel.app; frame-src https://js.stripe.com; font-src 'self';"
   );
 
   return response;
