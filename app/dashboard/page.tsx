@@ -170,12 +170,12 @@ export default function DashboardPage() {
           <a href="/" style={{ textDecoration: 'none', fontWeight: 800, fontSize: '18px', color: '#1a5c38' }}>TrimTrack</a>
         </div>
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-          {!profile ? (
-            <a href="/login" style={{ fontSize: '13px', color: '#1a5c38', textDecoration: 'none', fontWeight: 600 }}>Login</a>
-          ) : (
+          {profile ? (
             <button onClick={() => router.push('/profile')} style={{ fontSize: '12px', color: '#1a5c38', border: '1px solid #d1fae5', borderRadius: '20px', padding: '5px 14px', background: '#f0fdf4', cursor: 'pointer', fontWeight: 600 }}>
               {profile.name ? profile.name.split(' ')[0] : 'Profile'}
             </button>
+          ) : (
+            <a href="/login" style={{ fontSize: '13px', color: '#1a5c38', textDecoration: 'none', fontWeight: 600 }}>Login</a>
           )}
         </div>
       </nav>
