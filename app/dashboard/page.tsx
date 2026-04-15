@@ -104,10 +104,10 @@ export default function DashboardPage() {
     setToday(todayStr)
 
     // Schedule midnight reset
-    const now = new Date()
-    const midnight = new Date(now)
+    const midnightNow = new Date()
+    const midnight = new Date(midnightNow)
     midnight.setHours(24, 0, 0, 0)
-    const msToMidnight = midnight.getTime() - now.getTime()
+    const msToMidnight = midnight.getTime() - midnightNow.getTime()
     const midnightTimer = setTimeout(() => {
       setMeals({ breakfast: [], lunch: [], snack: [], dinner: [] })
       localStorage.removeItem('trimtrack_meals_today')
