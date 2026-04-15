@@ -50,6 +50,7 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<'log' | 'progress' | 'plan'>('log')
   const [motivation, setMotivation] = useState<string>("")
   const [today, setToday] = useState<string>("")
+  const [currentTime, setCurrentTime] = useState<string>("")
   const [userTimezone, setUserTimezone] = useState<string>("UTC")
 
   const saveMealsLocal = useCallback((m: Record<MealType, MealEntry[]>) => {
@@ -103,6 +104,14 @@ export default function DashboardPage() {
     const todayStr = new Date().toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
     setToday(todayStr)
 
+    // Live clock
+    const updateTime = () => {
+      const now = new Date()
+      setCurrentTime(now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: true }))
+    }
+    updateTime()
+    const clockInterval = setInterval(updateTime, 1000)
+
     // Schedule midnight reset
     const midnightNow = new Date()
     const midnight = new Date(midnightNow)
@@ -121,7 +130,7 @@ export default function DashboardPage() {
         setWeightLog(wts); localStorage.setItem('trimtrack_weights', JSON.stringify(wts))
       }
     }).catch(() => {})
-    return () => clearTimeout(midnightTimer)
+    return () => { clearTimeout(midnightTimer); clearInterval(clockInterval) }
   }, [router, saveMealsLocal])
 
   const allMeals = Object.values(meals).flat()
