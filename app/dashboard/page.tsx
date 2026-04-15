@@ -344,6 +344,21 @@ export default function DashboardPage() {
           {getStatusMessage(status, eaten, goal)}
         </div>
 
+
+        {/* HYDRATION REMINDER */}
+        {(() => {
+          const hr = new Date().getHours()
+          const msg = hr < 12 ? "Start your day with a glass of water." : hr < 17 ? "Take a water break — stay hydrated." : "Stay hydrated this evening."
+          return (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(219,234,254,0.5)', borderRadius: '14px', padding: '10px 16px', marginBottom: '12px', border: '1px solid rgba(147,197,253,0.4)' }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="rgba(59,130,246,0.1)" stroke="none"/>
+                <path d="M12 2c0 0-6 8-6 12a6 6 0 0 0 12 0c0-4-6-12-6-12z"/>
+              </svg>
+              <span style={{ fontSize: '13px', color: '#1d4ed8', fontWeight: 500 }}>{msg}</span>
+            </div>
+          )
+        })()}
         {/* MEAL SELECTOR */}
         <div style={{ background: 'white', borderRadius: '20px', border: '1px solid #f0f0f0', padding: '16px', marginBottom: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px', marginBottom: '14px' }}>
