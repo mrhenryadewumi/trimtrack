@@ -1,8 +1,12 @@
-const CACHE_NAME = 'trimtrack-v1'
+const CACHE_NAME = 'trimtrack-v2'
 const STATIC_ASSETS = [
   '/',
   '/dashboard',
   '/onboarding',
+  '/login',
+  '/profile',
+  '/statements',
+  '/trial',
   '/manifest.json',
   '/icon-192.png',
   '/icon-512.png',
