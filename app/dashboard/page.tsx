@@ -62,8 +62,16 @@ export default function DashboardPage() {
   useEffect(() => {
     const saved = localStorage.getItem('trimtrack_profile')
     if (saved) { try { setProfile(JSON.parse(saved)) } catch(e) {} }
+    const now = new Date()
+    const localToday = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0')
+    const savedMealsDate = localStorage.getItem('trimtrack_meals_date')
     const savedMeals = localStorage.getItem('trimtrack_meals_today')
-    if (savedMeals) { try { setMeals(JSON.parse(savedMeals)) } catch(e) {} }
+    if (savedMeals && savedMealsDate === localToday) {
+      try { setMeals(JSON.parse(savedMeals)) } catch(e) {}
+    } else {
+      localStorage.removeItem('trimtrack_meals_today')
+      localStorage.setItem('trimtrack_meals_date', localToday)
+    }
     const savedWt = localStorage.getItem('trimtrack_weights')
     if (savedWt) { try { setWeightLog(JSON.parse(savedWt)) } catch(e) {} }
 
