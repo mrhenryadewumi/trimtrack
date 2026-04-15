@@ -229,7 +229,7 @@ export default function DashboardPage() {
     <div style={{ minHeight: '100vh', background: '#f6fbf8' }}>
 
       {/* NAV */}
-      <nav style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(246,251,248,0.97)', backdropFilter: 'blur(8px)', borderBottom: '1px solid #e8f5ee', padding: '0 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '56px' }}>
+      <nav style={{ position: 'sticky', top: 0, zIndex: 50, background: 'rgba(246,251,248,0.97)', backdropFilter: 'blur(8px)', borderBottom: '1px solid #e8f5ee', padding: '0 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '52px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{ width: '28px', height: '28px', background: '#1a5c38', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <svg width="14" height="14" viewBox="0 0 18 18" fill="none">
@@ -250,7 +250,7 @@ export default function DashboardPage() {
         </div>
       </nav>
 
-      <div style={{ maxWidth: '480px', margin: '0 auto', padding: '20px 16px' }}>
+      <div style={{ maxWidth: '480px', margin: '0 auto', padding: '16px 12px' }}>
 
         {/* GREETING */}
         <p style={{ fontSize: '20px', fontWeight: 800, color: '#0f1f14', marginBottom: '16px' }}>
@@ -264,7 +264,7 @@ export default function DashboardPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
             {/* CIRCULAR PROGRESS RING */}
             <div style={{ position: 'relative', flexShrink: 0 }}>
-              <svg width="120" height="120" viewBox="0 0 120 120" style={{ transform: 'rotate(-90deg)' }}>
+              <svg width="100" height="100" viewBox="0 0 120 120" style={{ transform: 'rotate(-90deg)' }}>
                 {/* Background ring */}
                 <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="10"/>
                 {/* Progress ring */}
@@ -288,7 +288,7 @@ export default function DashboardPage() {
             {/* STATS */}
             <div style={{ flex: 1 }}>
               <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '4px' }}>Remaining today</div>
-              <div style={{ fontSize: '42px', fontWeight: 900, color: remain < 0 ? '#fca5a5' : remain < 200 ? '#fde047' : '#b5f23d', lineHeight: 1, marginBottom: '4px' }}>
+              <div style={{ fontSize: 'clamp(28px, 8vw, 42px)', fontWeight: 900, color: remain < 0 ? '#fca5a5' : remain < 200 ? '#fde047' : '#b5f23d', lineHeight: 1, marginBottom: '4px' }}>
                 {Math.abs(remain).toLocaleString()}
               </div>
               <div style={{ color: 'rgba(255,255,255,0.45)', fontSize: '12px', marginBottom: '16px' }}>

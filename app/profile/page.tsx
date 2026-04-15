@@ -90,7 +90,7 @@ export default function ProfilePage() {
         </div>
       </nav>
 
-      <div style={{ maxWidth: "540px", margin: "0 auto", padding: "32px 16px" }}>
+      <div style={{ maxWidth: "540px", margin: "0 auto", padding: "20px 12px" }}>
         <h1 style={{ fontSize: "26px", fontWeight: 800, color: "#0f1f14", marginBottom: "6px" }}>Your profile</h1>
         <p style={{ color: "#888", fontSize: "14px", marginBottom: "28px" }}>Keep your details accurate for the best results.</p>
 
@@ -108,7 +108,7 @@ export default function ProfilePage() {
             <label style={lbl}>Gender</label>
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" as const }}>
               {["female","male","other"].map(g => (
-                <button key={g} onClick={() => update("gender", g)} style={{ padding: "10px 18px", borderRadius: "10px", border: "1.5px solid", borderColor: profile.gender === g ? "#1a5c38" : "#e5e7eb", background: profile.gender === g ? "#1a5c38" : "white", color: profile.gender === g ? "#b5f23d" : "#555", fontWeight: 600, fontSize: "14px", cursor: "pointer", textTransform: "capitalize" as const }}>{g}</button>
+                <button key={g} onClick={() => update("gender", g)} style={{ padding: "10px 12px", borderRadius: "10px", flex: "1", border: "1.5px solid", borderColor: profile.gender === g ? "#1a5c38" : "#e5e7eb", background: profile.gender === g ? "#1a5c38" : "white", color: profile.gender === g ? "#b5f23d" : "#555", fontWeight: 600, fontSize: "14px", cursor: "pointer", textTransform: "capitalize" as const }}>{g}</button>
               ))}
             </div>
           </div>

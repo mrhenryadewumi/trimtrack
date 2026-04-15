@@ -39,7 +39,7 @@ export default function TrialPage() {
   };
 
   if (sent) return (
-    <div style={{ minHeight: "100vh", background: "#f6fbf8", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>
+    <div style={{ minHeight: "100vh", background: "#f6fbf8", display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" }}>
       <div style={{ textAlign: "center", maxWidth: "400px" }}>
         <div style={{ width: "72px", height: "72px", background: "#1a5c38", borderRadius: "18px", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px", fontSize: "32px" }}>✉</div>
         <h1 style={{ fontSize: "24px", fontWeight: "800", color: "#0f1f14", marginBottom: "12px" }}>Check your email</h1>
@@ -53,8 +53,8 @@ export default function TrialPage() {
   );
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f6fbf8", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>
-      <div style={{ maxWidth: "420px", width: "100%" }}>
+    <div style={{ minHeight: "100vh", background: "#f6fbf8", display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" }}>
+      <div style={{ maxWidth: "420px", width: "100%", boxSizing: "border-box" }}>
         <div style={{ textAlign: "center", marginBottom: "28px" }}>
           <a href="/" style={{ textDecoration: "none" }}>
             <span style={{ fontWeight: 800, fontSize: "22px", color: "#1a5c38" }}>TrimTrack</span>

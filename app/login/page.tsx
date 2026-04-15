@@ -41,8 +41,8 @@ function LoginForm() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f6fbf8", display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>
-      <div style={{ maxWidth: "420px", width: "100%" }}>
+    <div style={{ minHeight: "100vh", background: "#f6fbf8", display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" }}>
+      <div style={{ maxWidth: "420px", width: "100%", boxSizing: "border-box" }}>
         <div style={{ textAlign: "center", marginBottom: "28px" }}>
           <a href="/" style={{ textDecoration: "none" }}>
             <span style={{ fontWeight: 800, fontSize: "22px", color: "#1a5c38" }}>TrimTrack</span>
