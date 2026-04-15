@@ -47,7 +47,9 @@ export async function saveMeal(meal: {
 
 export async function fetchMeals(date?: string) {
   const session_id = getSessionId()
-  const dateStr = date || new Date().toISOString().split('T')[0]
+  const now = new Date()
+  const localDate = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0')
+  const dateStr = date || localDate
   const res = await fetch(`/api/meals?session_id=${session_id}&date=${dateStr}`)
   return res.json()
 }

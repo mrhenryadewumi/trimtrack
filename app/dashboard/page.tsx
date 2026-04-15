@@ -53,7 +53,10 @@ export default function DashboardPage() {
   const [userTimezone, setUserTimezone] = useState<string>("UTC")
 
   const saveMealsLocal = useCallback((m: Record<MealType, MealEntry[]>) => {
+    const now = new Date()
+    const localToday = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0')
     localStorage.setItem('trimtrack_meals_today', JSON.stringify(m))
+    localStorage.setItem('trimtrack_meals_date', localToday)
   }, [])
 
   useEffect(() => {

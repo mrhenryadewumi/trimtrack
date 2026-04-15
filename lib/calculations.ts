@@ -60,11 +60,12 @@ export function getStatusColour(status: CalorieStatus): string {
 export function getStatusMessage(status: CalorieStatus, eaten: number, goal: number): string {
   const remain = goal - eaten
   switch (status) {
-    case 'empty':    return 'Start adding meals to track your calories.'
+    case 'empty':    return "You're off to a fresh start today. Add your first meal."
     case 'good':     return `You're on track. ${remain.toLocaleString()} kcal remaining today.`
-    case 'warn':     return `Getting close — only ${remain.toLocaleString()} kcal left. Keep dinner light.`
-    case 'critical': return `Almost at your limit! Just ${remain.toLocaleString()} kcal remaining. Stick to vegetables.`
-    case 'over':     return `Over by ${(eaten - goal).toLocaleString()} kcal. No more food today — drink water instead.`
+    case 'warn':     return `Getting close - ${remain.toLocaleString()} kcal left. Make your next meal count.`
+    case 'critical': return `Only ${remain.toLocaleString()} kcal left today. Stick to light options.`
+    case 'over':     return `You're ${Math.abs(remain).toLocaleString()} kcal over your target today. That's okay - aim for balance across the week.`
+    default:         return "Keep logging your meals to stay on track."
   }
 }
 
