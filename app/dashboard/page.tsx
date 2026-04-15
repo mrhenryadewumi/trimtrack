@@ -170,8 +170,9 @@ export default function DashboardPage() {
     setMeals(updated); saveMealsLocal(updated)
     try {
       const result = await saveMeal({ meal_type: activeMeal, food_name: food.name, kcal: food.kcal, protein: food.protein, carbs: food.carbs, fat: food.fat })
-      if (result?.data?.id) {
-        const withId = { ...updated, [activeMeal]: updated[activeMeal].map((e, i) => i === updated[activeMeal].length - 1 ? { ...e, id: result.data.id } : e) }
+      const savedId = result?.data?.id || result?.id
+      if (savedId) {
+        const withId = { ...updated, [activeMeal]: updated[activeMeal].map((e, i) => i === updated[activeMeal].length - 1 ? { ...e, id: savedId } : e) }
         setMeals(withId); saveMealsLocal(withId)
       }
     } catch (e) { console.error(e) }
@@ -188,7 +189,14 @@ export default function DashboardPage() {
     const entry: MealEntry = { userId: 'local', date: new Date().toISOString().split('T')[0], mealType: activeMeal, foodName: food.food_name, kcal: food.kcal, protein: food.protein, carbs: food.carbs, fat: food.fat }
     const updated = { ...meals, [activeMeal]: [...meals[activeMeal], entry] }
     setMeals(updated); saveMealsLocal(updated)
-    try { await saveMeal({ meal_type: activeMeal, food_name: food.food_name, kcal: food.kcal, protein: food.protein, carbs: food.carbs, fat: food.fat }) } catch (e) { console.error(e) }
+    try {
+      const result = await saveMeal({ meal_type: activeMeal, food_name: food.food_name, kcal: food.kcal, protein: food.protein, carbs: food.carbs, fat: food.fat })
+      const savedId = result?.data?.id || result?.id
+      if (savedId) {
+        const withId = { ...updated, [activeMeal]: updated[activeMeal].map((e, i) => i === updated[activeMeal].length - 1 ? { ...e, id: savedId } : e) }
+        setMeals(withId); saveMealsLocal(withId)
+      }
+    } catch (e) { console.error(e) }
   }
 
   async function logWeight() {

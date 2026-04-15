@@ -55,7 +55,11 @@ export async function fetchMeals(date?: string) {
 }
 
 export async function deleteMeal(id: string) {
-  const res = await fetch(`/api/meals?id=${id}`, { method: 'DELETE' })
+  const res = await fetch('/api/meals', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id })
+  })
   return res.json()
 }
 
