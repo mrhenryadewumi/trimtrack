@@ -1,12 +1,15 @@
 {
   "name": "TrimTrack",
   "short_name": "TrimTrack",
-  "description": "The only calorie tracker that knows Nigerian food.",
-  "start_url": "/",
+  "description": "AI calorie tracking built for African food culture.",
+  "start_url": "/dashboard",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#f6fbf8",
   "theme_color": "#1a5c38",
   "orientation": "portrait",
+  "categories": ["health", "fitness", "food"],
+  "lang": "en-GB",
   "icons": [
     {
       "src": "/icon-192.png",
@@ -21,6 +24,22 @@
       "purpose": "any maskable"
     }
   ],
+  "shortcuts": [
+    {
+      "name": "Log a meal",
+      "short_name": "Log meal",
+      "description": "Go to dashboard and log a meal",
+      "url": "/dashboard",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "My statement",
+      "short_name": "Statement",
+      "description": "View your food statement",
+      "url": "/statements",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
   "screenshots": [
     {
       "src": "/screenshot-1.png",
@@ -28,7 +47,5 @@
       "type": "image/png",
       "form_factor": "narrow"
     }
-  ],
-  "categories": ["health", "fitness", "food"],
-  "lang": "en-GB"
+  ]
 }

@@ -4,7 +4,7 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'TrimTrack - The calorie tracker that understands your food',
   description: 'AI-powered calorie tracking built for Nigerian and African food. Scan your meal, get instant calories, and lose weight eating food you love. Free 30-day trial.',
-  keywords: ['calorie tracker', 'Nigerian food', 'African food', 'weight loss app', 'AI food scanner', 'jollof rice calories', 'egusi calories', 'Nigerian diet'],
+  keywords: ['calorie tracker', 'African food', 'African food', 'weight loss app', 'AI food scanner', 'jollof rice calories', 'egusi calories', 'Nigerian diet'],
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
@@ -38,6 +38,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <meta name="theme-color" content="#1a5c38" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="TrimTrack" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
