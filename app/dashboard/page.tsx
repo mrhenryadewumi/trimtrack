@@ -266,6 +266,12 @@ export default function DashboardPage() {
           {getGreeting(profile?.name || 'there')}
         </p>
 
+        {/* DATE AND TIME */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', marginTop: '-8px' }}>
+          <p style={{ fontSize: '13px', color: '#888', margin: 0 }}>{today}</p>
+          <p style={{ fontSize: '15px', fontWeight: 700, color: '#1a5c38', margin: 0 }}>{currentTime}</p>
+        </div>
+
         {/* HERO CALORIE CARD */}
         <div style={{ background: 'linear-gradient(135deg, #1a5c38 0%, #0f3d25 100%)', borderRadius: '24px', padding: '24px', marginBottom: '12px', position: 'relative', overflow: 'hidden' }}>
           <div style={{ position: 'absolute', top: '-20px', right: '-20px', width: '120px', height: '120px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }}/>
