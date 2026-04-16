@@ -1,10 +1,10 @@
-import { createServerClient } from '@/lib/supabase'
+import { createClient } from '@supabase/supabase-js';
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 
 
 
-const FREE_SCANS_PER_DAY = 3;
+const FREE_SCANS_PER_DAY = 6;
 
 export async function GET(req: NextRequest) {
   const supabase = createServerClient()
