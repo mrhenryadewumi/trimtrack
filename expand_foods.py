@@ -1,4 +1,6 @@
-import type { FoodItem } from '@/types'
+import re
+
+new_foods = """import type { FoodItem } from '@/types'
 
 export const FOODS: FoodItem[] = [
   // NIGERIAN PROTEINS
@@ -159,3 +161,12 @@ export const FOODS: FoodItem[] = [
   { id: 217, name: 'Butter (1 tbsp)',                category: 'snacks',  kcal: 102, protein: 0,  carbs: 0,  fat: 12 },
   { id: 218, name: 'Margarine (1 tbsp)',             category: 'snacks',  kcal: 90,  protein: 0,  carbs: 0,  fat: 10 },
 ]
+"""
+
+# Verify clean
+bad = [c for c in new_foods if ord(c) > 127]
+print(f"Bad chars: {len(bad)}")
+
+with open(r'C:\Users\mrhen\trimtrack\lib\foods.ts', 'w', encoding='utf-8') as f:
+    f.write(new_foods)
+print(f"Written: {len(new_foods.splitlines())} lines")
