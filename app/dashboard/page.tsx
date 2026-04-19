@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import FoodSearch from "@/components/FoodSearch";
 import PhotoScanner from "@/components/PhotoScanner";
 import { fetchMeals, saveMeal, deleteMeal } from "@/lib/api-client";
-import { getGreeting, getStatus } from "@/lib/calculations";
+import { getGreeting, getCalorieStatus, getStatusMessage } from "@/lib/calculations";
 
 type Meal = { id?: string; food_name: string; kcal: number; protein: number; carbs: number; fat: number; meal_type: string };
 
@@ -26,7 +26,9 @@ export default function Dashboard() {
   const goal = profile?.dailyCalorieGoal || 1500;
   const remaining = Math.max(0, goal - eaten);
   const progress = Math.min(100, Math.round((eaten / goal) * 100));
-  const status = getStatus(eaten, goal);
+  const statusType = getCalorieStatus(eaten, goal);
+  const statusMessage = getStatusMessage(statusType, eaten, goal);
+  const status = { type: statusType, message: statusMessage };
 
   useEffect(() => {
     fetch("/api/profile", { credentials: "include" })
