@@ -219,7 +219,7 @@ export default function Dashboard() {
       </nav>
 
       {showScanner && (
-        <PhotoScanner activeMeal={activeMeal} onClose={() => setShowScanner(false)} onAdd={(food: any) => { addFood(food); setShowScanner(false); }} />
+        <PhotoScanner mealType={activeMeal} onAdd={(food: any) => { addFood(food); setShowScanner(false); }} />
       )}
     </div>
   );
