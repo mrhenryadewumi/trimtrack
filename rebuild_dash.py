@@ -1,4 +1,4 @@
-"use client";
+content = '''"use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import FoodSearch from "@/components/FoodSearch";
@@ -190,7 +190,7 @@ export default function Dashboard() {
         {/* MEALS LIST */}
         {mealsArray.length > 0 && (
           <div style={{ marginBottom: "20px" }}>
-            <div style={{ fontSize: "11px", color: sub, fontWeight: 700, letterSpacing: "0.12em", marginBottom: "10px", padding: "0 4px" }}>TODAY'S MEALS</div>
+            <div style={{ fontSize: "11px", color: sub, fontWeight: 700, letterSpacing: "0.12em", marginBottom: "10px", padding: "0 4px" }}>TODAY\'S MEALS</div>
             {mealsArray.map((meal, i) => (
               <div key={i} style={{ background: card, borderRadius: "16px", padding: "14px 16px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "12px", border: `1px solid ${cardBorder}` }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -230,3 +230,11 @@ export default function Dashboard() {
     </div>
   );
 }
+'''
+
+bad = [c for c in content if ord(c) > 127]
+print(f"Bad chars: {len(bad)}")
+
+with open(r'C:\Users\mrhen\trimtrack\app\dashboard\page.tsx', 'w', encoding='utf-8') as f:
+    f.write(content)
+print(f"Written: {len(content.splitlines())} lines")
