@@ -19,10 +19,11 @@ export default function Dashboard() {
   const [scansLeft, setScansLeft] = useState(6);
   const [showScanner, setShowScanner] = useState(false);
 
-  const eaten = meals.reduce((s, m) => s + (m.kcal || 0), 0);
-  const protein = Math.round(meals.reduce((s, m) => s + (m.protein || 0), 0));
-  const carbs = Math.round(meals.reduce((s, m) => s + (m.carbs || 0), 0));
-  const fat = Math.round(meals.reduce((s, m) => s + (m.fat || 0), 0));
+  const mealsArray = Array.isArray(meals) ? meals : [];
+  const eaten = mealsArray.reduce((s, m) => s + (m.kcal || 0), 0);
+  const protein = Math.round(mealsArray.reduce((s, m) => s + (m.protein || 0), 0));
+  const carbs = Math.round(mealsArray.reduce((s, m) => s + (m.carbs || 0), 0));
+  const fat = Math.round(mealsArray.reduce((s, m) => s + (m.fat || 0), 0));
   const goal = profile?.dailyCalorieGoal || 1500;
   const remaining = Math.max(0, goal - eaten);
   const progress = Math.min(100, Math.round((eaten / goal) * 100));
@@ -50,7 +51,7 @@ export default function Dashboard() {
     updateTime();
     const clockInterval = setInterval(updateTime, 60000);
 
-    fetchMeals().then(data => setMeals(data || []));
+    fetchMeals().then(data => { const arr = Array.isArray(data) ? data : (data?.data || data?.meals || []); setMeals(Array.isArray(arr) ? arr : []); }).catch(() => setMeals([]));
 
     return () => clearInterval(clockInterval);
   }, []);
@@ -183,10 +184,10 @@ export default function Dashboard() {
         </button>
 
         {/* TODAY'S MEALS LIST */}
-        {meals.length > 0 && (
+        {mealsArray.length > 0 && (
           <div style={{ marginBottom: "20px" }}>
             <div style={{ fontSize: "11px", color: "#7a8a82", fontWeight: 700, letterSpacing: "0.12em", marginBottom: "10px", padding: "0 4px" }}>TODAY'S MEALS</div>
-            {meals.map((meal, i) => (
+            {mealsArray.map((meal, i) => (
               <div key={i} style={{ background: "#162a20", borderRadius: "16px", padding: "14px 16px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "12px", border: "1px solid rgba(255,255,255,0.04)" }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: "14px", fontWeight: 600, color: "white" }}>{meal.food_name}</div>
