@@ -51,7 +51,7 @@ export default function Dashboard() {
     updateTime();
     const clockInterval = setInterval(updateTime, 60000);
 
-    fetchMeals().then(data => { const arr = Array.isArray(data) ? data : (data?.data || data?.meals || []); setMeals(Array.isArray(arr) ? arr : []); }).catch(() => setMeals([]));
+    fetchMeals().then(data => { let arr = []; if (Array.isArray(data)) arr = data; else if (Array.isArray(data?.data)) arr = data.data; else if (Array.isArray(data?.meals)) arr = data.meals; setMeals(arr); }).catch(() => setMeals([]));
 
     return () => clearInterval(clockInterval);
   }, []);
