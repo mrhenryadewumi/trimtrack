@@ -94,9 +94,9 @@ export default function Dashboard() {
           <div style={{ fontSize: "13px", color: sub }}>{today}</div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <button onClick={() => setDarkMode(!darkMode)}
-            style={{ padding: "7px 14px", borderRadius: "99px", background: dk ? "#b5f23d" : "#1a5c38", border: "none", cursor: "pointer", fontSize: "12px", fontWeight: 800, color: dk ? "#0a1310" : "#ffffff" }}>
-            {dk ? "Day" : "Night"}
+          <button onClick={() => setDarkMode(m => !m)}
+            style={{ padding: "7px 16px", borderRadius: "99px", background: darkMode ? "#b5f23d" : "#1a5c38", border: "none", cursor: "pointer", fontSize: "13px", fontWeight: 800, color: darkMode ? "#0a1310" : "#ffffff", boxShadow: "0 2px 8px rgba(0,0,0,0.2)" }}>
+            {darkMode ? "Day" : "Night"}
           </button>
           <a href="/profile" style={{ width: "40px", height: "40px", borderRadius: "50%", background: "linear-gradient(135deg, #1a5c38, #0f3d25)", display: "flex", alignItems: "center", justifyContent: "center", color: "#b5f23d", fontWeight: 800, textDecoration: "none", fontSize: "15px" }}>
             {profile?.name?.[0]?.toUpperCase() || "U"}
