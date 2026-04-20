@@ -18,6 +18,18 @@ export default function Dashboard() {
   const [motivation, setMotivation] = useState("");
   const [scansLeft, setScansLeft] = useState(6);
   const [showScanner, setShowScanner] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
+
+  const theme = {
+    bg: darkMode ? "#0a1310" : "#f6fbf8",
+    card: darkMode ? "#162a20" : "#ffffff",
+    cardBorder: darkMode ? "rgba(255,255,255,0.04)" : "#e8f5ee",
+    text: darkMode ? "#ffffff" : "#0f1f14",
+    subtext: darkMode ? "#7a8a82" : "#6b7280",
+    accent: "#b5f23d",
+    navBg: darkMode ? "rgba(10,19,16,0.95)" : "rgba(246,251,248,0.97)",
+    navBorder: darkMode ? "rgba(255,255,255,0.04)" : "#e8f5ee",
+  };
 
   const mealsArray = Array.isArray(meals) ? meals : [];
   const eaten = mealsArray.reduce((s, m) => s + (m.kcal || 0), 0);
@@ -85,30 +97,40 @@ export default function Dashboard() {
   const ringOffset = 283 - (283 * progress) / 100;
 
   return (
-    <div style={{ minHeight: "100vh", background: "#0a1310", color: "white", paddingBottom: "80px" }}>
+    <div style={{ minHeight: "100vh", background: theme.bg, color: theme.text, paddingBottom: "80px", transition: "background 0.3s ease" }}>
       {/* TOP HEADER */}
       <div style={{ padding: "20px 20px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
-          <div style={{ fontSize: "11px", fontWeight: 700, color: "#7a8a82", letterSpacing: "0.15em", marginBottom: "2px" }}>TRIMTRACK</div>
-          <div style={{ fontSize: "13px", color: "#7a8a82" }}>{today}</div>
+          <div style={{ fontSize: "11px", fontWeight: 700, color: theme.subtext, letterSpacing: "0.15em", marginBottom: "2px" }}>TRIMTRACK</div>
+          <div style={{ fontSize: "13px", color: theme.subtext }}>{today}</div>
         </div>
-        <a href="/profile" style={{ width: "40px", height: "40px", borderRadius: "50%", background: "linear-gradient(135deg, #1a5c38, #0f3d25)", display: "flex", alignItems: "center", justifyContent: "center", color: "#b5f23d", fontWeight: 800, textDecoration: "none", fontSize: "15px", boxShadow: "0 4px 12px rgba(26,92,56,0.4)" }}>
-          {profile?.name?.[0]?.toUpperCase() || "U"}
-        </a>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <button onClick={() => setDarkMode(!darkMode)}
+            style={{ width: "36px", height: "36px", borderRadius: "50%", background: darkMode ? "#162a20" : "#e8f5ee", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            {darkMode ? (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#b5f23d" strokeWidth="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            ) : (
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1a5c38" strokeWidth="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            )}
+          </button>
+          <a href="/profile" style={{ width: "40px", height: "40px", borderRadius: "50%", background: "linear-gradient(135deg, #1a5c38, #0f3d25)", display: "flex", alignItems: "center", justifyContent: "center", color: "#b5f23d", fontWeight: 800, textDecoration: "none", fontSize: "15px", boxShadow: "0 4px 12px rgba(26,92,56,0.4)" }}>
+            {profile?.name?.[0]?.toUpperCase() || "U"}
+          </a>
+        </div>
       </div>
 
       <div style={{ padding: "0 16px" }}>
         {/* GREETING */}
         <div style={{ marginBottom: "16px", padding: "0 4px" }}>
-          <div style={{ fontSize: "22px", fontWeight: 800, color: "white" }}>{getGreeting(profile?.name || "there")}</div>
-          <div style={{ fontSize: "13px", color: "#7a8a82", marginTop: "2px" }}>{currentTime}</div>
+          <div style={{ fontSize: "22px", fontWeight: 800, color: theme.text }}>{getGreeting(profile?.name || "there")}</div>
+          <div style={{ fontSize: "13px", color: theme.subtext, marginTop: "2px" }}>{currentTime}</div>
         </div>
 
         {/* MAIN CALORIE CARD */}
-        <div style={{ background: "linear-gradient(135deg, #162a20 0%, #0e1e16 100%)", borderRadius: "28px", padding: "24px", marginBottom: "16px", border: "1px solid rgba(181,242,61,0.08)", boxShadow: "0 8px 24px rgba(0,0,0,0.3)" }}>
+        <div style={{ background: darkMode ? "linear-gradient(135deg, #162a20 0%, #0e1e16 100%)" : "linear-gradient(135deg, #ffffff 0%, #f0faf4 100%)", borderRadius: "28px", padding: "24px", marginBottom: "16px", border: "1px solid rgba(181,242,61,0.08)", boxShadow: "0 8px 24px rgba(0,0,0,0.3)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
             <div>
-              <div style={{ fontSize: "11px", color: "#7a8a82", fontWeight: 700, letterSpacing: "0.12em", marginBottom: "4px" }}>CALORIES TODAY</div>
+              <div style={{ fontSize: "11px", color: theme.subtext, fontWeight: 700, letterSpacing: "0.12em", marginBottom: "4px" }}>CALORIES TODAY</div>
               <div style={{ fontSize: "12px", color: statusColor, fontWeight: 600 }}>{status.message}</div>
             </div>
             <div style={{ background: "rgba(181,242,61,0.1)", padding: "6px 12px", borderRadius: "99px", fontSize: "11px", color: "#b5f23d", fontWeight: 700 }}>{progress}%</div>
@@ -121,20 +143,20 @@ export default function Dashboard() {
                 <circle cx="60" cy="60" r="45" fill="none" stroke="#b5f23d" strokeWidth="10" strokeLinecap="round" strokeDasharray="283" strokeDashoffset={ringOffset} transform="rotate(-90 60 60)" style={{ transition: "stroke-dashoffset 0.8s ease" }} />
               </svg>
               <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                <div style={{ fontSize: "28px", fontWeight: 900, color: "white", lineHeight: 1 }}>{eaten}</div>
-                <div style={{ fontSize: "10px", color: "#7a8a82", marginTop: "2px", letterSpacing: "0.1em" }}>/ {goal} kcal</div>
+                <div style={{ fontSize: "28px", fontWeight: 900, color: theme.text, lineHeight: 1 }}>{eaten}</div>
+                <div style={{ fontSize: "10px", color: theme.subtext, marginTop: "2px", letterSpacing: "0.1em" }}>/ {goal} kcal</div>
               </div>
             </div>
 
             <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "10px" }}>
               <div>
-                <div style={{ fontSize: "11px", color: "#7a8a82", fontWeight: 600 }}>REMAINING</div>
+                <div style={{ fontSize: "11px", color: theme.subtext, fontWeight: 600 }}>REMAINING</div>
                 <div style={{ fontSize: "20px", fontWeight: 800, color: "#b5f23d" }}>{remaining} kcal</div>
               </div>
               <div style={{ height: "1px", background: "rgba(255,255,255,0.06)" }} />
               <div>
-                <div style={{ fontSize: "11px", color: "#7a8a82", fontWeight: 600 }}>GOAL</div>
-                <div style={{ fontSize: "16px", fontWeight: 700, color: "white" }}>{goal.toLocaleString()} kcal</div>
+                <div style={{ fontSize: "11px", color: theme.subtext, fontWeight: 600 }}>GOAL</div>
+                <div style={{ fontSize: "16px", fontWeight: 700, color: theme.text }}>{goal.toLocaleString()} kcal</div>
               </div>
             </div>
           </div>
@@ -147,10 +169,10 @@ export default function Dashboard() {
             { label: "CARBS", val: carbs, color: "#eab308", icon: "C" },
             { label: "FAT", val: fat, color: "#f97316", icon: "F" },
           ].map(m => (
-            <div key={m.label} style={{ background: "#162a20", borderRadius: "16px", padding: "14px", border: "1px solid rgba(255,255,255,0.04)" }}>
+            <div key={m.label} style={{ background: theme.card, borderRadius: "16px", padding: "14px", border: `1px solid ${theme.cardBorder}` }}>
               <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: `${m.color}22`, display: "flex", alignItems: "center", justifyContent: "center", color: m.color, fontWeight: 800, fontSize: "12px", marginBottom: "8px" }}>{m.icon}</div>
-              <div style={{ fontSize: "10px", color: "#7a8a82", fontWeight: 600, letterSpacing: "0.1em" }}>{m.label}</div>
-              <div style={{ fontSize: "18px", fontWeight: 800, color: "white", marginTop: "2px" }}>{m.val}<span style={{ fontSize: "11px", color: "#7a8a82", marginLeft: "2px" }}>g</span></div>
+              <div style={{ fontSize: "10px", color: theme.subtext, fontWeight: 600, letterSpacing: "0.1em" }}>{m.label}</div>
+              <div style={{ fontSize: "18px", fontWeight: 800, color: theme.text, marginTop: "2px" }}>{m.val}<span style={{ fontSize: "11px", color: theme.subtext, marginLeft: "2px" }}>g</span></div>
             </div>
           ))}
         </div>
@@ -172,7 +194,7 @@ export default function Dashboard() {
         </div>
 
         {/* FOOD SEARCH */}
-        <div style={{ background: "#162a20", borderRadius: "20px", padding: "16px", marginBottom: "16px", border: "1px solid rgba(255,255,255,0.04)" }}>
+        <div style={{ background: theme.card, borderRadius: "20px", padding: "16px", marginBottom: "16px", border: `1px solid ${theme.cardBorder}` }}>
           <FoodSearch activeMeal={activeMeal} onAdd={addFood} />
         </div>
 
@@ -186,15 +208,15 @@ export default function Dashboard() {
         {/* TODAY'S MEALS LIST */}
         {mealsArray.length > 0 && (
           <div style={{ marginBottom: "20px" }}>
-            <div style={{ fontSize: "11px", color: "#7a8a82", fontWeight: 700, letterSpacing: "0.12em", marginBottom: "10px", padding: "0 4px" }}>TODAY'S MEALS</div>
+            <div style={{ fontSize: "11px", color: theme.subtext, fontWeight: 700, letterSpacing: "0.12em", marginBottom: "10px", padding: "0 4px" }}>TODAY'S MEALS</div>
             {mealsArray.map((meal, i) => (
-              <div key={i} style={{ background: "#162a20", borderRadius: "16px", padding: "14px 16px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "12px", border: "1px solid rgba(255,255,255,0.04)" }}>
+              <div key={i} style={{ background: theme.card, borderRadius: "16px", padding: "14px 16px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "12px", border: `1px solid ${theme.cardBorder}` }}>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: "14px", fontWeight: 600, color: "white" }}>{meal.food_name}</div>
-                  <div style={{ fontSize: "11px", color: "#7a8a82", marginTop: "2px", textTransform: "capitalize" as const }}>{meal.meal_type} - {meal.protein}g P - {meal.carbs}g C - {meal.fat}g F</div>
+                  <div style={{ fontSize: "14px", fontWeight: 600, color: theme.text }}>{meal.food_name}</div>
+                  <div style={{ fontSize: "11px", color: theme.subtext, marginTop: "2px", textTransform: "capitalize" as const }}>{meal.meal_type} - {meal.protein}g P - {meal.carbs}g C - {meal.fat}g F</div>
                 </div>
                 <div style={{ fontSize: "16px", fontWeight: 800, color: "#b5f23d" }}>{meal.kcal}</div>
-                <button onClick={() => removeMeal(meal.id, i)} style={{ background: "transparent", border: "none", color: "#7a8a82", cursor: "pointer", padding: "4px" }}>
+                <button onClick={() => removeMeal(meal.id, i)} style={{ background: "transparent", border: "none", color: theme.subtext, cursor: "pointer", padding: "4px" }}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
                 </button>
               </div>
@@ -204,7 +226,7 @@ export default function Dashboard() {
       </div>
 
       {/* BOTTOM NAV */}
-      <nav style={{ position: "fixed" as const, bottom: 0, left: 0, right: 0, background: "rgba(10,19,16,0.95)", backdropFilter: "blur(20px)", borderTop: "1px solid rgba(255,255,255,0.04)", padding: "12px 16px calc(12px + env(safe-area-inset-bottom))", display: "flex", justifyContent: "space-around", alignItems: "center" }}>
+      <nav style={{ position: "fixed" as const, bottom: 0, left: 0, right: 0, background: theme.navBg, backdropFilter: "blur(20px)", borderTop: `1px solid ${theme.navBorder}`, padding: "12px 16px calc(12px + env(safe-area-inset-bottom))", display: "flex", justifyContent: "space-around", alignItems: "center" }}>
         {[
           { icon: "M3 12l9-9 9 9M5 10v10h14V10", label: "Home", href: "/dashboard", active: true },
           { icon: "M21 8V7l-3 2-3-2v1l3 2 3-2zM3 12h18M3 8h18M3 16h18", label: "Statement", href: "/statements" },
