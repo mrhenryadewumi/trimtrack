@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#111814;font-family:'Plus Jakarta Sans',system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:28px 0}
+a{color:var(--acc)}a:hover{color:#8dc42a}
+.phone{width:390px;height:844px;border-radius:44px;overflow:hidden;position:relative;box-shadow:0 30px 70px -20px rgba(0,0,0,.6),0 0 0 11px #0c0c0c,0 0 0 12px #2a2a2a;flex:none;background:var(--bg);color:var(--ink)}
+.nav-it{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:600;color:var(--faint);cursor:pointer;padding:6px 8px;border-radius:10px}
+.nav-it:hover{color:var(--mut)}
+.phone div{scrollbar-width:none}
+.phone div::-webkit-scrollbar{display:none}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes ringDraw{from{stroke-dashoffset:308}}
+@keyframes barGrow{from{transform:scaleX(0)}}
+@keyframes dotPulse{0%,100%{opacity:.3}50%{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+@keyframes slideUp{from{transform:translateY(46px);opacity:0}to{transform:none;opacity:1}}
+</style>
+</helmet>
+
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#0a1310"></rect><circle cx="50" cy="50" r="21" fill="none" stroke="#b5f23d" stroke-width="9" stroke-dasharray="110 22" stroke-linecap="round" transform="rotate(-90 50 50)"></circle></svg></template>
+<div class="phone" style="{{ themeVars }}">
+<!-- ============ HOME ============ -->
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;inset:0;overflow:hidden">
+  <div style="height:100%;overflow-y:auto;box-sizing:border-box;animation:fadeUp .3s ease both;padding:52px 20px 100px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <div><div style="font-size:11px;font-weight:800;letter-spacing:.18em;color:var(--faint)">TRIMTRACK</div><div style="font-size:20px;font-weight:800;margin-top:2px">Good evening, {{ userName }}</div></div>
+      <div style="display:flex;align-items:center;gap:8px"><div style="font-size:12px;font-weight:800;color:var(--acc);background:var(--accBg);padding:6px 11px;border-radius:99px">🔥 7</div><div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#1a5c38,#0f3d25);display:flex;align-items:center;justify-content:center;color:#b5f23d;font-weight:800;font-size:14px">{{ userInitial }}</div></div>
+    </div>
+    <sc-if value="{{ showCircle }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;gap:11px;margin-bottom:12px">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer" onClick="{{ goFeed }}"><div style="width:50px;height:50px;border-radius:50%;background:#2b4a3a;border:2.5px solid #b5f23d;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">AO</div><span style="font-size:9px;color:var(--mut)">Adaeze</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer" onClick="{{ goThread }}"><div style="width:50px;height:50px;border-radius:50%;background:#3a4a2b;border:2.5px solid #b5f23d;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">KA</div><span style="font-size:9px;color:var(--mut)">Kwame</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer" onClick="{{ goFeed }}"><div style="width:50px;height:50px;border-radius:50%;background:#4a3a2b;border:2.5px solid var(--line4);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">MB</div><span style="font-size:9px;color:var(--mut)">Maryam</span></div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer"><div style="width:50px;height:50px;border-radius:50%;border:1.5px dashed var(--line4);display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--faint)">+</div><span style="font-size:9px;color:var(--faint)">Invite</span></div>
+    </div>
+    </sc-if>
+    <div style="background:var(--heroBg);border-radius:28px;padding:17px 20px;border:1px solid var(--line);box-shadow:var(--heroShadow);margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:20px">
+        <div style="position:relative;width:112px;height:112px;flex:none">
+          <svg width="112" height="112" viewBox="0 0 122 122">
+            <circle cx="61" cy="61" r="49" fill="none" stroke-width="10" style="stroke:var(--ringTrack)"></circle>
+            <circle cx="61" cy="61" r="49" fill="none" stroke-width="10" style="stroke:var(--acc);animation:ringDraw 1.1s ease-out both" stroke-linecap="round" stroke-dasharray="308" stroke-dashoffset="52" transform="rotate(-90 61 61)"></circle>
+          </svg>
+          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font:800 31px 'Space Grotesk';line-height:1">{{ kcalLeft }}</div><div style="font-size:9px;color:var(--faint);letter-spacing:.08em">KCAL LEFT</div></div>
+        </div>
+        <div style="flex:1">
+          <div style="font-size:10px;color:var(--faint);font-weight:700;letter-spacing:.1em">EATEN</div>
+          <div style="font-size:19px;font-weight:800;margin-bottom:9px">1,240<span style="font-size:12px;color:var(--faint);font-weight:600"> / {{ calGoalFmt }}</span></div>
+          <div style="display:inline-flex;gap:6px;background:var(--accBg);padding:5px 10px;border-radius:99px;font-size:11px;font-weight:700;color:var(--acc)">83% · on track</div>
+          <div style="font-size:11px;color:var(--mut);margin-top:9px">👟 6,240 steps · <span style="color:var(--acc);font-weight:700">+217 back</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:10px">
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 12px"><div style="font-size:9px;font-weight:700;letter-spacing:.08em;color:var(--faint)">PROTEIN</div><div style="font:800 17px 'Space Grotesk';margin:5px 0 7px">72<span style="font-size:10px;color:var(--faint)"> g</span></div><div style="height:4px;background:var(--track);border-radius:9px;overflow:hidden"><div style="height:100%;width:80%;background:#5e9bff;animation:barGrow .7s ease-out both;transform-origin:left"></div></div></div>
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 12px"><div style="font-size:9px;font-weight:700;letter-spacing:.08em;color:var(--faint)">CARBS</div><div style="font:800 17px 'Space Grotesk';margin:5px 0 7px">138<span style="font-size:10px;color:var(--faint)"> g</span></div><div style="height:4px;background:var(--track);border-radius:9px;overflow:hidden"><div style="height:100%;width:66%;background:#f5c542;animation:barGrow .7s .08s ease-out both;transform-origin:left"></div></div></div>
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 12px"><div style="font-size:9px;font-weight:700;letter-spacing:.08em;color:var(--faint)">FAT</div><div style="font:800 17px 'Space Grotesk';margin:5px 0 7px">41<span style="font-size:10px;color:var(--faint)"> g</span></div><div style="height:4px;background:var(--track);border-radius:9px;overflow:hidden"><div style="height:100%;width:52%;background:#ff8a5e;animation:barGrow .7s .16s ease-out both;transform-origin:left"></div></div></div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;background:#b5f23d;border-radius:18px;padding:11px 16px;margin-bottom:10px;cursor:pointer;box-shadow:0 8px 22px -8px rgba(181,242,61,.55)" onClick="{{ goCoach }}">
+      <div style="width:36px;height:36px;border-radius:50%;background:#0a1310;display:flex;align-items:center;justify-content:center;font-size:17px;flex:none">🥑</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:800;color:#0a1310">Ask Trim anything</div><div style="font-size:11px;color:#2d4a35;font-weight:600">Meals, cravings, your plan — your AI coach</div></div>
+      <div style="font-size:16px;color:#0a1310;font-weight:800">→</div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--accBg);border-radius:18px;padding:11px 15px;margin-bottom:10px;display:flex;align-items:center;gap:11px;cursor:pointer" onClick="{{ goFeed }}">
+      <div style="width:34px;height:34px;border-radius:50%;background:#2b4a3a;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;flex:none">AO</div>
+      <div style="flex:1;font-size:12px;color:var(--txt2);line-height:1.4"><b style="color:var(--ink)">Adaeze</b> logged Efo Riro · 240 kcal <span style="color:var(--faint)">· 12m</span></div>
+      <div style="background:var(--accBg);border-radius:99px;padding:7px 12px;font-size:12px;font-weight:700;color:var(--acc);flex:none;cursor:pointer" onClick="{{ cheerHomeStop }}">👏 {{ cheerHome }}</div>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:0 2px 7px"><div style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--faint)">TODAY'S MEALS</div><div style="font-size:12px;font-weight:700;color:var(--acc);cursor:pointer">+ Add</div></div>
+    <div style="display:flex;flex-direction:column;gap:7px">
+      <div style="display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:9px 14px"><div style="width:7px;height:7px;border-radius:50%;background:#b5f23d;flex:none"></div><div style="flex:1"><div style="font-size:13px;font-weight:600">Akara + Thin Pap</div><div style="font-size:10px;color:var(--faint)">Breakfast · 8:20 am</div></div><div style="font:700 14px 'Space Grotesk';color:var(--acc)">380</div></div>
+      <div style="display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:9px 14px"><div style="width:7px;height:7px;border-radius:50%;background:#b5f23d;flex:none"></div><div style="flex:1"><div style="font-size:13px;font-weight:600">Jollof Brown Rice + Chicken</div><div style="font-size:10px;color:var(--faint)">Lunch · 1:05 pm</div></div><div style="font:700 14px 'Space Grotesk';color:var(--acc)">480</div></div>
+      <div style="display:flex;align-items:center;gap:12px;background:transparent;border:1.5px dashed var(--line3);border-radius:15px;padding:9px 14px;cursor:pointer" onClick="{{ goScan }}"><div style="width:7px;height:7px;border-radius:50%;background:#5f7269;flex:none"></div><div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--mut)">Dinner — {{ kcalLeft }} kcal left</div><div style="font-size:10px;color:var(--faint)">Suggested: Efo Riro + Grilled Chicken</div></div><div style="font-size:11px;color:var(--acc);font-weight:800">Scan 📸</div></div>
+    </div>
+  </div>
+
+</div>
+</sc-if>
+
+<!-- ============ COMMUNITY FEED ============ -->
+<sc-if value="{{ isFeed }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;overflow:hidden">
+  <div style="height:100%;overflow-y:auto;box-sizing:border-box;animation:fadeUp .3s ease both;padding:52px 18px 100px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding:0 4px">
+      <div style="font-size:21px;font-weight:800">Community</div>
+      <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#1a5c38,#0f3d25);display:flex;align-items:center;justify-content:center;color:#b5f23d;font-weight:800;font-size:14px">{{ userInitial }}</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;padding:0 2px">
+      <div style="border-radius:99px;padding:8px 15px;font-size:12px;cursor:pointer;{{ tabJStyle }}" onClick="{{ setTabJ }}">Journeys</div>
+      <div style="border-radius:99px;padding:8px 15px;font-size:12px;cursor:pointer;{{ tabIStyle }}" onClick="{{ setTabI }}">Ideas</div>
+      <div style="border-radius:99px;padding:8px 15px;font-size:12px;cursor:pointer;{{ tabRStyle }}" onClick="{{ setTabR }}">Recipes</div>
+      <div style="border-radius:99px;padding:8px 15px;font-size:12px;cursor:pointer;{{ tabQStyle }}" onClick="{{ setTabQ }}">Q&A</div>
+    </div>
+    <sc-if value="{{ tabJourneys }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <sc-for list="{{ myPosts }}" as="mp" hint-placeholder-count="0">
+      <div style="background:var(--accBg);border:1px solid var(--accLine);border-radius:20px;padding:16px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#1a5c38,#0f3d25);color:#b5f23d;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">{{ userInitial }}</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:700">{{ userName }} <span style="font-size:10px;background:var(--accBg);color:var(--acc);padding:2px 7px;border-radius:99px;margin-left:3px">You</span></div><div style="font-size:11px;color:var(--faint)">Journey update · now</div></div>
+        </div>
+        <div style="font-size:13px;line-height:1.55;color:var(--txt2);margin-bottom:12px">{{ mp.text }}</div>
+        <div style="display:flex;gap:8px"><div style="background:var(--accBg);border-radius:99px;padding:7px 13px;font-size:12px;font-weight:700;color:var(--acc)">👏 0</div><div style="border:1px solid var(--line3);border-radius:99px;padding:7px 13px;font-size:12px;font-weight:600;color:var(--mut)">💬 0</div></div>
+      </div>
+      </sc-for>
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;cursor:pointer" onClick="{{ goThread }}" style-hover="border-color:rgba(181,242,61,.3)">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px">
+          <div style="width:38px;height:38px;border-radius:50%;background:#3a4a2b;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">KA</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:700">Kwame A. <span style="font-size:10px;background:var(--accBg);color:var(--acc);padding:2px 7px;border-radius:99px;margin-left:3px">Day 90</span></div><div style="font-size:11px;color:var(--faint)">Journey update · 1 hr ago</div></div>
+          <div style="font-size:11px;color:var(--acc);font-weight:700">Follow</div>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:11px">
+          <div style="flex:1;background:var(--deep);border-radius:13px;padding:12px;text-align:center"><div style="font-size:10px;color:var(--faint);font-weight:700;letter-spacing:.06em">DAY 1</div><div style="font:800 21px 'Space Grotesk';margin-top:3px">86<span style="font-size:11px;color:var(--faint)"> kg</span></div></div>
+          <div style="display:flex;align-items:center;color:var(--acc);font-size:16px">→</div>
+          <div style="flex:1;background:var(--accBg);border:1px solid var(--accLine);border-radius:13px;padding:12px;text-align:center"><div style="font-size:10px;color:var(--acc);font-weight:700;letter-spacing:.06em">DAY 90</div><div style="font:800 21px 'Space Grotesk';color:var(--acc);margin-top:3px">79<span style="font-size:11px;opacity:.6"> kg</span></div></div>
+        </div>
+        <div style="font-size:13px;line-height:1.55;color:var(--txt2);margin-bottom:12px">"Biggest lesson: I didn't give up jollof — I learned to portion it. Slow is fine. 🇳🇬"</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div style="display:flex;align-items:center;gap:6px;background:{{ cheerKBg }};border-radius:99px;padding:7px 13px;font-size:12px;font-weight:700;color:var(--acc);cursor:pointer" onClick="{{ cheerKwame }}">👏 {{ cheerK }}</div>
+          <div style="display:flex;align-items:center;gap:6px;border:1px solid var(--line3);border-radius:99px;padding:7px 13px;font-size:12px;font-weight:600;color:var(--mut)">💬 21</div>
+          <div style="margin-left:auto;font-size:11px;color:var(--faint);font-weight:600">Read →</div>
+        </div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px 16px;display:flex;align-items:center;gap:11px">
+        <div style="width:38px;height:38px;border-radius:50%;background:#2b4a3a;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex:none">AO</div>
+        <div style="flex:1;font-size:13px;color:var(--txt2);line-height:1.4"><b style="color:var(--ink)">Adaeze O.</b> hit a 10-day streak 🔥</div>
+        <div style="background:var(--accBg);border-radius:99px;padding:7px 12px;font-size:12px;font-weight:700;color:var(--acc);flex:none">👏 22</div>
+      </div>
+    </div>
+    </sc-if>
+    <sc-if value="{{ tabIdeas }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px">
+          <div style="width:38px;height:38px;border-radius:50%;background:#2b4a3a;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">AO</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:700">Adaeze O. <span style="font-size:10px;background:rgba(94,155,255,.14);color:#5e9bff;padding:2px 7px;border-radius:99px;margin-left:3px">💡 Idea</span></div><div style="font-size:11px;color:var(--faint)">Tip · 3 hrs ago</div></div>
+        </div>
+        <div style="font-size:13px;line-height:1.55;color:var(--txt2);margin-bottom:12px">"Meal-prep hack: scan the whole pot once, save as a recipe, log by portion all week."</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="display:flex;align-items:center;gap:6px;background:{{ cheerABg }};border-radius:99px;padding:7px 13px;font-size:12px;font-weight:700;color:var(--acc);cursor:pointer" onClick="{{ cheerAdaeze }}">👏 {{ cheerA }}</div>
+          <div style="display:flex;align-items:center;gap:6px;border:1px solid var(--line3);border-radius:99px;padding:7px 13px;font-size:12px;font-weight:600;color:var(--mut)">💬 8</div>
+          <div style="margin-left:auto;background:var(--accBg);color:var(--acc);border-radius:99px;padding:7px 12px;font-size:11px;font-weight:800;cursor:pointer">Try it</div>
+        </div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px">
+          <div style="width:38px;height:38px;border-radius:50%;background:#2b3a4a;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">TA</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:700">Tunde A. <span style="font-size:10px;background:rgba(94,155,255,.14);color:#5e9bff;padding:2px 7px;border-radius:99px;margin-left:3px">💡 Idea</span></div><div style="font-size:11px;color:var(--faint)">Tip · 6 hrs ago</div></div>
+        </div>
+        <div style="font-size:13px;line-height:1.55;color:var(--txt2);margin-bottom:12px">"I pre-log dinner at lunchtime — future me never argues with a plan."</div>
+        <div style="display:flex;gap:8px"><div style="background:var(--accBg);border-radius:99px;padding:7px 13px;font-size:12px;font-weight:700;color:var(--acc)">👏 31</div><div style="border:1px solid var(--line3);border-radius:99px;padding:7px 13px;font-size:12px;font-weight:600;color:var(--mut)">💬 5</div></div>
+      </div>
+    </div>
+    </sc-if>
+    <sc-if value="{{ tabRecipes }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <div style="display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px">
+        <div style="width:42px;height:42px;border-radius:13px;background:var(--deep);display:flex;align-items:center;justify-content:center;font-size:21px">🍲</div>
+        <div style="flex:1"><div style="font-size:14px;font-weight:700">Egusi Soup <span style="font-size:10px;background:var(--accBg);color:var(--acc);padding:2px 7px;border-radius:99px;font-weight:800;margin-left:2px">↓ 120 kcal lighter</span></div><div style="font-size:11px;color:var(--faint)">Maryam's version · 340 kcal · 68 cooked along</div></div>
+        <div style="background:var(--accBg);color:var(--acc);border-radius:99px;padding:7px 12px;font-size:11px;font-weight:800;cursor:pointer;flex:none">Log it</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px">
+        <div style="width:42px;height:42px;border-radius:13px;background:var(--deep);display:flex;align-items:center;justify-content:center;font-size:21px">🐟</div>
+        <div style="flex:1"><div style="font-size:14px;font-weight:700">Grilled Tilapia + Pepper Sauce</div><div style="font-size:11px;color:var(--faint)">Kwame swapped fried → grilled · 290 kcal</div></div>
+        <div style="background:var(--accBg);color:var(--acc);border-radius:99px;padding:7px 12px;font-size:11px;font-weight:800;cursor:pointer;flex:none">Log it</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px">
+        <div style="width:42px;height:42px;border-radius:13px;background:var(--deep);display:flex;align-items:center;justify-content:center;font-size:21px">🥣</div>
+        <div style="flex:1"><div style="font-size:14px;font-weight:700">Moi Moi (steamed, 2 wraps)</div><div style="font-size:11px;color:var(--faint)">Adaeze's go-to breakfast · 380 kcal</div></div>
+        <div style="background:var(--accBg);color:var(--acc);border-radius:99px;padding:7px 12px;font-size:11px;font-weight:800;cursor:pointer;flex:none">Log it</div>
+      </div>
+    </div>
+    </sc-if>
+    <sc-if value="{{ tabQA }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;flex-direction:column;gap:9px">
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px 16px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:38px;height:38px;border-radius:50%;background:#4a3a2b;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">MB</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:700">Maryam B. <span style="color:var(--faint);font-weight:500">asked</span></div><div style="font-size:12px;color:var(--txt2);margin-top:2px">"Anyone tracking during Ramadan? How do you split your budget between iftar and suhoor?"</div>
+          <div style="font-size:11px;color:var(--acc);font-weight:700;margin-top:6px">12 answers · latest 14m ago</div></div>
+        </div>
+      </div>
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px 16px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:38px;height:38px;border-radius:50%;background:#2b3a4a;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px">TA</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:700">Tunde A. <span style="color:var(--faint);font-weight:500">asked</span></div><div style="font-size:12px;color:var(--txt2);margin-top:2px">"Best swallow under 300 kcal? Trying to keep amala in my life 😅"</div>
+          <div style="font-size:11px;color:var(--acc);font-weight:700;margin-top:6px">8 answers · latest 2h ago</div></div>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+  </div>
+  <div style="position:absolute;left:0;right:0;bottom:118px;display:flex;justify-content:flex-end;padding-right:18px">
+    <div style="background:#b5f23d;color:#0a1310;border-radius:99px;padding:13px 19px;font-size:13px;font-weight:800;box-shadow:0 10px 24px -6px rgba(181,242,61,.5);cursor:pointer" onClick="{{ openComposer }}">✍️ Share your journey</div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ============ THREAD ============ -->
+<sc-if value="{{ isThread }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;overflow:hidden">
+  <div ref="{{ threadScroll }}" style="height:100%;overflow-y:auto;box-sizing:border-box;animation:fadeUp .3s ease both;padding:52px 18px 110px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <div style="width:34px;height:34px;border-radius:11px;background:var(--card);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:15px;cursor:pointer" onClick="{{ goFeed }}">←</div>
+      <div style="font-size:15px;font-weight:800">Kwame's journey</div>
+      <div style="margin-left:auto;font-size:11px;color:var(--acc);font-weight:700">Following ✓</div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px;margin-bottom:14px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:11px">
+        <div style="width:40px;height:40px;border-radius:50%;background:#3a4a2b;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px">KA</div>
+        <div><div style="font-size:14px;font-weight:700">Kwame A.</div><div style="font-size:11px;color:var(--faint)">Day 90 · -7 kg · Toronto</div></div>
+      </div>
+      <div style="font-size:14px;line-height:1.6;color:var(--txt2);margin-bottom:12px">"90 days in. What actually worked for me:<br>1. Scanning before eating, not after<br>2. Steps-for-calories — walking home earned my snacks<br>3. This community. Reading your journeys on hard days kept me going. 🙏"</div>
+      <div style="display:flex;gap:8px">
+        <div style="background:{{ cheerKBg }};border-radius:99px;padding:7px 13px;font-size:12px;font-weight:700;color:var(--acc);cursor:pointer" onClick="{{ cheerKwame }}">👏 {{ cheerK }}</div>
+        <div style="border:1px solid var(--line3);border-radius:99px;padding:7px 13px;font-size:12px;font-weight:600;color:var(--mut)">💬 {{ replyCount }} replies</div>
+      </div>
+    </div>
+    <div style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--faint);margin:0 2px 10px">REPLIES</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;gap:10px">
+        <div style="width:32px;height:32px;border-radius:50%;background:#2b4a3a;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex:none">AO</div>
+        <div style="flex:1;background:var(--card);border-radius:4px 16px 16px 16px;padding:11px 14px">
+          <div style="font-size:12px;font-weight:700;margin-bottom:3px">Adaeze O. <span style="color:var(--faint);font-weight:500;font-size:10px">· 44m</span></div>
+          <div style="font-size:13px;line-height:1.5;color:var(--txt2)">The scanning-before-eating tip changed everything for me too. Congrats Kwame! 🎉</div>
+          <div style="display:flex;gap:12px;margin-top:7px;font-size:11px;color:var(--faint);font-weight:600"><span style="color:var(--acc)">👏 18</span><span style="cursor:pointer">Reply</span></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;padding-left:26px">
+        <div style="width:32px;height:32px;border-radius:50%;background:#3a4a2b;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex:none">KA</div>
+        <div style="flex:1;background:var(--deep);border:1px solid var(--line);border-radius:4px 16px 16px 16px;padding:11px 14px">
+          <div style="font-size:12px;font-weight:700;margin-bottom:3px">Kwame A. <span style="font-size:9px;background:var(--accBg);color:var(--acc);padding:1px 6px;border-radius:99px">author</span> <span style="color:var(--faint);font-weight:500;font-size:10px">· 31m</span></div>
+          <div style="font-size:13px;line-height:1.5;color:var(--txt2)">@Adaeze your meal-prep scan hack is in my top 3 honestly 😂</div>
+          <div style="display:flex;gap:12px;margin-top:7px;font-size:11px;color:var(--faint);font-weight:600"><span>👏 9</span><span style="cursor:pointer">Reply</span></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <div style="width:32px;height:32px;border-radius:50%;background:#4a3a2b;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex:none">MB</div>
+        <div style="flex:1;background:var(--card);border-radius:4px 16px 16px 16px;padding:11px 14px">
+          <div style="font-size:12px;font-weight:700;margin-bottom:3px">Maryam B. <span style="color:var(--faint);font-weight:500;font-size:10px">· 12m</span></div>
+          <div style="font-size:13px;line-height:1.5;color:var(--txt2)">Starting week 2 and struggling with evening cravings — did the walks really help?</div>
+          <div style="display:flex;gap:12px;margin-top:7px;font-size:11px;color:var(--faint);font-weight:600"><span>👏 4</span><span style="color:var(--acc);cursor:pointer">Reply</span></div>
+        </div>
+      </div>
+      <sc-for list="{{ myReplies }}" as="r" hint-placeholder-count="0">
+      <div style="display:flex;gap:10px">
+        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#1a5c38,#0f3d25);color:#b5f23d;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex:none">{{ userInitial }}</div>
+        <div style="flex:1;background:rgba(181,242,61,.08);border:1px solid var(--accLine);border-radius:4px 16px 16px 16px;padding:11px 14px">
+          <div style="font-size:12px;font-weight:700;margin-bottom:3px">{{ userName }} <span style="color:var(--faint);font-weight:500;font-size:10px">· now</span></div>
+          <div style="font-size:13px;line-height:1.5;color:var(--txt2)">{{ r.text }}</div>
+        </div>
+      </div>
+      </sc-for>
+    </div>
+  </div>
+  <div style="position:absolute;left:0;right:0;bottom:0;padding:12px 16px 26px;background:var(--navBg);backdrop-filter:blur(20px);border-top:1px solid var(--line)">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#1a5c38,#0f3d25);display:flex;align-items:center;justify-content:center;color:#b5f23d;font-weight:800;font-size:12px;flex:none">{{ userInitial }}</div>
+      <input value="{{ draft }}" onChange="{{ setDraft }}" onKeyDown="{{ draftKey }}" placeholder="Reply to Kwame…" style="flex:1;background:var(--card);border:none;outline:none;border-radius:99px;padding:12px 17px;font-size:13px;color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif"></input>
+      <div style="width:40px;height:40px;border-radius:50%;background:#b5f23d;display:flex;align-items:center;justify-content:center;font-size:15px;color:#0a1310;font-weight:800;flex:none;cursor:pointer" onClick="{{ sendReply }}">↑</div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ============ TRENDS ============ -->
+<sc-if value="{{ isTrends }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;overflow:hidden">
+  <div style="height:100%;overflow-y:auto;box-sizing:border-box;animation:fadeUp .3s ease both;padding:52px 20px 100px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div><div style="font-size:21px;font-weight:800">Trends</div><div style="font-size:12px;color:var(--faint)">Last 7 days</div></div>
+      <div style="width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#1a5c38,#0f3d25);display:flex;align-items:center;justify-content:center;color:#b5f23d;font-weight:800;font-size:14px">{{ userInitial }}</div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--line);border-radius:24px;padding:20px;margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px"><div style="font-size:13px;font-weight:800">Daily intake</div><div style="font-size:11px;color:var(--faint)">avg <b style="color:var(--ink)">1,410</b> kcal</div></div>
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:8px;height:96px">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:7px"><div style="width:100%;height:62px;background:var(--barBg);border-radius:6px"></div><span style="font-size:10px;color:var(--faint)">M</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:7px"><div style="width:100%;height:78px;background:var(--barBg);border-radius:6px"></div><span style="font-size:10px;color:var(--faint)">T</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:7px"><div style="width:100%;height:54px;background:var(--barBg);border-radius:6px"></div><span style="font-size:10px;color:var(--faint)">W</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:7px"><div style="width:100%;height:70px;background:var(--barBg);border-radius:6px"></div><span style="font-size:10px;color:var(--faint)">T</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:7px"><div style="width:100%;height:46px;background:var(--barBg);border-radius:6px"></div><span style="font-size:10px;color:var(--faint)">F</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:7px"><div style="width:100%;height:82px;background:var(--barBg);border-radius:6px"></div><span style="font-size:10px;color:var(--faint)">S</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:7px"><div style="width:100%;height:56px;background:#b5f23d;border-radius:6px"></div><span style="font-size:10px;color:var(--acc);font-weight:700">S</span></div>
+      </div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--line);border-radius:24px;padding:20px;margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px"><div style="font-size:13px;font-weight:800">Weight</div><div style="font-size:11px;color:var(--acc);font-weight:700">-0.6 kg this week</div></div>
+      <div style="display:flex;align-items:flex-end;gap:8px;margin-bottom:12px"><div style="font:800 34px/1 'Space Grotesk'">82.0</div><div style="font-size:12px;color:var(--faint);margin-bottom:4px">kg · goal {{ weightGoalFmt }}</div></div>
+      <div style="height:8px;background:var(--track);border-radius:9px;overflow:hidden;margin-bottom:7px"><div style="height:100%;width:44%;background:linear-gradient(90deg,#8dc42a,#b5f23d);border-radius:9px"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--faint)"><span><b style="color:var(--acc)">4.0 kg lost</b> of 9 kg goal</span><span>started 86.0</span></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px"><div style="font-size:10px;color:var(--faint);font-weight:700;letter-spacing:.08em">STREAK</div><div style="font:800 24px 'Space Grotesk';color:var(--acc);margin-top:4px">7 🔥</div><div style="font-size:11px;color:var(--faint)">best: 14 days</div></div>
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:18px;padding:15px"><div style="font-size:10px;color:var(--faint);font-weight:700;letter-spacing:.08em">DAYS LOGGED</div><div style="font:800 24px 'Space Grotesk';margin-top:4px">92%</div><div style="font-size:11px;color:var(--faint)">since joining</div></div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ============ YOU ============ -->
+<sc-if value="{{ isYou }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;overflow:hidden">
+  <div style="height:100%;overflow-y:auto;box-sizing:border-box;animation:fadeUp .3s ease both;padding:52px 20px 100px">
+    <div style="display:flex;flex-direction:column;align-items:center;margin-bottom:18px">
+      <div style="width:74px;height:74px;border-radius:50%;background:linear-gradient(135deg,#1a5c38,#0f3d25);display:flex;align-items:center;justify-content:center;color:#b5f23d;font-weight:800;font-size:26px;border:2.5px solid #b5f23d;margin-bottom:10px">{{ userInitial }}</div>
+      <div style="font-size:19px;font-weight:800">{{ userName }}</div>
+      <div style="font-size:12px;color:var(--faint);margin-top:2px">Level 4 · Trimmer</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:14px">
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px;text-align:center"><div style="font:800 18px 'Space Grotesk';color:var(--acc)">-4.0</div><div style="font-size:9px;color:var(--faint);font-weight:700;letter-spacing:.06em;margin-top:3px">KG LOST</div></div>
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px;text-align:center"><div style="font:800 18px 'Space Grotesk'">7 🔥</div><div style="font-size:9px;color:var(--faint);font-weight:700;letter-spacing:.06em;margin-top:3px">STREAK</div></div>
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px;text-align:center"><div style="font:800 18px 'Space Grotesk'">92%</div><div style="font-size:9px;color:var(--faint);font-weight:700;letter-spacing:.06em;margin-top:3px">LOGGED</div></div>
+    </div>
+    <div style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--faint);margin:0 2px 9px">BADGES</div>
+    <div style="display:flex;gap:9px;margin-bottom:16px">
+      <div style="flex:1;background:var(--card);border:1px solid var(--accLine);border-radius:16px;padding:12px;text-align:center"><div style="font-size:22px;margin-bottom:4px">🥇</div><div style="font-size:10px;color:var(--mut);font-weight:600">7-day streak</div></div>
+      <div style="flex:1;background:var(--card);border:1px solid var(--accLine);border-radius:16px;padding:12px;text-align:center"><div style="font-size:22px;margin-bottom:4px">📸</div><div style="font-size:10px;color:var(--mut);font-weight:600">50 scans</div></div>
+      <div style="flex:1;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;text-align:center;opacity:.45"><div style="font-size:22px;margin-bottom:4px">🏆</div><div style="font-size:10px;color:var(--mut);font-weight:600">-5 kg club</div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:7px">
+      <div style="display:flex;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:14px 16px;cursor:pointer" onClick="{{ goGoals }}"><div style="flex:1;font-size:13px;font-weight:600">🎯 &nbsp;Goals & targets</div><div style="color:var(--faint)">›</div></div>
+      <div style="display:flex;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:14px 16px;cursor:pointer"><div style="flex:1;font-size:13px;font-weight:600">⚖️ &nbsp;Units & preferences</div><div style="color:var(--faint)">›</div></div>
+      <div style="display:flex;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:14px 16px;cursor:pointer"><div style="flex:1;font-size:13px;font-weight:600">🔔 &nbsp;Notifications</div><div style="color:var(--faint)">›</div></div>
+      <div style="display:flex;align-items:center;background:linear-gradient(120deg,#173026,#0e1e16);border:1px solid var(--accLine);border-radius:15px;padding:14px 16px;cursor:pointer" onClick="{{ goPaywall }}"><div style="flex:1;font-size:13px;font-weight:700;color:var(--acc)">⚡ &nbsp;Upgrade to Pro</div><div style="font-size:10px;background:#b5f23d;color:#0a1310;padding:3px 8px;border-radius:99px;font-weight:800">PRO</div></div>
+      <div style="display:flex;align-items:center;background:transparent;border:1px solid var(--line2);border-radius:15px;padding:14px 16px;cursor:pointer" onClick="{{ goOnboard }}"><div style="flex:1;font-size:13px;font-weight:600;color:var(--mut)">Sign out</div></div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ============ BOTTOM NAV (home & feed) ============ -->
+<sc-if value="{{ showNav }}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;left:0;right:0;bottom:0;height:78px;background:var(--navBg);backdrop-filter:blur(20px);border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-around;padding-bottom:14px;z-index:5">
+  <div class="nav-it" style="{{ navHomeStyle }}" onClick="{{ goHome }}">Home</div>
+  <div class="nav-it" style="{{ navFeedStyle }}" onClick="{{ goFeed }}">Community</div>
+  <div style="width:52px;height:52px;border-radius:50%;background:#b5f23d;display:flex;align-items:center;justify-content:center;color:#0a1310;font-size:26px;font-weight:700;margin-top:-24px;box-shadow:0 8px 20px -4px rgba(181,242,61,.5);cursor:pointer" onClick="{{ openPlus }}">+</div>
+  <div class="nav-it" style="{{ navTrendsStyle }}" onClick="{{ goTrends }}">Trends</div>
+  <div class="nav-it" style="{{ navYouStyle }}" onClick="{{ goYou }}">You</div>
+</div>
+</sc-if>
+
+<!-- ============ ONBOARDING ============ -->
+<sc-if value="{{ isOnboard }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;overflow:hidden;background:var(--bg)">
+  <div style="height:100%;overflow-y:auto;box-sizing:border-box;animation:fadeUp .3s ease both;padding:56px 26px 40px;display:flex;flex-direction:column">
+    <div style="display:flex;justify-content:center;gap:7px;margin-bottom:26px">
+      <div style="width:26px;height:5px;border-radius:99px;background:{{ obDot0 }}"></div>
+      <div style="width:26px;height:5px;border-radius:99px;background:{{ obDot1 }}"></div>
+      <div style="width:26px;height:5px;border-radius:99px;background:{{ obDot2 }}"></div>
+    </div>
+    <sc-if value="{{ obIs0 }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center">
+      <svg width="120" height="120" viewBox="0 0 122 122" style="margin:0 auto 26px">
+        <circle cx="61" cy="61" r="49" fill="none" stroke-width="11" style="stroke:var(--ringTrack)"></circle>
+        <circle cx="61" cy="61" r="49" fill="none" stroke-width="11" stroke-linecap="round" stroke-dasharray="308" stroke-dashoffset="72" transform="rotate(-90 61 61)" style="stroke:var(--acc);animation:ringDraw 1.1s ease-out both"></circle>
+      </svg>
+      <div style="font-size:11px;font-weight:800;letter-spacing:.2em;color:var(--faint);margin-bottom:10px">TRIMTRACK</div>
+      <div style="font-size:28px;font-weight:800;line-height:1.2;letter-spacing:-.01em;margin-bottom:12px;text-wrap:pretty">Lose weight without losing your culture</div>
+      <div style="font-size:14px;color:var(--mut);line-height:1.6;margin-bottom:34px">Jollof, egusi, suya — TrimTrack knows your food. Scan it, track it, keep enjoying it.</div>
+      <div style="background:#b5f23d;color:#0a1310;border-radius:99px;padding:16px;text-align:center;font-size:14px;font-weight:800;cursor:pointer" onClick="{{ obNext }}">Get started</div>
+    </div>
+    </sc-if>
+    <sc-if value="{{ obIs1 }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column">
+      <div style="width:34px;height:34px;border-radius:11px;background:var(--card);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:15px;cursor:pointer;margin-bottom:20px" onClick="{{ obBack }}">←</div>
+      <div style="font-size:24px;font-weight:800;margin-bottom:6px">What's your goal?</div>
+      <div style="font-size:13px;color:var(--mut);margin-bottom:22px">We'll set your daily calorie budget around it.</div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:auto">
+        <div style="display:flex;align-items:center;gap:14px;background:var(--card);border-radius:18px;padding:16px;cursor:pointer;{{ obLoseStyle }}" onClick="{{ obPickLose }}"><div style="font-size:24px">📉</div><div style="flex:1"><div style="font-size:15px;font-weight:800">Lose weight</div><div style="font-size:12px;color:var(--mut)">Steady, sustainable deficit</div></div></div>
+        <div style="display:flex;align-items:center;gap:14px;background:var(--card);border-radius:18px;padding:16px;cursor:pointer;{{ obMaintainStyle }}" onClick="{{ obPickMaintain }}"><div style="font-size:24px">⚖️</div><div style="flex:1"><div style="font-size:15px;font-weight:800">Maintain</div><div style="font-size:12px;color:var(--mut)">Hold steady, eat mindfully</div></div></div>
+        <div style="display:flex;align-items:center;gap:14px;background:var(--card);border-radius:18px;padding:16px;cursor:pointer;{{ obGainStyle }}" onClick="{{ obPickGain }}"><div style="font-size:24px">💪</div><div style="flex:1"><div style="font-size:15px;font-weight:800">Gain muscle</div><div style="font-size:12px;color:var(--mut)">Surplus with protein focus</div></div></div>
+      </div>
+      <div style="background:#b5f23d;color:#0a1310;border-radius:99px;padding:16px;text-align:center;font-size:14px;font-weight:800;cursor:pointer;margin-top:22px" onClick="{{ obNext }}">Continue</div>
+    </div>
+    </sc-if>
+    <sc-if value="{{ obIs2 }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column">
+      <div style="width:34px;height:34px;border-radius:11px;background:var(--card);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:15px;cursor:pointer;margin-bottom:20px" onClick="{{ obBack }}">←</div>
+      <div style="font-size:24px;font-weight:800;margin-bottom:6px">Here's your plan, {{ userName }}</div>
+      <div style="font-size:13px;color:var(--mut);margin-bottom:24px">Based on your goal — adjust anytime in Goals.</div>
+      <div style="background:var(--card);border:1px solid var(--line);border-radius:24px;padding:24px;text-align:center;margin-bottom:12px">
+        <div style="font-size:10px;color:var(--faint);font-weight:700;letter-spacing:.1em;margin-bottom:8px">DAILY BUDGET</div>
+        <div style="font:800 46px/1 'Space Grotesk';color:var(--acc)">1,500</div>
+        <div style="font-size:12px;color:var(--mut);margin-top:6px">kcal / day</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:auto">
+        <div style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px;text-align:center"><div style="font:800 16px 'Space Grotesk'">90g</div><div style="font-size:9px;color:var(--faint);font-weight:700;margin-top:3px">PROTEIN</div></div>
+        <div style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px;text-align:center"><div style="font:800 16px 'Space Grotesk'">8k</div><div style="font-size:9px;color:var(--faint);font-weight:700;margin-top:3px">STEPS</div></div>
+        <div style="background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px;text-align:center"><div style="font:800 16px 'Space Grotesk'">-0.5</div><div style="font-size:9px;color:var(--faint);font-weight:700;margin-top:3px">KG / WEEK</div></div>
+      </div>
+      <div style="background:#b5f23d;color:#0a1310;border-radius:99px;padding:16px;text-align:center;font-size:14px;font-weight:800;cursor:pointer;margin-top:22px" onClick="{{ obFinish }}">Start tracking</div>
+    </div>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
+<!-- ============ PAYWALL ============ -->
+<sc-if value="{{ isPaywall }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;overflow:hidden;background:var(--bg)">
+  <div style="height:100%;overflow-y:auto;box-sizing:border-box;animation:fadeUp .3s ease both;padding:52px 22px 36px">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:6px"><div style="width:34px;height:34px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:14px;cursor:pointer" onClick="{{ goYou }}">✕</div></div>
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg,#b5f23d,#8dc42a);display:flex;align-items:center;justify-content:center;font-size:30px;margin:0 auto 14px;box-shadow:0 12px 28px -8px rgba(181,242,61,.5)">⚡</div>
+      <div style="font-size:24px;font-weight:800;letter-spacing:-.01em">TrimTrack Pro</div>
+      <div style="font-size:13px;color:var(--mut);margin-top:4px">Everything, unlimited.</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:12px 15px"><div style="width:26px;height:26px;border-radius:50%;background:var(--accBg);color:var(--acc);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex:none">✓</div><div style="flex:1"><div style="font-size:13px;font-weight:700">Unlimited AI coach</div><div style="font-size:11px;color:var(--faint)">Ask Trim anything, anytime</div></div></div>
+      <div style="display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:12px 15px"><div style="width:26px;height:26px;border-radius:50%;background:var(--accBg);color:var(--acc);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex:none">✓</div><div style="flex:1"><div style="font-size:13px;font-weight:700">Unlimited photo scans</div><div style="font-size:11px;color:var(--faint)">No daily scan cap</div></div></div>
+      <div style="display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:12px 15px"><div style="width:26px;height:26px;border-radius:50%;background:var(--accBg);color:var(--acc);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex:none">✓</div><div style="flex:1"><div style="font-size:13px;font-weight:700">Circle insights & leagues</div><div style="font-size:11px;color:var(--faint)">Deeper stats for your crew</div></div></div>
+      <div style="display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:12px 15px"><div style="width:26px;height:26px;border-radius:50%;background:var(--accBg);color:var(--acc);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex:none">✓</div><div style="flex:1"><div style="font-size:13px;font-weight:700">Custom macro targets</div><div style="font-size:11px;color:var(--faint)">Tune protein, carbs & fat</div></div></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:16px">
+      <div style="flex:1;position:relative;background:var(--card);border-radius:18px;padding:16px 14px;cursor:pointer;{{ planYStyle }}" onClick="{{ pickYearly }}">
+        <div style="position:absolute;top:-9px;right:10px;background:#b5f23d;color:#0a1310;border-radius:99px;padding:3px 9px;font-size:9px;font-weight:800">SAVE 36%</div>
+        <div style="font-size:11px;font-weight:800;color:var(--faint);letter-spacing:.06em">YEARLY</div>
+        <div style="font:800 22px 'Space Grotesk';margin:6px 0 2px">₦1,600<span style="font-size:11px;color:var(--faint)"> /mo</span></div>
+        <div style="font-size:10px;color:var(--faint)">₦19,200 billed yearly</div>
+      </div>
+      <div style="flex:1;background:var(--card);border-radius:18px;padding:16px 14px;cursor:pointer;{{ planMStyle }}" onClick="{{ pickMonthly }}">
+        <div style="font-size:11px;font-weight:800;color:var(--faint);letter-spacing:.06em">MONTHLY</div>
+        <div style="font:800 22px 'Space Grotesk';margin:6px 0 2px">₦2,500<span style="font-size:11px;color:var(--faint)"> /mo</span></div>
+        <div style="font-size:10px;color:var(--faint)">Cancel anytime</div>
+      </div>
+    </div>
+    <div style="background:#b5f23d;color:#0a1310;border-radius:99px;padding:16px;text-align:center;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 10px 26px -8px rgba(181,242,61,.55)" onClick="{{ goYou }}">Start 7-day free trial</div>
+    <div style="text-align:center;font-size:11px;color:var(--faint);margin-top:12px">Cancel anytime · <span style="color:var(--acc);font-weight:700;cursor:pointer">Restore purchase</span></div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ============ COACH ============ -->
+<sc-if value="{{ isCoach }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;overflow:hidden">
+  <div style="position:absolute;top:0;left:0;right:0;z-index:2;background:var(--navBg);backdrop-filter:blur(20px);border-bottom:1px solid var(--line);padding:50px 18px 12px;display:flex;align-items:center;gap:12px">
+    <div style="width:34px;height:34px;border-radius:11px;background:var(--card);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:15px;cursor:pointer;flex:none" onClick="{{ goHome }}">←</div>
+    <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#b5f23d,#8dc42a);display:flex;align-items:center;justify-content:center;font-size:19px;flex:none">🥑</div>
+    <div style="flex:1"><div style="font-size:15px;font-weight:800">Trim, your coach</div><div style="font-size:11px;color:var(--acc);display:flex;align-items:center;gap:5px"><span style="width:6px;height:6px;border-radius:50%;background:#8dc42a"></span>ask me anything</div></div>
+  </div>
+  <div ref="{{ coachScroll }}" style="height:100%;overflow-y:auto;box-sizing:border-box;animation:fadeUp .3s ease both;padding:124px 16px 96px;display:flex;flex-direction:column;gap:10px">
+    <sc-for list="{{ coachMsgs }}" as="m" hint-placeholder-count="2">
+    <div style="display:flex;justify-content:{{ m.row }}">
+      <div style="max-width:82%;background:{{ m.bg }};color:{{ m.color }};border-radius:{{ m.radius }};padding:12px 15px;font-size:13.5px;line-height:1.55;font-weight:{{ m.weight }}">{{ m.text }}</div>
+    </div>
+    </sc-for>
+    <sc-if value="{{ coachTyping }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;justify-content:flex-start">
+      <div style="background:var(--card);border-radius:16px 16px 16px 5px;padding:13px 17px;font-size:13px;color:var(--faint);letter-spacing:2px;animation:dotPulse 1s ease-in-out infinite">●●●</div>
+    </div>
+    </sc-if>
+    <sc-if value="{{ showChips }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:2px">
+      <div style="border:1px solid var(--accLine);color:var(--acc);border-radius:99px;padding:8px 13px;font-size:12px;font-weight:700;cursor:pointer" onClick="{{ askDinner }}">What should I eat tonight?</div>
+      <div style="border:1px solid var(--accLine);color:var(--acc);border-radius:99px;padding:8px 13px;font-size:12px;font-weight:700;cursor:pointer" onClick="{{ askWeight }}">How's my progress?</div>
+      <div style="border:1px solid var(--accLine);color:var(--acc);border-radius:99px;padding:8px 13px;font-size:12px;font-weight:700;cursor:pointer" onClick="{{ askCravings }}">Help with cravings</div>
+    </div>
+    </sc-if>
+  </div>
+  <div style="position:absolute;left:0;right:0;bottom:0;padding:12px 16px 26px;background:var(--navBg);backdrop-filter:blur(20px);border-top:1px solid var(--line);z-index:2">
+    <div style="display:flex;align-items:center;gap:10px">
+      <input value="{{ coachDraft }}" onChange="{{ setCoachDraft }}" onKeyDown="{{ coachKey }}" placeholder="Ask Trim anything…" style="flex:1;background:var(--card);border:1px solid var(--line2);outline:none;border-radius:99px;padding:13px 18px;font-size:13px;color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif"></input>
+      <div style="width:42px;height:42px;border-radius:50%;background:#b5f23d;display:flex;align-items:center;justify-content:center;font-size:16px;color:#0a1310;font-weight:800;flex:none;cursor:pointer" onClick="{{ sendCoach }}">↑</div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ============ SCAN ============ -->
+<sc-if value="{{ isScan }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:#06100A;z-index:8;overflow:hidden;animation:fadeUp .3s ease both">
+  <div style="position:absolute;top:52px;left:20px;right:20px;display:flex;justify-content:space-between;align-items:center;z-index:3">
+    <div style="width:36px;height:36px;border-radius:12px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;color:#FFFFFF;font-size:15px;cursor:pointer" onClick="{{ goHome }}">←</div>
+    <div style="font-size:13px;font-weight:800;color:#FFFFFF">Scan a meal</div>
+    <div style="width:36px;height:36px;border-radius:12px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-size:14px">⚡</div>
+  </div>
+  <div style="position:absolute;top:150px;left:50%;transform:translateX(-50%);width:262px;height:262px;border:2px dashed rgba(181,242,61,0.55);border-radius:28px;display:flex;align-items:center;justify-content:center;font-size:104px;background:radial-gradient(80% 80% at 50% 45%,rgba(181,242,61,0.08),rgba(0,0,0,0))">🍛</div>
+  <div style="position:absolute;top:428px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;background:rgba(181,242,61,0.15);border:1px solid rgba(181,242,61,0.4);border-radius:99px;padding:7px 14px;font-size:11px;font-weight:800;color:#B5F23D"><span style="width:7px;height:7px;border-radius:50%;background:#B5F23D"></span>DETECTED · 92% MATCH</div>
+  <div style="position:absolute;left:16px;right:16px;bottom:30px;background:#0F1F15;border:1px solid rgba(181,242,61,0.2);border-radius:24px;padding:18px">
+    <div style="display:flex;align-items:center;gap:13px;margin-bottom:14px">
+      <div style="width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:23px">🍛</div>
+      <div style="flex:1"><div style="font-size:15px;font-weight:800;color:#FFFFFF">Jollof Rice + Chicken</div><div style="font-size:11px;color:#8FA396">1 plate · 28g protein · 52g carbs</div></div>
+      <div style="font:800 22px 'Space Grotesk';color:#B5F23D">480</div>
+    </div>
+    <div style="display:flex;gap:9px">
+      <div style="flex:1;border:1px solid rgba(255,255,255,0.16);border-radius:99px;padding:13px;text-align:center;font-size:13px;font-weight:700;color:#C9D6CC;cursor:pointer">Adjust</div>
+      <div style="flex:1;background:#B5F23D;color:#0A1310;border-radius:99px;padding:13px;text-align:center;font-size:13px;font-weight:800;cursor:pointer" onClick="{{ goHome }}">Log meal</div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ============ SEARCH ============ -->
+<sc-if value="{{ isSearch }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;overflow:hidden">
+  <div style="height:100%;overflow-y:auto;box-sizing:border-box;animation:fadeUp .3s ease both;padding:52px 20px 40px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+      <div style="width:34px;height:34px;border-radius:11px;background:var(--card);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:15px;cursor:pointer" onClick="{{ goHome }}">←</div>
+      <div style="font-size:15px;font-weight:800">Search food</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line3);border-radius:99px;padding:12px 17px;margin-bottom:14px">
+      <span style="font-size:14px">🔍</span>
+      <input value="{{ searchQ }}" onChange="{{ setSearchQ }}" placeholder="Try jollof, egusi, suya…" style="flex:1;background:transparent;border:none;outline:none;font-size:13px;color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif"></input>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <sc-for list="{{ filteredFoods }}" as="f" hint-placeholder-count="5">
+      <div style="display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px">
+        <div style="width:42px;height:42px;border-radius:13px;background:var(--deep);display:flex;align-items:center;justify-content:center;font-size:20px">{{ f.emoji }}</div>
+        <div style="flex:1"><div style="font-size:14px;font-weight:700">{{ f.name }}</div><div style="font-size:11px;color:var(--faint)">{{ f.detail }}</div></div>
+        <div style="font:700 14px 'Space Grotesk';color:var(--acc)">{{ f.kcal }}</div>
+        <div style="width:34px;height:34px;border-radius:50%;background:{{ f.addBg }};color:{{ f.addColor }};display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;cursor:pointer" onClick="{{ f.toggle }}">{{ f.addLabel }}</div>
+      </div>
+      </sc-for>
+      <sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+      <div style="text-align:center;padding:28px 20px;color:var(--faint);font-size:13px;line-height:1.6">No match for that.<br><span style="color:var(--acc);font-weight:800;cursor:pointer" onClick="{{ goScan }}">Scan it instead 📸</span></div>
+      </sc-if>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ============ GOALS ============ -->
+<sc-if value="{{ isGoals }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;overflow:hidden">
+  <div style="height:100%;overflow-y:auto;box-sizing:border-box;animation:fadeUp .3s ease both;padding:52px 20px 40px">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <div style="width:34px;height:34px;border-radius:11px;background:var(--card);display:flex;align-items:center;justify-content:center;color:var(--mut);font-size:15px;cursor:pointer" onClick="{{ goYou }}">←</div>
+      <div style="font-size:15px;font-weight:800">Goals & targets</div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;margin-bottom:12px">
+      <div style="font-size:10px;color:var(--faint);font-weight:700;letter-spacing:.1em;margin-bottom:14px">DAILY CALORIE BUDGET</div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="width:44px;height:44px;border-radius:50%;background:var(--deep);border:1px solid var(--line3);display:flex;align-items:center;justify-content:center;font-size:19px;color:var(--acc);cursor:pointer" onClick="{{ calMinus }}">−</div>
+        <div style="text-align:center"><div style="font:800 34px/1 'Space Grotesk'">{{ calGoalFmt }}</div><div style="font-size:11px;color:var(--faint);margin-top:4px">kcal / day</div></div>
+        <div style="width:44px;height:44px;border-radius:50%;background:var(--deep);border:1px solid var(--line3);display:flex;align-items:center;justify-content:center;font-size:19px;color:var(--acc);cursor:pointer" onClick="{{ calPlus }}">+</div>
+      </div>
+      <div style="font-size:11px;color:var(--faint);text-align:center;margin-top:12px">Recommended for your target: 1,450–1,600</div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;margin-bottom:12px">
+      <div style="font-size:10px;color:var(--faint);font-weight:700;letter-spacing:.1em;margin-bottom:14px">GOAL WEIGHT</div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="width:44px;height:44px;border-radius:50%;background:var(--deep);border:1px solid var(--line3);display:flex;align-items:center;justify-content:center;font-size:19px;color:var(--acc);cursor:pointer" onClick="{{ wMinus }}">−</div>
+        <div style="text-align:center"><div style="font:800 34px/1 'Space Grotesk'">{{ weightGoalFmt }}</div><div style="font-size:11px;color:var(--faint);margin-top:4px">kg · now 82.0</div></div>
+        <div style="width:44px;height:44px;border-radius:50%;background:var(--deep);border:1px solid var(--line3);display:flex;align-items:center;justify-content:center;font-size:19px;color:var(--acc);cursor:pointer" onClick="{{ wPlus }}">+</div>
+      </div>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--line);border-radius:22px;padding:20px;margin-bottom:16px">
+      <div style="font-size:10px;color:var(--faint);font-weight:700;letter-spacing:.1em;margin-bottom:14px">MACRO SPLIT</div>
+      <div style="display:flex;height:10px;border-radius:99px;overflow:hidden;margin-bottom:10px"><div style="width:25%;background:#5e9bff"></div><div style="width:50%;background:#f5c542"></div><div style="width:25%;background:#ff8a5e"></div></div>
+      <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--mut);white-space:nowrap;gap:8px"><span><b style="color:#5e9bff">■</b> Protein 25%</span><span><b style="color:#f5c542">■</b> Carbs 50%</span><span><b style="color:#ff8a5e">■</b> Fat 25%</span></div>
+    </div>
+    <div style="background:#b5f23d;color:#0a1310;border-radius:99px;padding:15px;text-align:center;font-size:14px;font-weight:800;cursor:pointer" onClick="{{ goYou }}">Save changes</div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ============ COMPOSER OVERLAY ============ -->
+<sc-if value="{{ composerOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:rgba(4,8,6,.72);backdrop-filter:blur(4px);z-index:20;display:flex;align-items:center;justify-content:center;padding:22px" onClick="{{ closeComposer }}">
+  <div style="width:100%;background:var(--sheet);border:1px solid var(--accLine);border-radius:24px;padding:20px;animation:popIn .22s ease both" onClick="{{ stopClick }}">
+    <div style="font-size:16px;font-weight:800;margin-bottom:4px">Share your journey ✍️</div>
+    <div style="font-size:12px;color:var(--mut);margin-bottom:14px">Milestones, lessons, hard days — your circle is listening.</div>
+    <textarea value="{{ journeyDraft }}" onChange="{{ setJourneyDraft }}" rows="5" placeholder="What's working? What's been hard?" style="width:100%;box-sizing:border-box;background:var(--deep);border:1px solid var(--line2);outline:none;border-radius:14px;padding:13px 15px;font-size:13px;line-height:1.5;color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif;resize:none;margin-bottom:14px"></textarea>
+    <div style="display:flex;gap:9px">
+      <div style="flex:1;border:1px solid var(--line3);border-radius:99px;padding:12px;text-align:center;font-size:13px;font-weight:700;color:var(--mut);cursor:pointer" onClick="{{ closeComposer }}">Cancel</div>
+      <div style="flex:1;background:#b5f23d;color:#0a1310;border-radius:99px;padding:12px;text-align:center;font-size:13px;font-weight:800;cursor:pointer" onClick="{{ postJourney }}">Post</div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- ============ PLUS SHEET ============ -->
+<sc-if value="{{ plusOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;inset:0;background:rgba(4,8,6,.62);z-index:20;display:flex;flex-direction:column;justify-content:flex-end" onClick="{{ closePlus }}">
+  <div style="background:var(--sheet);border-radius:28px 28px 0 0;padding:18px 20px 36px;border-top:1px solid var(--accLine);animation:slideUp .28s ease both" onClick="{{ stopClick }}">
+    <div style="width:38px;height:4px;border-radius:99px;background:var(--line4);margin:0 auto 16px"></div>
+    <div style="font-size:15px;font-weight:800;margin-bottom:12px">Log a meal</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--accLine);border-radius:16px;padding:14px 16px;cursor:pointer" onClick="{{ goScan }}"><div style="font-size:20px">📸</div><div style="flex:1"><div style="font-size:14px;font-weight:700">Scan a meal</div><div style="font-size:11px;color:var(--faint)">Point your camera, we do the rest</div></div><div style="color:var(--faint)">›</div></div>
+      <div style="display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;cursor:pointer" onClick="{{ goSearch }}"><div style="font-size:20px">🔍</div><div style="flex:1"><div style="font-size:14px;font-weight:700">Search food</div><div style="font-size:11px;color:var(--faint)">10,000+ local & global foods</div></div><div style="color:var(--faint)">›</div></div>
+      <div style="display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;cursor:pointer" onClick="{{ closePlus }}"><div style="font-size:20px">✍️</div><div style="flex:1"><div style="font-size:14px;font-weight:700">Quick add</div><div style="font-size:11px;color:var(--faint)">Just the calories, no details</div></div><div style="color:var(--faint)">›</div></div>
+    </div>
+  </div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 480, &quot;height&quot;: 900}, &quot;theme&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;dark&quot;, &quot;light&quot;], &quot;default&quot;: &quot;dark&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Theme&quot;}, &quot;userName&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;Sarah&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Profile&quot;}, &quot;showCircle&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Home&quot;}}">
+class Component extends DCLogic {
+  state = { screen: 'home', feedTab: 'journeys', cheerK: 84, cheeredK: false, cheerA: 46, cheeredA: false, cheerHome: 12, cheeredHome: false, draft: '', myReplies: [], composerOpen: false, journeyDraft: '', myPosts: [], plusOpen: false, searchQ: '', calGoal: 1500, weightGoal: 77, added: {}, coachMsgs: [], coachDraft: '', coachTyping: false, plan: 'yearly', obStep: 0, obGoal: 'lose' };
+  coachReply(t) {
+    const left = (this.state.calGoal - 1240).toLocaleString();
+    const x = t.toLowerCase();
+    if (/dinner|eat|food|hungry|meal|tonight/.test(x)) return `You've got ${left} kcal left. Efo riro + grilled chicken (240 kcal) fits perfectly — and it closes most of your 18g protein gap. Want me to pre-log it?`;
+    if (/step|walk/.test(x)) return '6,240 steps so far. 1,760 more hits your 8k goal and earns ~60 kcal back — an evening walk covers it.';
+    if (/weight|progress|trend|doing/.test(x)) return "You're at 82.0 kg — down 4.0 of your 9 kg goal, averaging ~0.5 kg a week. That's a healthy pace; on track for October. 📉";
+    if (/crav|snack|sweet|hungry at night/.test(x)) return 'Craving window! Roasted plantain (120 kcal) or garden eggs keep you in budget. Try water first, wait 10 minutes, then decide.';
+    if (/protein/.test(x)) return "You're at 72g of 90g. Easy top-ups: grilled fish (+22g), moi moi (+9g), or a boiled egg (+6g).";
+    if (/jollof|rice/.test(x)) return 'Jollof is very loggable 😄 — 1 cup with stew is ~410 kcal. Portion it, pair with protein, and it fits your plan.';
+    return `Good question. My rule of thumb: protein first, scan before you eat, and keep dinner under your remaining ${left} kcal. What else is on your mind?`;
+  }
+  FOODS = [
+    { emoji: '🍛', name: 'Jollof Rice', detail: '1 cup, with stew', kcal: 410 },
+    { emoji: '🍲', name: 'Egusi Soup', detail: '1 bowl, light version', kcal: 340 },
+    { emoji: '🥣', name: 'Moi Moi', detail: '1 wrap, steamed', kcal: 190 },
+    { emoji: '🍢', name: 'Suya (beef)', detail: '1 stick, lean', kcal: 220 },
+    { emoji: '🐟', name: 'Grilled Tilapia', detail: '1 whole, pepper sauce', kcal: 290 },
+    { emoji: '🍌', name: 'Roasted Plantain', detail: '1 finger, boli', kcal: 120 },
+    { emoji: '🫘', name: 'Akara', detail: '3 balls, fried', kcal: 240 },
+    { emoji: '🍚', name: 'Pounded Yam', detail: '1 wrap, medium', kcal: 400 }
+  ];
+  async askCoach(t) {
+    const msg = (t || '').trim();
+    if (!msg || this.state.coachTyping) return;
+    const scroll = () => { const el = this._coachRef && this._coachRef.current; if (el) el.scrollTop = el.scrollHeight; };
+    this.setState(st => ({ coachMsgs: [...st.coachMsgs, { who: 'u', text: msg }], coachDraft: '', coachTyping: true }), scroll);
+    let reply = null;
+    try {
+      if (window.claude && window.claude.complete) {
+        const left = (this.state.calGoal - 1240).toLocaleString();
+        const hist = this.state.coachMsgs.slice(-6).map(m => (m.who === 'u' ? 'User: ' : 'Trim: ') + m.text).join('\n');
+        const raw = await window.claude.complete({
+          system: 'You are Trim, the warm, practical AI nutrition coach inside TrimTrack, a calorie tracker built around African (especially Nigerian) food culture. Live user context: name Sarah; daily budget ' + this.state.calGoal.toLocaleString() + ' kcal; eaten 1,240 kcal so far today (akara + pap breakfast 380, jollof brown rice + chicken lunch 480, roasted plantain snack 380); ' + left + ' kcal remaining; protein 72g of 90g target; steps 6,240 of 8,000 (earned +217 kcal back); weight 82.0 kg, started 86.0, goal ' + this.state.weightGoal.toFixed(1) + ' kg; 7-day logging streak. Answer in 1-3 short sentences, concrete and encouraging, referencing familiar Nigerian foods where natural. Plain text only, no markdown, no lists.',
+          messages: [{ role: 'user', content: hist ? hist + '\nUser: ' + msg : msg }]
+        });
+        reply = (raw || '').trim() || null;
+      }
+    } catch (e) { reply = null; }
+    if (!reply) reply = this.coachReply(msg);
+    this.setState(st => ({ coachMsgs: [...st.coachMsgs, { who: 'c', text: reply }], coachTyping: false }), scroll);
+  }
+  renderVals() {
+    const s = this.state, p = this.props;
+    const name = p.userName ?? 'Sarah';
+    this._threadRef = this._threadRef || React.createRef();
+    const light = (p.theme ?? 'dark') === 'light';
+    const q = s.searchQ.trim().toLowerCase();
+    const flist = this.FOODS.filter(f => f.name.toLowerCase().includes(q));
+    const pill = (a) => a ? 'background:#b5f23d;color:#0a1310;font-weight:800;border:1px solid #b5f23d' : 'border:1px solid var(--line3);color:var(--mut);font-weight:600';
+    const send = () => { const t = s.draft.trim(); if (t) this.setState({ myReplies: [...s.myReplies, { text: t }], draft: '' }, () => { const el = this._threadRef.current; if (el) el.scrollTop = el.scrollHeight; }); };
+    return {
+      userName: name, userInitial: name.charAt(0).toUpperCase(),
+      showCircle: p.showCircle ?? true,
+      isHome: s.screen === 'home', isFeed: s.screen === 'feed', isThread: s.screen === 'thread',
+      showNav: ['home', 'feed', 'trends', 'you'].includes(s.screen),
+      coachName: name,
+      navHomeStyle: s.screen === 'home' ? 'color:var(--acc);font-weight:800' : '',
+      navFeedStyle: s.screen === 'feed' ? 'color:var(--acc);font-weight:800' : '',
+      goHome: () => this.setState({ screen: 'home' }),
+      goFeed: () => this.setState({ screen: 'feed' }),
+      goThread: () => this.setState({ screen: 'thread' }),
+      goTrends: () => this.setState({ screen: 'trends' }),
+      goYou: () => this.setState({ screen: 'you' }),
+      isTrends: s.screen === 'trends', isYou: s.screen === 'you',
+      navTrendsStyle: s.screen === 'trends' ? 'color:var(--acc);font-weight:800' : '',
+      navYouStyle: s.screen === 'you' ? 'color:var(--acc);font-weight:800' : '',
+      tabJourneys: s.feedTab === 'journeys', tabIdeas: s.feedTab === 'ideas', tabRecipes: s.feedTab === 'recipes', tabQA: s.feedTab === 'qa',
+      tabJStyle: pill(s.feedTab === 'journeys'), tabIStyle: pill(s.feedTab === 'ideas'), tabRStyle: pill(s.feedTab === 'recipes'), tabQStyle: pill(s.feedTab === 'qa'),
+      setTabJ: () => this.setState({ feedTab: 'journeys' }), setTabI: () => this.setState({ feedTab: 'ideas' }), setTabR: () => this.setState({ feedTab: 'recipes' }), setTabQ: () => this.setState({ feedTab: 'qa' }),
+      composerOpen: s.composerOpen,
+      openComposer: () => this.setState({ composerOpen: true }),
+      closeComposer: () => this.setState({ composerOpen: false }),
+      journeyDraft: s.journeyDraft,
+      setJourneyDraft: (e) => this.setState({ journeyDraft: e.target.value }),
+      postJourney: () => { const t = s.journeyDraft.trim(); if (t) this.setState({ myPosts: [{ text: t }, ...s.myPosts], journeyDraft: '', composerOpen: false, feedTab: 'journeys' }); },
+      myPosts: s.myPosts,
+      plusOpen: s.plusOpen,
+      openPlus: () => this.setState({ plusOpen: true }),
+      closePlus: () => this.setState({ plusOpen: false }),
+      stopClick: (e) => e.stopPropagation(),
+      goCoach: () => this.setState({ screen: 'coach' }),
+      goPaywall: () => this.setState({ screen: 'paywall' }),
+      goOnboard: () => this.setState({ screen: 'onboard', obStep: 0 }),
+      isPaywall: s.screen === 'paywall', isOnboard: s.screen === 'onboard',
+      obIs0: s.obStep === 0, obIs1: s.obStep === 1, obIs2: s.obStep === 2,
+      obNext: () => this.setState({ obStep: Math.min(2, s.obStep + 1) }),
+      obBack: () => this.setState({ obStep: Math.max(0, s.obStep - 1) }),
+      obFinish: () => this.setState({ screen: 'home' }),
+      obDot0: s.obStep === 0 ? '#b5f23d' : 'var(--line3)', obDot1: s.obStep === 1 ? '#b5f23d' : 'var(--line3)', obDot2: s.obStep === 2 ? '#b5f23d' : 'var(--line3)',
+      obLoseStyle: s.obGoal === 'lose' ? 'border:2px solid #b5f23d;background:var(--accBg)' : 'border:1px solid var(--line3)',
+      obMaintainStyle: s.obGoal === 'maintain' ? 'border:2px solid #b5f23d;background:var(--accBg)' : 'border:1px solid var(--line3)',
+      obGainStyle: s.obGoal === 'gain' ? 'border:2px solid #b5f23d;background:var(--accBg)' : 'border:1px solid var(--line3)',
+      obPickLose: () => this.setState({ obGoal: 'lose' }),
+      obPickMaintain: () => this.setState({ obGoal: 'maintain' }),
+      obPickGain: () => this.setState({ obGoal: 'gain' }),
+      planYStyle: s.plan === 'yearly' ? 'border:2px solid #b5f23d;background:var(--accBg)' : 'border:1px solid var(--line3)',
+      planMStyle: s.plan === 'monthly' ? 'border:2px solid #b5f23d;background:var(--accBg)' : 'border:1px solid var(--line3)',
+      pickYearly: () => this.setState({ plan: 'yearly' }),
+      pickMonthly: () => this.setState({ plan: 'monthly' }),
+      isCoach: s.screen === 'coach',
+      coachMsgs: [{ who: 'c', text: `Evening ${name}! You're at 1,240 of ${s.calGoal.toLocaleString()} kcal with ${(s.calGoal - 1240).toLocaleString()} left, and 18g short on protein. Ask me anything — meals, cravings, your trend. 🥑` }, ...s.coachMsgs].map(m => ({
+        text: m.text,
+        row: m.who === 'u' ? 'flex-end' : 'flex-start',
+        bg: m.who === 'u' ? '#b5f23d' : 'var(--card)',
+        color: m.who === 'u' ? '#0a1310' : 'var(--txt2)',
+        radius: m.who === 'u' ? '16px 16px 5px 16px' : '16px 16px 16px 5px',
+        weight: m.who === 'u' ? '600' : '400'
+      })),
+      coachTyping: s.coachTyping,
+      showChips: s.coachMsgs.length === 0 && !s.coachTyping,
+      coachDraft: s.coachDraft,
+      setCoachDraft: (e) => this.setState({ coachDraft: e.target.value }),
+      coachKey: (e) => { if (e.key === 'Enter') this.askCoach(s.coachDraft); },
+      sendCoach: () => this.askCoach(s.coachDraft),
+      askDinner: () => this.askCoach('What should I eat tonight?'),
+      askWeight: () => this.askCoach("How's my progress?"),
+      askCravings: () => this.askCoach('Help with cravings'),
+      coachScroll: (this._coachRef = this._coachRef || React.createRef()),
+      goScan: () => this.setState({ screen: 'scan', plusOpen: false }),
+      goSearch: () => this.setState({ screen: 'search', plusOpen: false }),
+      goGoals: () => this.setState({ screen: 'goals' }),
+      isScan: s.screen === 'scan', isSearch: s.screen === 'search', isGoals: s.screen === 'goals',
+      searchQ: s.searchQ, setSearchQ: (e) => this.setState({ searchQ: e.target.value }),
+      filteredFoods: flist.map(f => ({ ...f, addLabel: s.added[f.name] ? '✓' : '+', addBg: s.added[f.name] ? '#b5f23d' : 'var(--accBg)', addColor: s.added[f.name] ? '#0a1310' : 'var(--acc)', toggle: () => this.setState({ added: { ...s.added, [f.name]: !s.added[f.name] } }) })),
+      noResults: flist.length === 0,
+      kcalLeft: (s.calGoal - 1240).toLocaleString(), calGoalFmt: s.calGoal.toLocaleString(),
+      calMinus: () => this.setState({ calGoal: Math.max(1200, s.calGoal - 50) }),
+      calPlus: () => this.setState({ calGoal: Math.min(4000, s.calGoal + 50) }),
+      weightGoalFmt: s.weightGoal.toFixed(1),
+      wMinus: () => this.setState({ weightGoal: Math.max(60, s.weightGoal - 0.5) }),
+      wPlus: () => this.setState({ weightGoal: Math.min(120, s.weightGoal + 0.5) }),
+      themeVars: light
+        ? '--bg:#f4f7f2;--card:#ffffff;--deep:#eef2ec;--sheet:#ffffff;--ink:#0f1f14;--txt2:#3d5240;--mut:#5c6b60;--faint:#8a9589;--line:rgba(15,31,20,.08);--line2:rgba(15,31,20,.1);--line3:rgba(15,31,20,.16);--line4:rgba(15,31,20,.3);--track:rgba(15,31,20,.08);--acc:#1a5c38;--accBg:rgba(26,92,56,.1);--accLine:rgba(26,92,56,.3);--ringTrack:rgba(26,92,56,.12);--heroBg:linear-gradient(150deg,#ffffff,#eef7ee);--heroShadow:0 16px 40px -18px rgba(15,31,20,.18);--navBg:rgba(255,255,255,.93);--barBg:#dce5da;background:var(--bg);color:var(--ink)'
+        : '--bg:#0a1310;--card:#162a20;--deep:#0e1e16;--sheet:#132218;--ink:#ffffff;--txt2:#c9d8ce;--mut:#8a9a92;--faint:#5f7269;--line:rgba(255,255,255,.05);--line2:rgba(255,255,255,.08);--line3:rgba(255,255,255,.13);--line4:rgba(255,255,255,.25);--track:rgba(255,255,255,.07);--acc:#b5f23d;--accBg:rgba(181,242,61,.12);--accLine:rgba(181,242,61,.2);--ringTrack:rgba(181,242,61,.09);--heroBg:linear-gradient(150deg,#173026,#0e1e16);--heroShadow:0 16px 40px -14px rgba(0,0,0,.7);--navBg:rgba(10,19,16,.92);--barBg:#233020;background:var(--bg);color:var(--ink)',
+      cheerK: s.cheerK, cheerKBg: s.cheeredK ? 'rgba(181,242,61,.3)' : 'var(--accBg)',
+      cheerKwame: (e) => { e.stopPropagation(); this.setState({ cheerK: s.cheeredK ? s.cheerK - 1 : s.cheerK + 1, cheeredK: !s.cheeredK }); },
+      cheerA: s.cheerA, cheerABg: s.cheeredA ? 'rgba(181,242,61,.3)' : 'var(--accBg)',
+      cheerAdaeze: (e) => { e.stopPropagation(); this.setState({ cheerA: s.cheeredA ? s.cheerA - 1 : s.cheerA + 1, cheeredA: !s.cheeredA }); },
+      cheerHome: s.cheerHome,
+      cheerHomeStop: (e) => { e.stopPropagation(); this.setState({ cheerHome: s.cheeredHome ? s.cheerHome - 1 : s.cheerHome + 1, cheeredHome: !s.cheeredHome }); },
+      replyCount: 21 + s.myReplies.length,
+      myReplies: s.myReplies, draft: s.draft,
+      setDraft: (e) => this.setState({ draft: e.target.value }),
+      draftKey: (e) => { if (e.key === 'Enter') send(); },
+      sendReply: send, threadScroll: this._threadRef
+    };
+  }
+}
+</script>
+</body>
+</html>
