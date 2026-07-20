@@ -203,6 +203,7 @@ export default function Dashboard() {
         <a href="/dashboard" style={{ display: "flex", flexDirection: "column" as const, alignItems: "center", gap: "3px", textDecoration: "none", color: acc, fontWeight: 800, fontSize: "11px", padding: "6px 10px" }}>
           <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: acc }} />Home
         </a>
+        <a href="/community" style={{ display: "flex", flexDirection: "column" as const, alignItems: "center", gap: "3px", textDecoration: "none", color: faint, fontWeight: 600, fontSize: "11px", padding: "6px 10px" }}>Community</a>
         <a href="/statements" style={{ display: "flex", flexDirection: "column" as const, alignItems: "center", gap: "3px", textDecoration: "none", color: faint, fontWeight: 600, fontSize: "11px", padding: "6px 10px" }}>Statement</a>
         <button onClick={() => setShowScanner(true)} style={{ width: "52px", height: "52px", borderRadius: "50%", background: "#b5f23d", border: "none", color: "#0a1310", fontSize: "26px", fontWeight: 700, marginTop: "-26px", boxShadow: "0 8px 20px -4px rgba(181,242,61,0.5)", cursor: "pointer" }}>+</button>
         <a href="/profile" style={{ display: "flex", flexDirection: "column" as const, alignItems: "center", gap: "3px", textDecoration: "none", color: faint, fontWeight: 600, fontSize: "11px", padding: "6px 10px" }}>Profile</a>
