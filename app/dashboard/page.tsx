@@ -162,6 +162,16 @@ export default function Dashboard() {
           <div style={{ fontSize: "16px", color: "#0a1310", fontWeight: 800 }}>→</div>
         </button>
 
+        {/* ASK TRIM */}
+        <a href="/coach" style={{ display: "flex", alignItems: "center", gap: "12px", background: card, border: `1px solid ${accLine}`, borderRadius: "18px", padding: "12px 16px", marginBottom: "10px", textDecoration: "none", color: txt }}>
+          <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "linear-gradient(135deg,#1a5c38,#0f3d25)", border: "1.5px solid rgba(181,242,61,0.4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", flexShrink: 0 }}>??</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: "13px", fontWeight: 800 }}>Ask Trim anything</div>
+            <div style={{ fontSize: "11px", color: mut }}>Your AI coach knows your day</div>
+          </div>
+          <div style={{ fontSize: "14px", color: acc, fontWeight: 800 }}>?</div>
+        </a>
+
         {/* MEAL TABS */}
         <div style={{ display: "flex", gap: "8px", marginBottom: "10px", overflowX: "auto" as const, paddingBottom: "4px" }}>
           {["breakfast", "lunch", "dinner", "snack"].map(m => (
@@ -215,3 +225,4 @@ export default function Dashboard() {
     </div>
   );
 }
+
