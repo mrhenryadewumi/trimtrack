@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ['Plus Jakarta Sans', 'sans-serif'],
+        num: ['Space Grotesk', 'sans-serif'],
       },
       colors: {
         green: {
@@ -24,7 +25,12 @@ const config: Config = {
           400: '#b5f23d',
           500: '#8dc42a',
         },
+        surface: { DEFAULT: 'var(--tt-bg)', card: 'var(--tt-card)', deep: 'var(--tt-deep)', sheet: 'var(--tt-sheet)' },
+        ink: { DEFAULT: 'var(--tt-ink)', body: 'var(--tt-txt2)', mut: 'var(--tt-mut)', faint: 'var(--tt-faint)' },
+        accent: { DEFAULT: 'var(--tt-acc)', bg: 'var(--tt-acc-bg)', line: 'var(--tt-acc-line)' },
+        macro: { protein: '#5e9bff', carbs: '#f5c542', fat: '#ff8a5e' },
       },
+      borderColor: { hairline: 'var(--tt-line)' },
       borderRadius: {
         '2xl': '1rem',
         '3xl': '1.5rem',

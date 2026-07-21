@@ -8,12 +8,13 @@ import { getGreeting, getCalorieStatus, getStatusMessage } from "@/lib/calculati
 
 type Meal = { id?: string; food_name: string; kcal: number; protein: number; carbs: number; fat: number; meal_type: string };
 
+const NUM = "'Space Grotesk', sans-serif";
+
 export default function Dashboard() {
   const router = useRouter();
   const [profile, setProfile] = useState<any>(null);
   const [meals, setMeals] = useState<Meal[]>([]);
   const [activeMeal, setActiveMeal] = useState("breakfast");
-  const [currentTime, setCurrentTime] = useState("");
   const [today, setToday] = useState("");
   const [motivation, setMotivation] = useState("");
   const [showScanner, setShowScanner] = useState(false);
@@ -29,18 +30,27 @@ export default function Dashboard() {
   const progress = Math.min(100, Math.round((eaten / goal) * 100));
   const statusType = getCalorieStatus(eaten, goal);
   const statusMsg = getStatusMessage(statusType, eaten, goal);
-  const ringOffset = 283 - (283 * progress) / 100;
+  const ringOffset = 308 - (308 * progress) / 100;
+
+  // macro targets (fallbacks match the design spec)
+  const pGoal = profile?.proteinGoal || 90;
+  const cGoal = profile?.carbsGoal || 210;
+  const fGoal = profile?.fatGoal || 60;
 
   const dk = darkMode;
-  const bg = dk ? "#0a1310" : "#f6fbf8";
+  const bg = dk ? "#0a1310" : "#f4f7f2";
   const card = dk ? "#162a20" : "#ffffff";
-  const cardBorder = dk ? "rgba(255,255,255,0.04)" : "#e8f5ee";
+  const deep = dk ? "#0e1e16" : "#eef2ec";
+  const line = dk ? "rgba(255,255,255,0.05)" : "rgba(15,31,20,0.08)";
   const txt = dk ? "#ffffff" : "#0f1f14";
-  const sub = dk ? "#7a8a82" : "#6b7280";
-  const navBg = dk ? "rgba(10,19,16,0.95)" : "rgba(246,251,248,0.97)";
-
-  const statusColors: Record<string, string> = { empty: "#888", good: "#22c55e", warn: "#eab308", critical: "#f97316", over: "#ef4444" };
-  const statusColor = statusColors[statusType] || "#888";
+  const body = dk ? "#c9d8ce" : "#3d5240";
+  const mut = dk ? "#8a9a92" : "#5c6b60";
+  const faint = dk ? "#5f7269" : "#8a9589";
+  const acc = dk ? "#b5f23d" : "#1a5c38";
+  const accBg = dk ? "rgba(181,242,61,0.12)" : "rgba(26,92,56,0.1)";
+  const accLine = dk ? "rgba(181,242,61,0.2)" : "rgba(26,92,56,0.3)";
+  const heroBg = dk ? "linear-gradient(150deg,#173026,#0e1e16)" : "linear-gradient(150deg,#ffffff,#eef7ee)";
+  const navBg = dk ? "rgba(10,19,16,0.92)" : "rgba(255,255,255,0.93)";
 
   useEffect(() => {
     fetch("/api/profile", { credentials: "include" })
@@ -49,11 +59,7 @@ export default function Dashboard() {
       .catch(() => router.push("/login"));
 
     const now = new Date();
-    setToday(now.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" }));
-
-    const updateTime = () => setCurrentTime(new Date().toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", hour12: true }));
-    updateTime();
-    const clock = setInterval(updateTime, 60000);
+    setToday(now.toLocaleDateString("en-GB", { weekday: "short", day: "numeric", month: "long" }));
 
     fetchMeals().then(data => {
       let arr: Meal[] = [];
@@ -62,8 +68,6 @@ export default function Dashboard() {
       else if (Array.isArray(data?.data)) arr = data.data;
       setMeals(arr);
     }).catch(() => setMeals([]));
-
-    return () => clearInterval(clock);
   }, []);
 
   useEffect(() => {
@@ -84,144 +88,135 @@ export default function Dashboard() {
     setMeals(prev => (Array.isArray(prev) ? prev : []).filter((m, i) => m.id ? m.id !== id : i !== idx));
   };
 
+  const macroRows = [
+    { label: "PROTEIN", val: protein, target: pGoal, color: "#5e9bff" },
+    { label: "CARBS", val: carbs, target: cGoal, color: "#f5c542" },
+    { label: "FAT", val: fat, target: fGoal, color: "#ff8a5e" },
+  ];
+
   return (
-    <div style={{ minHeight: "100vh", background: bg, color: txt, paddingBottom: "80px", transition: "background 0.3s" }}>
+    <div style={{ minHeight: "100vh", background: bg, color: txt, paddingBottom: "96px", transition: "background 0.3s", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
 
       {/* HEADER */}
-      <div style={{ padding: "20px 20px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div>
-          <div style={{ fontSize: "11px", fontWeight: 700, color: sub, letterSpacing: "0.15em", marginBottom: "2px" }}>TRIMTRACK</div>
-          <div style={{ fontSize: "13px", color: sub }}>{today}</div>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <button onClick={() => setDarkMode(m => !m)}
-            style={{ padding: "7px 16px", borderRadius: "99px", background: darkMode ? "#b5f23d" : "#1a5c38", border: "none", cursor: "pointer", fontSize: "13px", fontWeight: 800, color: darkMode ? "#0a1310" : "#ffffff", boxShadow: "0 2px 8px rgba(0,0,0,0.2)" }}>
-            {darkMode ? "Day" : "Night"}
-          </button>
-          <a href="/profile" style={{ width: "40px", height: "40px", borderRadius: "50%", background: "linear-gradient(135deg, #1a5c38, #0f3d25)", display: "flex", alignItems: "center", justifyContent: "center", color: "#b5f23d", fontWeight: 800, textDecoration: "none", fontSize: "15px" }}>
-            {profile?.name?.[0]?.toUpperCase() || "U"}
-          </a>
-        </div>
-      </div>
-
-      <div style={{ padding: "0 16px" }}>
-
-        {/* GREETING */}
-        <div style={{ marginBottom: "16px", padding: "0 4px" }}>
-          <div style={{ fontSize: "22px", fontWeight: 800, color: txt }}>{getGreeting(profile?.name || "there")}</div>
-          <div style={{ fontSize: "13px", color: sub, marginTop: "2px" }}>{currentTime}</div>
-        </div>
-
-        {/* CALORIE CARD */}
-        <div style={{ background: dk ? "linear-gradient(135deg, #162a20 0%, #0e1e16 100%)" : "linear-gradient(135deg, #ffffff 0%, #f0faf4 100%)", borderRadius: "28px", padding: "24px", marginBottom: "16px", border: `1px solid ${cardBorder}`, boxShadow: "0 8px 24px rgba(0,0,0,0.15)" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "20px" }}>
-            <div>
-              <div style={{ fontSize: "11px", color: sub, fontWeight: 700, letterSpacing: "0.12em", marginBottom: "4px" }}>CALORIES TODAY</div>
-              <div style={{ fontSize: "12px", color: statusColor, fontWeight: 600 }}>{statusMsg}</div>
-            </div>
-            <div style={{ background: "rgba(181,242,61,0.15)", padding: "6px 12px", borderRadius: "99px", fontSize: "11px", color: "#b5f23d", fontWeight: 700 }}>{progress}%</div>
+      <div style={{ maxWidth: "480px", margin: "0 auto", padding: "20px 20px 0" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+          <div>
+            <div style={{ fontSize: "11px", fontWeight: 800, color: faint, letterSpacing: "0.18em" }}>TRIMTRACK</div>
+            <div style={{ fontSize: "20px", fontWeight: 800, marginTop: "2px" }}>{getGreeting(profile?.name || "there")}</div>
+            <div style={{ fontSize: "12px", color: faint, marginTop: "2px" }}>{today}</div>
           </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <button onClick={() => setDarkMode(m => !m)}
+              style={{ padding: "6px 12px", borderRadius: "99px", background: accBg, border: `1px solid ${accLine}`, cursor: "pointer", fontSize: "12px", fontWeight: 800, color: acc, minHeight: "34px" }}>
+              {darkMode ? "Day" : "Night"}
+            </button>
+            <a href="/profile" style={{ width: "40px", height: "40px", borderRadius: "50%", background: "linear-gradient(135deg,#1a5c38,#0f3d25)", display: "flex", alignItems: "center", justifyContent: "center", color: "#b5f23d", fontWeight: 800, textDecoration: "none", fontSize: "15px" }}>
+              {profile?.name?.[0]?.toUpperCase() || "U"}
+            </a>
+          </div>
+        </div>
+
+        {/* HERO RING CARD */}
+        <div style={{ background: heroBg, borderRadius: "28px", padding: "17px 20px", border: `1px solid ${line}`, boxShadow: dk ? "0 16px 40px -14px rgba(0,0,0,0.7)" : "0 16px 40px -18px rgba(15,31,20,0.18)", marginBottom: "10px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-            <div style={{ position: "relative", width: "120px", height: "120px", flexShrink: 0 }}>
-              <svg width="120" height="120" viewBox="0 0 120 120">
-                <circle cx="60" cy="60" r="45" fill="none" stroke="rgba(181,242,61,0.1)" strokeWidth="10" />
-                <circle cx="60" cy="60" r="45" fill="none" stroke="#b5f23d" strokeWidth="10" strokeLinecap="round" strokeDasharray="283" strokeDashoffset={ringOffset} transform="rotate(-90 60 60)" style={{ transition: "stroke-dashoffset 0.8s ease" }} />
+            <div style={{ position: "relative", width: "112px", height: "112px", flexShrink: 0 }}>
+              <svg width="112" height="112" viewBox="0 0 122 122">
+                <circle cx="61" cy="61" r="49" fill="none" stroke={dk ? "rgba(181,242,61,0.09)" : "rgba(26,92,56,0.12)"} strokeWidth="10" />
+                <circle cx="61" cy="61" r="49" fill="none" stroke={acc} strokeWidth="10" strokeLinecap="round" strokeDasharray="308" strokeDashoffset={ringOffset} transform="rotate(-90 61 61)" style={{ transition: "stroke-dashoffset 0.9s ease" }} />
               </svg>
               <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                <div style={{ fontSize: "28px", fontWeight: 900, color: txt, lineHeight: 1 }}>{eaten}</div>
-                <div style={{ fontSize: "10px", color: sub, marginTop: "2px" }}>/ {goal} kcal</div>
+                <div style={{ fontFamily: NUM, fontSize: "31px", fontWeight: 800, lineHeight: 1 }}>{remaining}</div>
+                <div style={{ fontSize: "9px", color: faint, letterSpacing: "0.08em", fontWeight: 700 }}>KCAL LEFT</div>
               </div>
             </div>
-            <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "10px" }}>
-              <div>
-                <div style={{ fontSize: "11px", color: sub, fontWeight: 600 }}>REMAINING</div>
-                <div style={{ fontSize: "20px", fontWeight: 800, color: "#b5f23d" }}>{remaining} kcal</div>
-              </div>
-              <div style={{ height: "1px", background: cardBorder }} />
-              <div>
-                <div style={{ fontSize: "11px", color: sub, fontWeight: 600 }}>GOAL</div>
-                <div style={{ fontSize: "16px", fontWeight: 700, color: txt }}>{goal.toLocaleString()} kcal</div>
-              </div>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: "10px", color: faint, fontWeight: 700, letterSpacing: "0.1em" }}>EATEN</div>
+              <div style={{ fontSize: "19px", fontWeight: 800, marginBottom: "9px" }}>{eaten.toLocaleString()}<span style={{ fontSize: "12px", color: faint, fontWeight: 600 }}> / {goal.toLocaleString()}</span></div>
+              <div style={{ display: "inline-flex", gap: "6px", background: accBg, padding: "5px 10px", borderRadius: "99px", fontSize: "11px", fontWeight: 700, color: acc }}>{progress}% · {statusMsg}</div>
+              {motivation && <div style={{ fontSize: "11px", color: mut, marginTop: "9px", lineHeight: 1.4 }}>{motivation}</div>}
             </div>
           </div>
         </div>
 
         {/* MACROS */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "10px", marginBottom: "16px" }}>
-          {[
-            { label: "PROTEIN", val: protein, color: "#3b82f6" },
-            { label: "CARBS", val: carbs, color: "#eab308" },
-            { label: "FAT", val: fat, color: "#f97316" },
-          ].map(m => (
-            <div key={m.label} style={{ background: card, borderRadius: "16px", padding: "14px", border: `1px solid ${cardBorder}` }}>
-              <div style={{ fontSize: "10px", color: sub, fontWeight: 600, letterSpacing: "0.1em" }}>{m.label}</div>
-              <div style={{ fontSize: "20px", fontWeight: 800, color: m.color, marginTop: "4px" }}>{m.val}<span style={{ fontSize: "11px", color: sub, marginLeft: "2px" }}>g</span></div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "9px", marginBottom: "10px" }}>
+          {macroRows.map(m => (
+            <div key={m.label} style={{ background: card, border: `1px solid ${line}`, borderRadius: "16px", padding: "10px 12px" }}>
+              <div style={{ fontSize: "9px", fontWeight: 700, letterSpacing: "0.08em", color: faint }}>{m.label}</div>
+              <div style={{ fontFamily: NUM, fontSize: "17px", fontWeight: 800, margin: "5px 0 7px" }}>{m.val}<span style={{ fontSize: "10px", color: faint }}> g</span></div>
+              <div style={{ height: "4px", background: dk ? "rgba(255,255,255,0.07)" : "rgba(15,31,20,0.08)", borderRadius: "9px", overflow: "hidden" }}>
+                <div style={{ height: "100%", width: `${Math.min(100, Math.round((m.val / m.target) * 100))}%`, background: m.color, transition: "width 0.7s ease" }} />
+              </div>
             </div>
           ))}
         </div>
 
-        {motivation && (
-          <div style={{ background: card, borderRadius: "16px", padding: "14px 16px", marginBottom: "16px", border: `1px solid ${cardBorder}`, fontSize: "13px", color: sub, fontStyle: "italic" }}>
-            {motivation}
+        {/* SCAN CTA */}
+        <button onClick={() => setShowScanner(true)}
+          style={{ display: "flex", alignItems: "center", gap: "12px", width: "100%", background: "#b5f23d", border: "none", borderRadius: "18px", padding: "11px 16px", marginBottom: "10px", cursor: "pointer", boxShadow: "0 8px 22px -8px rgba(181,242,61,0.55)", textAlign: "left" as const }}>
+          <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "#0a1310", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", flexShrink: 0 }}>📸</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: "13px", fontWeight: 800, color: "#0a1310" }}>Scan food with AI</div>
+            <div style={{ fontSize: "11px", color: "#2d4a35", fontWeight: 600 }}>Point your camera — we do the rest</div>
           </div>
-        )}
+          <div style={{ fontSize: "16px", color: "#0a1310", fontWeight: 800 }}>→</div>
+        </button>
+
+        {/* ASK TRIM */}
+        <a href="/coach" style={{ display: "flex", alignItems: "center", gap: "12px", background: card, border: `1px solid ${accLine}`, borderRadius: "18px", padding: "12px 16px", marginBottom: "10px", textDecoration: "none", color: txt }}>
+          <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "linear-gradient(135deg,#1a5c38,#0f3d25)", border: "1.5px solid rgba(181,242,61,0.4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", flexShrink: 0 }}>??</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: "13px", fontWeight: 800 }}>Ask Trim anything</div>
+            <div style={{ fontSize: "11px", color: mut }}>Your AI coach knows your day</div>
+          </div>
+          <div style={{ fontSize: "14px", color: acc, fontWeight: 800 }}>?</div>
+        </a>
 
         {/* MEAL TABS */}
-        <div style={{ display: "flex", gap: "8px", marginBottom: "12px", overflowX: "auto" as const, paddingBottom: "4px" }}>
+        <div style={{ display: "flex", gap: "8px", marginBottom: "10px", overflowX: "auto" as const, paddingBottom: "4px" }}>
           {["breakfast", "lunch", "dinner", "snack"].map(m => (
             <button key={m} onClick={() => setActiveMeal(m)}
-              style={{ padding: "10px 18px", borderRadius: "99px", border: "none", background: activeMeal === m ? "#b5f23d" : card, color: activeMeal === m ? "#0a1310" : sub, fontWeight: 700, fontSize: "13px", cursor: "pointer", textTransform: "capitalize" as const, whiteSpace: "nowrap" as const, flexShrink: 0 }}>
+              style={{ padding: "8px 15px", borderRadius: "99px", border: activeMeal === m ? "1px solid #b5f23d" : `1px solid ${dk ? "rgba(255,255,255,0.14)" : "rgba(15,31,20,0.16)"}`, background: activeMeal === m ? "#b5f23d" : "transparent", color: activeMeal === m ? "#0a1310" : mut, fontWeight: activeMeal === m ? 800 : 600, fontSize: "12px", cursor: "pointer", textTransform: "capitalize" as const, whiteSpace: "nowrap" as const, flexShrink: 0, minHeight: "36px" }}>
               {m}
             </button>
           ))}
         </div>
 
         {/* FOOD SEARCH */}
-        <div style={{ background: card, borderRadius: "20px", padding: "16px", marginBottom: "16px", border: `1px solid ${cardBorder}` }}>
+        <div style={{ background: card, borderRadius: "20px", padding: "16px", marginBottom: "14px", border: `1px solid ${line}` }}>
           <FoodSearch activeMeal={activeMeal} onAdd={addFood} />
         </div>
 
-        {/* AI SCAN */}
-        <button onClick={() => setShowScanner(true)}
-          style={{ width: "100%", padding: "14px", background: "linear-gradient(135deg, #1a5c38, #0f3d25)", color: "#b5f23d", border: "1px solid rgba(181,242,61,0.2)", borderRadius: "16px", fontSize: "14px", fontWeight: 700, cursor: "pointer", marginBottom: "20px" }}>
-          Scan food with AI
-        </button>
-
         {/* MEALS LIST */}
         {mealsArray.length > 0 && (
-          <div style={{ marginBottom: "20px" }}>
-            <div style={{ fontSize: "11px", color: sub, fontWeight: 700, letterSpacing: "0.12em", marginBottom: "10px", padding: "0 4px" }}>TODAY'S MEALS</div>
-            {mealsArray.map((meal, i) => (
-              <div key={i} style={{ background: card, borderRadius: "16px", padding: "14px 16px", marginBottom: "8px", display: "flex", alignItems: "center", gap: "12px", border: `1px solid ${cardBorder}` }}>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: "14px", fontWeight: 600, color: txt }}>{meal.food_name}</div>
-                  <div style={{ fontSize: "11px", color: sub, marginTop: "2px", textTransform: "capitalize" as const }}>{meal.meal_type}</div>
+          <div style={{ marginBottom: "14px" }}>
+            <div style={{ fontSize: "11px", color: faint, fontWeight: 800, letterSpacing: "0.12em", margin: "0 2px 7px" }}>TODAY'S MEALS</div>
+            <div style={{ display: "flex", flexDirection: "column" as const, gap: "7px" }}>
+              {mealsArray.map((meal, i) => (
+                <div key={i} style={{ background: card, borderRadius: "15px", padding: "9px 14px", display: "flex", alignItems: "center", gap: "12px", border: `1px solid ${line}` }}>
+                  <div style={{ width: "7px", height: "7px", borderRadius: "50%", background: acc, flexShrink: 0 }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: "13px", fontWeight: 600 }}>{meal.food_name}</div>
+                    <div style={{ fontSize: "10px", color: faint, textTransform: "capitalize" as const }}>{meal.meal_type}</div>
+                  </div>
+                  <div style={{ fontFamily: NUM, fontSize: "14px", fontWeight: 700, color: acc }}>{meal.kcal}</div>
+                  <button onClick={() => removeMeal(meal.id, i)} style={{ background: "transparent", border: "none", color: faint, cursor: "pointer", padding: "4px 6px", fontSize: "16px", minHeight: "auto" }}>×</button>
                 </div>
-                <div style={{ fontSize: "16px", fontWeight: 800, color: "#b5f23d" }}>{meal.kcal}</div>
-                <button onClick={() => removeMeal(meal.id, i)} style={{ background: "transparent", border: "none", color: sub, cursor: "pointer", padding: "4px", fontSize: "18px" }}>x</button>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
-
-        {/* NAV LINKS */}
-        <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
-          <a href="/statements" style={{ flex: 1, padding: "12px", background: card, border: `1px solid ${cardBorder}`, borderRadius: "12px", textAlign: "center" as const, textDecoration: "none", color: sub, fontSize: "13px", fontWeight: 600 }}>Food Statement</a>
-          <a href="/profile" style={{ flex: 1, padding: "12px", background: card, border: `1px solid ${cardBorder}`, borderRadius: "12px", textAlign: "center" as const, textDecoration: "none", color: sub, fontSize: "13px", fontWeight: 600 }}>Profile</a>
-        </div>
       </div>
 
       {/* BOTTOM NAV */}
-      <nav style={{ position: "fixed" as const, bottom: 0, left: 0, right: 0, background: navBg, backdropFilter: "blur(20px)", borderTop: `1px solid ${cardBorder}`, padding: "10px 16px", display: "flex", justifyContent: "space-around", alignItems: "center" }}>
-        {[
-          { label: "Home", href: "/dashboard", active: true },
-          { label: "Statement", href: "/statements" },
-          { label: "Profile", href: "/profile" },
-        ].map(n => (
-          <a key={n.label} href={n.href} style={{ display: "flex", flexDirection: "column" as const, alignItems: "center", gap: "2px", textDecoration: "none", color: n.active ? "#b5f23d" : sub, fontWeight: n.active ? 700 : 500, fontSize: "12px" }}>
-            {n.label}
-          </a>
-        ))}
+      <nav style={{ position: "fixed" as const, bottom: 0, left: 0, right: 0, height: "72px", background: navBg, backdropFilter: "blur(20px)", borderTop: `1px solid ${line}`, display: "flex", justifyContent: "space-around", alignItems: "center", padding: "0 8px" }}>
+        <a href="/dashboard" style={{ display: "flex", flexDirection: "column" as const, alignItems: "center", gap: "3px", textDecoration: "none", color: acc, fontWeight: 800, fontSize: "11px", padding: "6px 10px" }}>
+          <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: acc }} />Home
+        </a>
+        <a href="/community" style={{ display: "flex", flexDirection: "column" as const, alignItems: "center", gap: "3px", textDecoration: "none", color: faint, fontWeight: 600, fontSize: "11px", padding: "6px 10px" }}>Community</a>
+        <a href="/statements" style={{ display: "flex", flexDirection: "column" as const, alignItems: "center", gap: "3px", textDecoration: "none", color: faint, fontWeight: 600, fontSize: "11px", padding: "6px 10px" }}>Statement</a>
+        <button onClick={() => setShowScanner(true)} style={{ width: "52px", height: "52px", borderRadius: "50%", background: "#b5f23d", border: "none", color: "#0a1310", fontSize: "26px", fontWeight: 700, marginTop: "-26px", boxShadow: "0 8px 20px -4px rgba(181,242,61,0.5)", cursor: "pointer" }}>+</button>
+        <a href="/profile" style={{ display: "flex", flexDirection: "column" as const, alignItems: "center", gap: "3px", textDecoration: "none", color: faint, fontWeight: 600, fontSize: "11px", padding: "6px 10px" }}>Profile</a>
       </nav>
 
       {showScanner && (
@@ -230,3 +225,4 @@ export default function Dashboard() {
     </div>
   );
 }
+

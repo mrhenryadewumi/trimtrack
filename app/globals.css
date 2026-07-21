@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -83,4 +83,35 @@ button {
 * {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+}
+
+/* Design tokens — redesign */
+:root, html.dark {
+  --tt-bg: #0a1310;
+  --tt-card: #162a20;
+  --tt-deep: #0e1e16;
+  --tt-sheet: #132218;
+  --tt-ink: #ffffff;
+  --tt-txt2: #c9d8ce;
+  --tt-mut: #8a9a92;
+  --tt-faint: #5f7269;
+  --tt-line: rgba(255, 255, 255, 0.05);
+  --tt-acc: #b5f23d;
+  --tt-acc-bg: rgba(181, 242, 61, 0.12);
+  --tt-acc-line: rgba(181, 242, 61, 0.2);
+}
+
+html.light {
+  --tt-bg: #f4f7f2;
+  --tt-card: #ffffff;
+  --tt-deep: #eef2ec;
+  --tt-sheet: #ffffff;
+  --tt-ink: #0f1f14;
+  --tt-txt2: #3d5240;
+  --tt-mut: #5c6b60;
+  --tt-faint: #8a9589;
+  --tt-line: rgba(15, 31, 20, 0.08);
+  --tt-acc: #1a5c38;
+  --tt-acc-bg: rgba(26, 92, 56, 0.1);
+  --tt-acc-line: rgba(26, 92, 56, 0.3);
 }

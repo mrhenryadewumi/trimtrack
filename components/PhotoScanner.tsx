@@ -33,17 +33,12 @@ export default function PhotoScanner({ onAdd, mealType }: PhotoScannerProps) {
     if (!file) return
     setError('')
     setResult(null)
-
-    // Create preview
     const reader = new FileReader()
     reader.onload = async (e) => {
       const base64Full = e.target?.result as string
       setPreview(base64Full)
-
-      // Extract base64 data without header
       const base64Data = base64Full.split(',')[1]
       const mediaType = file.type || 'image/jpeg'
-
       setScanning(true)
       try {
         const res = await fetch('/api/scan', {
@@ -84,15 +79,12 @@ export default function PhotoScanner({ onAdd, mealType }: PhotoScannerProps) {
     setScanning(false)
   }
 
-  const confidenceColor = result?.confidence === 'high' ? 'text-green-600' :
-    result?.confidence === 'medium' ? 'text-yellow-600' : 'text-red-500'
-
   return (
     <>
       {/* Trigger Button */}
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white rounded-full text-sm font-semibold hover:bg-green-500 transition-colors"
+        className="flex items-center gap-2 px-4 py-2.5 bg-[#b5f23d] text-[#0a1310] rounded-full text-sm font-semibold hover:bg-[#8dc42a] transition-colors"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
           <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
@@ -105,22 +97,22 @@ export default function PhotoScanner({ onAdd, mealType }: PhotoScannerProps) {
       <AnimatePresence>
         {open && (
           <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
-            style={{ background: 'rgba(0,0,0,0.6)' }}>
+            style={{ background: 'rgba(0,0,0,0.7)' }}>
             <motion.div
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 40 }}
-              className="w-full max-w-md bg-white rounded-3xl overflow-hidden shadow-2xl"
+              className="w-full max-w-md bg-[#162a20] rounded-3xl overflow-hidden shadow-2xl border border-white/10"
             >
               {/* Header */}
-              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
                 <div>
-                  <div className="font-bold text-gray-900">Scan your meal</div>
-                  <div className="text-xs text-gray-400 mt-0.5">Adding to {mealType}</div>
+                  <div className="font-bold text-white">Scan your meal</div>
+                  <div className="text-xs text-[#5f7269] mt-0.5">Adding to {mealType}</div>
                 </div>
                 <button onClick={() => { setOpen(false); reset(); }}
-                  className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200">
-                  x
+                  className="w-8 h-8 rounded-full bg-[#0e1e16] flex items-center justify-center text-[#8a9a92] hover:bg-[#1f3a2b]">
+                  ×
                 </button>
               </div>
 
@@ -129,16 +121,16 @@ export default function PhotoScanner({ onAdd, mealType }: PhotoScannerProps) {
                 {!preview && !scanning && (
                   <>
                     <div className="text-center mb-6">
-                      <div className="w-20 h-20 bg-green-50 rounded-3xl flex items-center justify-center mx-auto mb-4">
-                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#1a5c38" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <div className="w-20 h-20 bg-[#0e1e16] rounded-3xl flex items-center justify-center mx-auto mb-4">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#b5f23d" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
                           <circle cx="12" cy="13" r="4"/>
                         </svg>
                       </div>
-                      <p className="text-sm text-gray-500 leading-relaxed">
+                      <p className="text-sm text-[#8a9a92] leading-relaxed">
                         Take a photo of your meal or upload from your gallery. AI will instantly identify the food and estimate calories.
                       </p>
-                      <div className="inline-flex items-center gap-1.5 bg-green-50 text-green-700 text-xs font-semibold px-3 py-1.5 rounded-full mt-3">
+                      <div className="inline-flex items-center gap-1.5 bg-[#233020] text-[#b5f23d] text-xs font-semibold px-3 py-1.5 rounded-full mt-3">
                         ✓ Trained on Nigerian & West African foods
                       </div>
                     </div>
@@ -146,24 +138,24 @@ export default function PhotoScanner({ onAdd, mealType }: PhotoScannerProps) {
                     <div className="grid grid-cols-2 gap-3">
                       <button
                         onClick={() => cameraRef.current?.click()}
-                        className="flex flex-col items-center gap-2 p-4 border-2 border-dashed border-green-200 rounded-2xl hover:border-green-400 hover:bg-green-50 transition-all"
+                        className="flex flex-col items-center gap-2 p-4 border-2 border-dashed border-[#b5f23d]/30 rounded-2xl hover:border-[#b5f23d] hover:bg-[#1f3a2b] transition-all"
                       >
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a5c38" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#b5f23d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
                           <circle cx="12" cy="13" r="4"/>
                         </svg>
-                        <span className="text-sm font-semibold text-green-700">Take Photo</span>
+                        <span className="text-sm font-semibold text-[#b5f23d]">Take Photo</span>
                       </button>
                       <button
                         onClick={() => fileRef.current?.click()}
-                        className="flex flex-col items-center gap-2 p-4 border-2 border-dashed border-gray-200 rounded-2xl hover:border-gray-400 hover:bg-gray-50 transition-all"
+                        className="flex flex-col items-center gap-2 p-4 border-2 border-dashed border-white/10 rounded-2xl hover:border-white/25 hover:bg-[#0e1e16] transition-all"
                       >
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6b7280" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8a9a92" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                           <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
                           <circle cx="8.5" cy="8.5" r="1.5"/>
                           <polyline points="21 15 16 10 5 21"/>
                         </svg>
-                        <span className="text-sm font-semibold text-gray-600">From Gallery</span>
+                        <span className="text-sm font-semibold text-[#8a9a92]">From Gallery</span>
                       </button>
                     </div>
 
@@ -181,18 +173,18 @@ export default function PhotoScanner({ onAdd, mealType }: PhotoScannerProps) {
                       <img src={preview} alt="Scanning" className="w-full h-48 object-cover rounded-2xl mb-6" />
                     )}
                     <div className="flex items-center justify-center gap-2 mb-3">
-                      <div className="w-5 h-5 border-2 border-green-600 border-t-transparent rounded-full animate-spin" />
-                      <span className="font-semibold text-gray-800">Analysing your meal...</span>
+                      <div className="w-5 h-5 border-2 border-[#b5f23d] border-t-transparent rounded-full animate-spin" />
+                      <span className="font-semibold text-white">Analysing your meal...</span>
                     </div>
-                    <p className="text-sm text-gray-400">AI is identifying the food and calculating calories</p>
+                    <p className="text-sm text-[#5f7269]">AI is identifying the food and calculating calories</p>
                   </div>
                 )}
 
                 {/* Error */}
                 {error && !scanning && (
                   <div className="text-center py-6">
-                    <div className="text-red-500 font-semibold mb-2">{error}</div>
-                    <button onClick={reset} className="text-sm text-green-600 font-semibold underline">Try again</button>
+                    <div className="text-[#ff8a5e] font-semibold mb-2">{error}</div>
+                    <button onClick={reset} className="text-sm text-[#b5f23d] font-semibold underline">Try again</button>
                   </div>
                 )}
 
@@ -207,13 +199,13 @@ export default function PhotoScanner({ onAdd, mealType }: PhotoScannerProps) {
                       <>
                         <div className="flex items-start justify-between mb-3">
                           <div>
-                            <div className="font-bold text-lg text-gray-900">{result.meal_name}</div>
-                            <div className="text-sm text-gray-400 mt-0.5">{result.description}</div>
+                            <div className="font-bold text-lg text-white">{result.meal_name}</div>
+                            <div className="text-sm text-[#5f7269] mt-0.5">{result.description}</div>
                           </div>
                           <div className={`text-xs font-semibold px-2 py-1 rounded-full ${
-                            result.confidence === 'high' ? 'bg-green-100 text-green-700' :
-                            result.confidence === 'medium' ? 'bg-yellow-100 text-yellow-700' :
-                            'bg-red-100 text-red-600'
+                            result.confidence === 'high' ? 'bg-[rgba(181,242,61,0.15)] text-[#b5f23d]' :
+                            result.confidence === 'medium' ? 'bg-[rgba(245,197,66,0.15)] text-[#f5c542]' :
+                            'bg-[rgba(255,138,94,0.15)] text-[#ff8a5e]'
                           }`}>
                             {result.confidence} confidence
                           </div>
@@ -222,10 +214,10 @@ export default function PhotoScanner({ onAdd, mealType }: PhotoScannerProps) {
                         {/* Macros */}
                         <div className="grid grid-cols-4 gap-2 mb-4">
                           {[
-                            { label: 'Calories', val: result.kcal, unit: 'kcal', color: 'bg-green-50 text-green-700' },
-                            { label: 'Protein', val: result.protein, unit: 'g', color: 'bg-blue-50 text-blue-700' },
-                            { label: 'Carbs', val: result.carbs, unit: 'g', color: 'bg-yellow-50 text-yellow-700' },
-                            { label: 'Fat', val: result.fat, unit: 'g', color: 'bg-orange-50 text-orange-700' },
+                            { label: 'Calories', val: result.kcal, unit: 'kcal', color: 'bg-[rgba(181,242,61,0.12)] text-[#b5f23d]' },
+                            { label: 'Protein', val: result.protein, unit: 'g', color: 'bg-[rgba(94,155,255,0.14)] text-[#5e9bff]' },
+                            { label: 'Carbs', val: result.carbs, unit: 'g', color: 'bg-[rgba(245,197,66,0.14)] text-[#f5c542]' },
+                            { label: 'Fat', val: result.fat, unit: 'g', color: 'bg-[rgba(255,138,94,0.14)] text-[#ff8a5e]' },
                           ].map(m => (
                             <div key={m.label} className={`${m.color} rounded-xl p-2.5 text-center`}>
                               <div className="font-extrabold text-base leading-none">{m.val}</div>
@@ -236,27 +228,27 @@ export default function PhotoScanner({ onAdd, mealType }: PhotoScannerProps) {
                         </div>
 
                         {result.notes && (
-                          <div className="bg-yellow-50 border border-yellow-200 rounded-xl px-3 py-2 text-xs text-yellow-800 mb-4">
+                          <div className="bg-[rgba(245,197,66,0.1)] border border-[rgba(245,197,66,0.2)] rounded-xl px-3 py-2 text-xs text-[#f5c542] mb-4">
                             {result.notes}
                           </div>
                         )}
 
                         <div className="flex gap-3">
                           <button onClick={reset}
-                            className="flex-1 py-3 border border-gray-200 rounded-full text-sm font-semibold text-gray-600 hover:bg-gray-50">
+                            className="flex-1 py-3 border border-white/10 rounded-full text-sm font-semibold text-[#8a9a92] hover:bg-[#0e1e16]">
                             Retake
                           </button>
                           <button onClick={handleAdd}
-                            className="flex-1 py-3 bg-green-600 text-white rounded-full text-sm font-bold hover:bg-green-500">
+                            className="flex-1 py-3 bg-[#b5f23d] text-[#0a1310] rounded-full text-sm font-bold hover:bg-[#8dc42a]">
                             Add to {mealType}
                           </button>
                         </div>
                       </>
                     ) : (
                       <div className="text-center py-4">
-                        <div className="text-gray-500 mb-4">{result.message}</div>
+                        <div className="text-[#8a9a92] mb-4">{result.message}</div>
                         <button onClick={reset}
-                          className="px-6 py-2.5 bg-green-600 text-white rounded-full text-sm font-bold hover:bg-green-500">
+                          className="px-6 py-2.5 bg-[#b5f23d] text-[#0a1310] rounded-full text-sm font-bold hover:bg-[#8dc42a]">
                           Try another photo
                         </button>
                       </div>
