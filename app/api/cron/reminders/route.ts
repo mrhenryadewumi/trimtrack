@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
   if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const slot = req.nextUrl.searchParams.get("slot") || "morning";
+  const slot = new Date().getUTCHours() < 12 ? "morning" : "evening";
   const msg = slot === "evening"
     ? { title: "Evening check-in", body: "How did today go? Log your dinner." }
     : { title: "Good morning", body: "Plan your day - log breakfast to stay on track." };
@@ -40,3 +40,4 @@ export async function GET(req: NextRequest) {
   );
   return NextResponse.json({ ok: true, slot, sent: data?.length || 0 });
 }
+
