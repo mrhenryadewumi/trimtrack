@@ -24,6 +24,11 @@ const ACTIVITIES = [
   { value: "active", label: "Very active" },
 ];
 
+const NUM = "'Space Grotesk', sans-serif";
+const BG = "#0a1310", CARD = "#162a20", DEEP = "#0e1e16";
+const LINE = "rgba(255,255,255,0.05)", LINE3 = "rgba(255,255,255,0.13)";
+const INK = "#ffffff", MUT = "#8a9a92", FAINT = "#5f7269", ACC = "#b5f23d";
+
 export default function ProfilePage() {
   const router = useRouter();
   const [profile, setProfile] = useState<any>(null);
@@ -69,33 +74,32 @@ export default function ProfilePage() {
   };
 
   if (loading) return (
-    <div style={{ minHeight: "100vh", background: "#f6fbf8", display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ color: "#1a5c38", fontWeight: 600 }}>Loading...</div>
+    <div style={{ minHeight: "100vh", background: BG, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ color: ACC, fontWeight: 600 }}>Loading...</div>
     </div>
   );
 
   if (!profile) return null;
 
-  const inp = { width: "100%", padding: "12px 14px", borderRadius: "10px", border: "1.5px solid #e5e7eb", fontSize: "15px", outline: "none", boxSizing: "border-box" as const, color: "#0f1f14", background: "white" };
-  const card = { background: "white", borderRadius: "20px", padding: "24px", border: "1px solid #e5e7eb", marginBottom: "16px" };
-  const lbl = { fontSize: "12px", fontWeight: "600" as const, color: "#888", display: "block", marginBottom: "6px", textTransform: "uppercase" as const, letterSpacing: "0.05em" };
+  const inp = { width: "100%", padding: "12px 14px", borderRadius: "12px", border: `1.5px solid ${LINE3}`, fontSize: "15px", outline: "none", boxSizing: "border-box" as const, color: INK, background: DEEP };
+  const card = { background: CARD, borderRadius: "22px", padding: "22px", border: `1px solid ${LINE}`, marginBottom: "12px" };
+  const lbl = { fontSize: "10px", fontWeight: 700 as const, color: FAINT, display: "block", marginBottom: "7px", textTransform: "uppercase" as const, letterSpacing: "0.1em" };
+  const pill = (active: boolean) => ({ padding: "11px 14px", borderRadius: "12px", border: active ? "1.5px solid #b5f23d" : `1.5px solid ${LINE3}`, background: active ? "#b5f23d" : "transparent", color: active ? "#0a1310" : MUT, fontWeight: active ? 800 : 600, fontSize: "13px", cursor: "pointer", minHeight: "44px" });
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f6fbf8" }}>
-      <nav style={{ background: "rgba(246,251,248,0.97)", borderBottom: "1px solid #e8f5ee", padding: "0 20px", display: "flex", alignItems: "center", justifyContent: "space-between", height: "56px", position: "sticky", top: 0, zIndex: 50 }}>
-        <a href="/dashboard" style={{ textDecoration: "none", fontWeight: 800, fontSize: "18px", color: "#1a5c38" }}>TrimTrack</a>
-        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-          <a href="/dashboard" style={{ fontSize: "14px", color: "#1a5c38", textDecoration: "none", fontWeight: 600 }}>Dashboard</a>
-          <button onClick={handleLogout} style={{ fontSize: "13px", color: "#dc2626", background: "none", border: "1px solid #fecaca", borderRadius: "20px", padding: "5px 14px", cursor: "pointer", fontWeight: 600 }}>Log out</button>
+    <div style={{ minHeight: "100vh", background: BG, color: INK, paddingBottom: "96px", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
+      <div style={{ maxWidth: "540px", margin: "0 auto", padding: "20px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "18px" }}>
+          <a href="/dashboard" style={{ width: "36px", height: "36px", borderRadius: "12px", background: CARD, display: "flex", alignItems: "center", justifyContent: "center", color: MUT, fontSize: "16px", textDecoration: "none" }}>←</a>
+          <div style={{ fontSize: "17px", fontWeight: 800 }}>Your profile</div>
+          <div style={{ marginLeft: "auto", width: "40px", height: "40px", borderRadius: "50%", background: "linear-gradient(135deg,#1a5c38,#0f3d25)", display: "flex", alignItems: "center", justifyContent: "center", color: "#b5f23d", fontWeight: 800, fontSize: "15px" }}>
+            {profile?.name?.[0]?.toUpperCase() || "U"}
+          </div>
         </div>
-      </nav>
-
-      <div style={{ maxWidth: "540px", margin: "0 auto", padding: "20px 12px" }}>
-        <h1 style={{ fontSize: "26px", fontWeight: 800, color: "#0f1f14", marginBottom: "6px" }}>Your profile</h1>
-        <p style={{ color: "#888", fontSize: "14px", marginBottom: "28px" }}>Keep your details accurate for the best results.</p>
+        <p style={{ color: FAINT, fontSize: "13px", margin: "0 2px 18px" }}>Keep your details accurate for the best results.</p>
 
         <div style={card}>
-          <h2 style={{ fontSize: "15px", fontWeight: 700, color: "#0f1f14", marginBottom: "18px" }}>Personal details</h2>
+          <h2 style={{ fontSize: "11px", fontWeight: 800, color: FAINT, letterSpacing: "0.12em", margin: "0 0 16px" }}>PERSONAL DETAILS</h2>
           <div style={{ marginBottom: "16px" }}>
             <label style={lbl}>Name</label>
             <input type="text" value={profile.name || ""} onChange={e => update("name", e.target.value)} style={inp} />
@@ -108,7 +112,7 @@ export default function ProfilePage() {
             <label style={lbl}>Gender</label>
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" as const }}>
               {["female","male","other"].map(g => (
-                <button key={g} onClick={() => update("gender", g)} style={{ padding: "10px 12px", borderRadius: "10px", flex: "1", border: "1.5px solid", borderColor: profile.gender === g ? "#1a5c38" : "#e5e7eb", background: profile.gender === g ? "#1a5c38" : "white", color: profile.gender === g ? "#b5f23d" : "#555", fontWeight: 600, fontSize: "14px", cursor: "pointer", textTransform: "capitalize" as const }}>{g}</button>
+                <button key={g} onClick={() => update("gender", g)} style={{ ...pill(profile.gender === g), flex: 1, textTransform: "capitalize" as const }}>{g}</button>
               ))}
             </div>
           </div>
@@ -122,7 +126,7 @@ export default function ProfilePage() {
         </div>
 
         <div style={card}>
-          <h2 style={{ fontSize: "15px", fontWeight: 700, color: "#0f1f14", marginBottom: "18px" }}>Body measurements</h2>
+          <h2 style={{ fontSize: "11px", fontWeight: 800, color: FAINT, letterSpacing: "0.12em", margin: "0 0 16px" }}>BODY MEASUREMENTS</h2>
           {[
             { label: "Current weight (kg)", key: "startWeight", min: 40, max: 250 },
             { label: "Goal weight (kg)", key: "goalWeight", min: 40, max: 250 },
@@ -133,42 +137,51 @@ export default function ProfilePage() {
               <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
                 <input type="range" min={field.min} max={field.max} value={profile[field.key] || field.min}
                   onChange={e => update(field.key, parseInt(e.target.value))}
-                  style={{ flex: 1, accentColor: "#1a5c38" }} />
-                <span style={{ fontSize: "22px", fontWeight: 800, color: "#0f1f14", width: "55px", textAlign: "right" as const }}>{profile[field.key] || field.min}</span>
+                  style={{ flex: 1, accentColor: "#b5f23d" }} />
+                <span style={{ fontFamily: NUM, fontSize: "22px", fontWeight: 700, color: ACC, width: "58px", textAlign: "right" as const }}>{profile[field.key] || field.min}</span>
               </div>
             </div>
           ))}
         </div>
 
         <div style={card}>
-          <h2 style={{ fontSize: "15px", fontWeight: 700, color: "#0f1f14", marginBottom: "18px" }}>Lifestyle</h2>
+          <h2 style={{ fontSize: "11px", fontWeight: 800, color: FAINT, letterSpacing: "0.12em", margin: "0 0 16px" }}>LIFESTYLE</h2>
           <div style={{ marginBottom: "16px" }}>
             <label style={lbl}>Activity level</label>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
               {ACTIVITIES.map(a => (
-                <button key={a.value} onClick={() => update("activity", a.value)} style={{ padding: "12px", borderRadius: "10px", border: "1.5px solid", borderColor: profile.activity === a.value ? "#1a5c38" : "#e5e7eb", background: profile.activity === a.value ? "#1a5c38" : "white", color: profile.activity === a.value ? "#b5f23d" : "#555", fontWeight: 600, fontSize: "13px", cursor: "pointer", textAlign: "left" as const }}>{a.label}</button>
+                <button key={a.value} onClick={() => update("activity", a.value)} style={{ ...pill(profile.activity === a.value), textAlign: "left" as const }}>{a.label}</button>
               ))}
             </div>
           </div>
           <div>
             <label style={lbl}>Daily reminders</label>
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" as const }}>
-              <button onClick={() => update("reminders", true)} style={{ padding: "10px 16px", borderRadius: "10px", border: "1.5px solid", borderColor: profile.reminders ? "#1a5c38" : "#e5e7eb", background: profile.reminders ? "#1a5c38" : "white", color: profile.reminders ? "#b5f23d" : "#555", fontWeight: 600, fontSize: "13px", cursor: "pointer" }}>Yes - morning + evening</button>
-              <button onClick={() => update("reminders", false)} style={{ padding: "10px 16px", borderRadius: "10px", border: "1.5px solid", borderColor: !profile.reminders ? "#1a5c38" : "#e5e7eb", background: !profile.reminders ? "#1a5c38" : "white", color: !profile.reminders ? "#b5f23d" : "#555", fontWeight: 600, fontSize: "13px", cursor: "pointer" }}>No thanks</button>
+              <button onClick={() => update("reminders", true)} style={pill(!!profile.reminders)}>Yes - morning + evening</button>
+              <button onClick={() => update("reminders", false)} style={pill(!profile.reminders)}>No thanks</button>
             </div>
           </div>
         </div>
 
-        {error && <p style={{ color: "#dc2626", fontSize: "13px", marginBottom: "16px" }}>{error}</p>}
+        {error && <p style={{ color: "#ff8a8a", fontSize: "13px", marginBottom: "16px" }}>{error}</p>}
 
-        <button onClick={handleSave} disabled={saving} style={{ width: "100%", padding: "16px", background: saved ? "#22c55e" : saving ? "#2d8a56" : "#1a5c38", color: "#b5f23d", border: "none", borderRadius: "14px", fontSize: "16px", fontWeight: 700, cursor: saving ? "not-allowed" : "pointer", marginBottom: "12px", transition: "background 0.2s" }}>
+        <button onClick={handleSave} disabled={saving} style={{ width: "100%", padding: "16px", background: saved ? "#8dc42a" : "#b5f23d", color: "#0a1310", border: "none", borderRadius: "99px", fontSize: "15px", fontWeight: 800, cursor: saving ? "not-allowed" : "pointer", marginBottom: "12px", boxShadow: "0 10px 26px -8px rgba(181,242,61,0.45)", opacity: saving ? 0.7 : 1, transition: "background 0.2s" }}>
           {saved ? "Saved!" : saving ? "Saving..." : "Save changes"}
         </button>
 
-        <div style={{ textAlign: "center", paddingTop: "16px", borderTop: "1px solid #f0f0f0" }}>
-          <button onClick={handleLogout} style={{ color: "#dc2626", background: "none", border: "none", fontSize: "14px", cursor: "pointer", fontWeight: 600 }}>Log out</button>
+        <div style={{ textAlign: "center", paddingTop: "14px", borderTop: `1px solid ${LINE}` }}>
+          <button onClick={handleLogout} style={{ color: MUT, background: "none", border: `1px solid ${LINE3}`, borderRadius: "99px", padding: "10px 22px", fontSize: "13px", cursor: "pointer", fontWeight: 600 }}>Log out</button>
         </div>
       </div>
+
+      <nav style={{ position: "fixed" as const, bottom: 0, left: 0, right: 0, height: "72px", background: "rgba(10,19,16,0.92)", backdropFilter: "blur(20px)", borderTop: `1px solid ${LINE}`, display: "flex", justifyContent: "space-around", alignItems: "center", padding: "0 8px" }}>
+        <a href="/dashboard" style={{ color: FAINT, fontWeight: 600, fontSize: "11px", textDecoration: "none", padding: "6px 10px" }}>Home</a>
+        <a href="/statements" style={{ color: FAINT, fontWeight: 600, fontSize: "11px", textDecoration: "none", padding: "6px 10px" }}>Statement</a>
+        <a href="/dashboard" style={{ width: "52px", height: "52px", borderRadius: "50%", background: "#b5f23d", color: "#0a1310", fontSize: "26px", fontWeight: 700, marginTop: "-26px", boxShadow: "0 8px 20px -4px rgba(181,242,61,0.5)", display: "flex", alignItems: "center", justifyContent: "center", textDecoration: "none" }}>+</a>
+        <a href="/profile" style={{ display: "flex", flexDirection: "column" as const, alignItems: "center", gap: "3px", color: ACC, fontWeight: 800, fontSize: "11px", textDecoration: "none", padding: "6px 10px" }}>
+          <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: ACC }} />Profile
+        </a>
+      </nav>
     </div>
   );
 }

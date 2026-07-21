@@ -8,7 +8,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 export async function POST(req: NextRequest) {
   try {
@@ -36,12 +36,12 @@ export async function POST(req: NextRequest) {
       email,
       name,
       password_hash: passwordHash,
-      email_confirmed: false,
+      email_confirmed: !resend,
       confirm_token: confirmToken,
       trial_started_at: new Date().toISOString(),
       trial_ends_at: trialEndsAt,
       plan: "trial",
-      status: "pending",
+      status: resend ? "pending" : "active",
       updated_at: new Date().toISOString(),
     });
 
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: dbError.message }, { status: 500 });
     }
 
-    await resend.emails.send({
+    if (resend) await resend.emails.send({
       from: "TrimTrack <hello@trimtrack.fit>",
       to: email,
       subject: "Confirm your TrimTrack account",
