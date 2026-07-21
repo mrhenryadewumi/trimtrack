@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import FoodSearch from "@/components/FoodSearch";
@@ -32,7 +32,6 @@ export default function Dashboard() {
   const statusMsg = getStatusMessage(statusType, eaten, goal);
   const ringOffset = 308 - (308 * progress) / 100;
 
-  // macro targets (fallbacks match the design spec)
   const pGoal = profile?.proteinGoal || 90;
   const cGoal = profile?.carbsGoal || 210;
   const fGoal = profile?.fatGoal || 60;
@@ -132,7 +131,7 @@ export default function Dashboard() {
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: "10px", color: faint, fontWeight: 700, letterSpacing: "0.1em" }}>EATEN</div>
               <div style={{ fontSize: "19px", fontWeight: 800, marginBottom: "9px" }}>{eaten.toLocaleString()}<span style={{ fontSize: "12px", color: faint, fontWeight: 600 }}> / {goal.toLocaleString()}</span></div>
-              <div style={{ display: "inline-flex", gap: "6px", background: accBg, padding: "5px 10px", borderRadius: "99px", fontSize: "11px", fontWeight: 700, color: acc }}>{progress}% Â· {statusMsg}</div>
+              <div style={{ display: "inline-flex", gap: "6px", background: accBg, padding: "5px 10px", borderRadius: "99px", fontSize: "11px", fontWeight: 700, color: acc }}>{progress}%{" \u00B7 "}{statusMsg}</div>
               {motivation && <div style={{ fontSize: "11px", color: mut, marginTop: "9px", lineHeight: 1.4 }}>{motivation}</div>}
             </div>
           </div>
@@ -154,17 +153,21 @@ export default function Dashboard() {
         {/* SCAN CTA */}
         <button onClick={() => setShowScanner(true)}
           style={{ display: "flex", alignItems: "center", gap: "12px", width: "100%", background: "#b5f23d", border: "none", borderRadius: "18px", padding: "11px 16px", marginBottom: "10px", cursor: "pointer", boxShadow: "0 8px 22px -8px rgba(181,242,61,0.55)", textAlign: "left" as const }}>
-          <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "#0a1310", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "17px", flexShrink: 0 }}>ðŸ“¸</div>
+          <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "#0a1310", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b5f23d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </div>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: "13px", fontWeight: 800, color: "#0a1310" }}>Scan food with AI</div>
-            <div style={{ fontSize: "11px", color: "#2d4a35", fontWeight: 600 }}>Point your camera â€” we do the rest</div>
+            <div style={{ fontSize: "11px", color: "#2d4a35", fontWeight: 600 }}>Point your camera - we do the rest</div>
           </div>
-          <div style={{ fontSize: "16px", color: "#0a1310", fontWeight: 800 }}>â†’</div>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0a1310" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
         </button>
 
         {/* ASK TRIM */}
         <a href="/coach" style={{ display: "flex", alignItems: "center", gap: "12px", background: card, border: `1px solid ${accLine}`, borderRadius: "18px", padding: "12px 16px", marginBottom: "10px", textDecoration: "none", color: txt }}>
-          <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "linear-gradient(135deg,#1a5c38,#0f3d25)", border: "1.5px solid rgba(181,242,61,0.4)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}><svg width="18" height="18" viewBox="0 0 24 24" fill="#b5f23d"><path d="M12 2l2.4 6.4L21 11l-6.6 2.6L12 22l-2.4-6.4L3 13l6.6-2.6z"/></svg></div>
+          <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "linear-gradient(135deg,#1a5c38,#0f3d25)", border: "1.5px solid rgba(181,242,61,0.4)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#b5f23d"><path d="M12 2l2.4 6.4L21 11l-6.6 2.6L12 22l-2.4-6.4L3 13l6.6-2.6z"/></svg>
+          </div>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: "13px", fontWeight: 800 }}>Ask Trim anything</div>
             <div style={{ fontSize: "11px", color: mut }}>Your AI coach knows your day</div>
@@ -200,7 +203,7 @@ export default function Dashboard() {
                     <div style={{ fontSize: "10px", color: faint, textTransform: "capitalize" as const }}>{meal.meal_type}</div>
                   </div>
                   <div style={{ fontFamily: NUM, fontSize: "14px", fontWeight: 700, color: acc }}>{meal.kcal}</div>
-                  <button onClick={() => removeMeal(meal.id, i)} style={{ background: "transparent", border: "none", color: faint, cursor: "pointer", padding: "4px 6px", fontSize: "16px", minHeight: "auto" }}>Ã—</button>
+                  <button onClick={() => removeMeal(meal.id, i)} style={{ background: "transparent", border: "none", color: faint, cursor: "pointer", padding: "4px 6px", fontSize: "16px", minHeight: "auto", lineHeight: 1 }}>{"\u00D7"}</button>
                 </div>
               ))}
             </div>
@@ -225,6 +228,3 @@ export default function Dashboard() {
     </div>
   );
 }
-
-
-
