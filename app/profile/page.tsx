@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import PushButton from "@/components/PushButton";
 
 const COUNTRIES = [
   "Nigeria", "Ghana", "Kenya", "South Africa", "Ethiopia", "Tanzania", "Uganda",
@@ -155,6 +156,7 @@ export default function ProfilePage() {
             </div>
           </div>
           <div>
+            <div style={{ marginBottom: "18px" }}><PushButton /></div>
             <label style={lbl}>Daily reminders</label>
             <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" as const }}>
               <button onClick={() => update("reminders", true)} style={pill(!!profile.reminders)}>Yes - morning + evening</button>
@@ -185,3 +187,4 @@ export default function ProfilePage() {
     </div>
   );
 }
+
