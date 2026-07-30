@@ -70,13 +70,14 @@ export async function DELETE(req: NextRequest) {
     await supabase.from("weight_log").delete().eq("session_id", sessionId);
     await supabase.from("push_subscriptions").delete().eq("session_id", sessionId);
 
-    // Reminder sends carry the member's email, name and daily goal, so they
-    // are personal data and have to go too. lib/api-client.ts sendReminder()
-    // posts { type, email, name, daily_goal, ... } with no session_id, hence
-    // the email key. (The `reminders` boolean on profiles is the on/off
-    // preference and goes with the profile row below.)
+    // Reminder sends and the waitlist are keyed by email, not session_id —
+    // lib/api-client.ts sendReminder() posts { type, email, name,
+    // daily_goal, ... } with no session id. Both carry personal data, so both
+    // go. (The `reminders` boolean on profiles is the on/off preference and
+    // goes with the profile row below.)
     if (email) {
       await supabase.from("reminders").delete().eq("email", email);
+      await supabase.from("waitlist").delete().eq("email", email);
     }
 
     await supabase.from("profiles").delete().eq("session_id", sessionId);
