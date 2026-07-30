@@ -36,6 +36,16 @@ export async function DELETE(req: NextRequest) {
     // and the caller's goal (account gone, signed out) already holds.
     if (!sessionId) return clearedResponse({ ok: true, deleted: false });
 
+    // The `reminders` table is keyed by email, not session_id, so the address
+    // has to be read before the subscriptions row (the user record) goes.
+    const { data: sub } = await supabase
+      .from("subscriptions")
+      .select("email")
+      .eq("session_id", sessionId)
+      .maybeSingle();
+
+    const email = sub?.email ?? null;
+
     // Cheers and replies other members left on this member's posts would
     // otherwise be orphaned, so they go before the posts themselves.
     const { data: ownPosts } = await supabase
@@ -60,14 +70,13 @@ export async function DELETE(req: NextRequest) {
     await supabase.from("weight_log").delete().eq("session_id", sessionId);
     await supabase.from("push_subscriptions").delete().eq("session_id", sessionId);
 
-    // `reminders` is written with an unvalidated body elsewhere in this repo,
-    // so its shape is not guaranteed to carry session_id. Best effort: if the
-    // column is not there the delete errors and we carry on rather than fail
-    // the whole deletion.
-    try {
-      await supabase.from("reminders").delete().eq("session_id", sessionId);
-    } catch {
-      // no session_id column on reminders — nothing to do
+    // Reminder sends carry the member's email, name and daily goal, so they
+    // are personal data and have to go too. lib/api-client.ts sendReminder()
+    // posts { type, email, name, daily_goal, ... } with no session_id, hence
+    // the email key. (The `reminders` boolean on profiles is the on/off
+    // preference and goes with the profile row below.)
+    if (email) {
+      await supabase.from("reminders").delete().eq("email", email);
     }
 
     await supabase.from("profiles").delete().eq("session_id", sessionId);
