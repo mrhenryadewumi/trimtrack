@@ -80,9 +80,23 @@ export async function DELETE(req: NextRequest) {
     // daily_goal, ... } with no session id. Both carry personal data, so both
     // go. (The `reminders` boolean on profiles is the on/off preference and
     // goes with the profile row below.)
+    //
+    // But subscriptions has no unique constraint on email: one address can
+    // own several accounts. These rows cannot be attributed to a single one,
+    // so they are only removed once the last account for that address is
+    // going — otherwise deleting one account would strip the surviving
+    // siblings' reminders and waitlist entry too.
     if (email) {
-      await supabase.from("reminders").delete().eq("email", email);
-      await supabase.from("waitlist").delete().eq("email", email);
+      const { count: siblings } = await supabase
+        .from("subscriptions")
+        .select("session_id", { count: "exact", head: true })
+        .eq("email", email)
+        .neq("session_id", sessionId);
+
+      if (!siblings) {
+        await supabase.from("reminders").delete().eq("email", email);
+        await supabase.from("waitlist").delete().eq("email", email);
+      }
     }
 
     await supabase.from("profiles").delete().eq("session_id", sessionId);
