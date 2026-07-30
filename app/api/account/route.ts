@@ -46,6 +46,11 @@ export async function DELETE(req: NextRequest) {
 
     const email = sub?.email ?? null;
 
+    // Whether there was an account here at all. The cleanup below still runs
+    // either way so any orphaned rows go, but the caller is told the truth:
+    // an unknown or already-deleted session reports deleted:false.
+    const existed = sub !== null;
+
     // Cheers and replies other members left on this member's posts would
     // otherwise be orphaned, so they go before the posts themselves.
     const { data: ownPosts } = await supabase
@@ -95,7 +100,7 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return clearedResponse({ ok: true, deleted: true });
+    return clearedResponse({ ok: true, deleted: existed });
   } catch (err: any) {
     console.error("Account DELETE error:", err);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
