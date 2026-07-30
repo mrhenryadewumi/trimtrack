@@ -17,11 +17,15 @@ export async function POST(req: NextRequest) {
     if (!email) return NextResponse.json({ ok: false, error: "Email is required" }, { status: 400 });
     if (!password || password.length < 8) return NextResponse.json({ ok: false, error: "Password must be at least 8 characters" }, { status: 400 });
 
+    // .single() errors on anything other than exactly one row — including two
+    // or more — which left `existing` null and let the signup through. Once an
+    // address had duplicates, every later signup added another.
     const { data: existing } = await supabase
       .from("subscriptions")
       .select("id")
       .eq("email", email)
-      .single();
+      .limit(1)
+      .maybeSingle();
 
     if (existing) return NextResponse.json({ ok: false, error: "An account with this email already exists. Please log in." }, { status: 409 });
 
