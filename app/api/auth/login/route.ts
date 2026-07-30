@@ -16,11 +16,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "Email and password are required" }, { status: 400 });
     }
 
-    const { data: user } = await supabase
+    // subscriptions has no unique constraint on email, so one address can own
+    // several accounts. .single() errored on those and locked the person out
+    // entirely; take the newest account instead.
+    const { data: users } = await supabase
       .from("subscriptions")
-      .select("session_id, password_hash, plan, status, name, email_confirmed")
+      .select("session_id, password_hash, plan, status, name, email_confirmed, created_at")
       .eq("email", email)
-      .single();
+      .order("created_at", { ascending: false })
+      .limit(1);
+
+    const user = users?.[0];
 
     if (!user) {
       return NextResponse.json({ ok: false, error: "No account found with this email" }, { status: 404 });
