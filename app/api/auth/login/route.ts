@@ -18,15 +18,16 @@ export async function POST(req: NextRequest) {
 
     // subscriptions has no unique constraint on email, so one address can own
     // several accounts. .single() errored on those and locked the person out
-    // entirely; take the newest account instead.
+    // entirely. Take the newest account that can actually be signed into, and
+    // fall back to the newest overall so the "reset your password" message
+    // still reaches someone whose accounts all lack a hash.
     const { data: users } = await supabase
       .from("subscriptions")
       .select("session_id, password_hash, plan, status, name, email_confirmed, created_at")
       .eq("email", email)
-      .order("created_at", { ascending: false })
-      .limit(1);
+      .order("created_at", { ascending: false });
 
-    const user = users?.[0];
+    const user = users?.find((u) => u.password_hash) ?? users?.[0];
 
     if (!user) {
       return NextResponse.json({ ok: false, error: "No account found with this email" }, { status: 404 });
