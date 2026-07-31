@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
 
     const { data: sub } = await supabase
       .from("subscriptions")
-      .select("email, name, plan, status, trial_ends_at, session_id")
+      .select("email, name, plan, status, trial_ends_at, session_id, email_confirmed")
       .eq("session_id", sessionId)
       .single();
 
@@ -35,6 +35,8 @@ export async function GET(req: NextRequest) {
       status: sub.status,
       trial_ends_at: sub.trial_ends_at,
       session_id: sessionId,
+      // Older rows predate the column; only an explicit false is unconfirmed.
+      emailConfirmed: sub.email_confirmed !== false,
       dailyCalorieGoal: profile?.daily_calorie_goal || 1500,
       startWeight: profile?.start_weight || 80,
       goalWeight: profile?.goal_weight || 70,
