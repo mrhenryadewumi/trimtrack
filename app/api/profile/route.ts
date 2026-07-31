@@ -61,6 +61,66 @@ export async function POST(req: NextRequest) {
     const sid = body.session_id || req.cookies.get("trimtrack_session")?.value;
     if (!sid) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
+    // Body measurements were previously written through unchecked, which let
+    // a goal weight of 170 kg sit against a start weight of 80. Validate here
+    // so every client is covered, not just whichever one is being fixed.
+    const num = (v: unknown) => (v === undefined || v === null ? null : Number(v));
+
+    const startWeight = num(body.startWeight);
+    const goalWeight = num(body.goalWeight);
+    const height = num(body.height);
+
+    for (const [label, value] of [
+      ["Start weight", startWeight],
+      ["Goal weight", goalWeight],
+    ] as const) {
+      if (value !== null && (!Number.isFinite(value) || value < 30 || value > 300)) {
+        return NextResponse.json(
+          { error: `${label} must be between 30 and 300 kg` },
+          { status: 400 }
+        );
+      }
+    }
+
+    if (height !== null && (!Number.isFinite(height) || height < 100 || height > 250)) {
+      return NextResponse.json(
+        { error: "Height must be between 100 and 250 cm" },
+        { status: 400 }
+      );
+    }
+
+    // A patch may carry only one of the pair, so read the stored counterpart
+    // rather than skipping the comparison.
+    let effectiveStart = startWeight;
+    let effectiveGoal = goalWeight;
+    if ((startWeight === null) !== (goalWeight === null)) {
+      const { data: stored } = await supabase
+        .from("profiles")
+        .select("start_weight, goal_weight")
+        .eq("session_id", sid)
+        .maybeSingle();
+      if (stored) {
+        if (effectiveStart === null) effectiveStart = num(stored.start_weight);
+        if (effectiveGoal === null) effectiveGoal = num(stored.goal_weight);
+      }
+    }
+
+    // TrimTrack is a weight-loss product — onboarding says "To lose" and the
+    // projection subtracts goal from start — so the goal has to be lighter.
+    // Supporting gain would need a goal-type column before this can relax.
+    if (
+      effectiveStart !== null &&
+      effectiveGoal !== null &&
+      Number.isFinite(effectiveStart) &&
+      Number.isFinite(effectiveGoal) &&
+      effectiveGoal >= effectiveStart
+    ) {
+      return NextResponse.json(
+        { error: "Goal weight must be below your current weight" },
+        { status: 400 }
+      );
+    }
+
     // Map camelCase frontend fields to snake_case DB columns
     const dbRecord: any = {
       session_id: sid,

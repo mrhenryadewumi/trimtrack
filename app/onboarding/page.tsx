@@ -44,7 +44,18 @@ export default function OnboardingPage() {
   })
 
   function update<K extends keyof UserProfile>(key: K, val: UserProfile[K]) {
-    setProfile(p => ({ ...p, [key]: val }))
+    setProfile(p => {
+      const next = { ...p, [key]: val }
+      // Keep the pair coherent: lowering the current weight must drag an
+      // now-impossible goal down with it, or the stale value gets submitted
+      // even though the slider renders clamped.
+      const start = next.startWeight
+      const goal = next.goalWeight
+      if (typeof start === "number" && typeof goal === "number" && goal >= start) {
+        next.goalWeight = Math.max(30, start - 1)
+      }
+      return next
+    })
   }
 
   function toggleAvoid(item: string) {
@@ -148,19 +159,28 @@ export default function OnboardingPage() {
                 <h2 className="text-2xl font-extrabold text-gray-900 mb-1">Your weight goals</h2>
                 <p className="text-sm text-gray-500 mb-6">We use this to calculate your daily calorie target.</p>
                 {([
-                  { label: "Current weight (kg)", key: "startWeight", min: 40, max: 250 },
-                  { label: "Goal weight (kg)", key: "goalWeight", min: 40, max: 250 },
-                  { label: "Height (cm)", key: "height", min: 100, max: 220 },
+                  { label: "Current weight (kg)", key: "startWeight", min: 30, max: 300 },
+                  // Loss-only product, so the goal cannot reach the current
+                  // weight: the ceiling follows the start weight rather than
+                  // sitting at a fixed 250, which is how a goal of 170 kg
+                  // could be set against a start of 80.
+                  {
+                    label: "Goal weight (kg)",
+                    key: "goalWeight",
+                    min: 30,
+                    max: Math.max(30, (profile.startWeight ?? 80) - 1),
+                  },
+                  { label: "Height (cm)", key: "height", min: 100, max: 250 },
                 ] as { label: string; key: keyof UserProfile; min: number; max: number }[]).map(field => (
                   <div key={String(field.key)} className="mb-5">
                     <label className="text-xs font-semibold text-gray-500 uppercase tracking-wide block mb-1.5">{field.label}</label>
                     <div className="flex items-center gap-4">
                       <input type="range" min={field.min} max={field.max} step={1}
-                        value={profile[field.key] as number}
+                        value={Math.min(Math.max(profile[field.key] as number, field.min), field.max)}
                         onChange={e => update(field.key, parseInt(e.target.value))}
                         className="flex-1 accent-green-700" />
                       <span className="text-2xl font-extrabold text-gray-900 w-16 text-right">
-                        {profile[field.key]}
+                        {Math.min(Math.max(profile[field.key] as number, field.min), field.max)}
                       </span>
                     </div>
                   </div>
