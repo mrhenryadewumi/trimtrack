@@ -29,6 +29,27 @@ export async function GET(req: NextRequest) {
   }
 }
 
+const BACKDATE_LIMIT_DAYS = 90;
+
+/**
+ * Today when no date is given. A supplied date must be YYYY-MM-DD, not in the
+ * future, and within the back-dating window. Returns null when invalid.
+ */
+function resolveEntryDate(raw: unknown): string | null {
+  const today = new Date().toISOString().split("T")[0];
+  if (raw === undefined || raw === null || raw === "") return today;
+  if (typeof raw !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(raw)) return null;
+
+  const asked = Date.parse(`${raw}T00:00:00Z`);
+  if (!Number.isFinite(asked)) return null;
+
+  const todayMs = Date.parse(`${today}T00:00:00Z`);
+  if (asked > todayMs) return null;
+  if (todayMs - asked > BACKDATE_LIMIT_DAYS * 24 * 60 * 60 * 1000) return null;
+
+  return raw;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const cookieSession = req.cookies.get("trimtrack_session")?.value;
@@ -37,11 +58,21 @@ export async function POST(req: NextRequest) {
 
     if (!sessionId) return NextResponse.json({ error: "Missing session" }, { status: 400 });
 
+    // Optional back-dating, so a meal missed yesterday can still be logged.
+    // Bounded to the last 90 days and never the future.
+    const entryDate = resolveEntryDate(body.date);
+    if (entryDate === null) {
+      return NextResponse.json(
+        { error: "date must be YYYY-MM-DD, not in the future, within the last 90 days" },
+        { status: 400 }
+      );
+    }
+
     const { data, error } = await supabase
       .from("meal_entries")
       .insert({
         session_id: sessionId,
-        date: new Date().toISOString().split("T")[0],
+        date: entryDate,
         meal_type: body.meal_type,
         food_name: body.food_name,
         kcal: body.kcal,
@@ -54,8 +85,10 @@ export async function POST(req: NextRequest) {
 
     if (error) throw error;
 
-    // Build/update today's statement after every meal save
-    const today = new Date().toISOString().split("T")[0];
+    // Rebuild the statement for the day the meal belongs to, not today —
+    // Trends reads food_statements, so a back-dated meal would otherwise
+    // never show up there.
+    const today = entryDate;
     const { data: todayMeals } = await supabase
       .from("meal_entries")
       .select("*")
