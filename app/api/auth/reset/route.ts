@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import bcrypt from "bcryptjs";
+import { isConfirmTokenExpired } from "@/lib/confirmToken";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -17,6 +18,16 @@ export async function POST(req: NextRequest) {
     }
     if (password.length < 8) {
       return NextResponse.json({ ok: false, error: "Password must be at least 8 characters" }, { status: 400 });
+    }
+
+    // The email promises the link lasts an hour; enforce it. Tokens issued
+    // before the expiry format carry no expiry and still work, so links
+    // already sent are not invalidated.
+    if (isConfirmTokenExpired(token)) {
+      return NextResponse.json(
+        { ok: false, error: "That reset link has expired. Please request a new one." },
+        { status: 400 }
+      );
     }
 
     const { data: user } = await supabase
