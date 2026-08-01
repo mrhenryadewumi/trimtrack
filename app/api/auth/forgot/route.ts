@@ -2,6 +2,10 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
+import { createConfirmToken } from "@/lib/confirmToken";
+
+/** Matches the "expires in 1 hour" line in the email below. */
+const RESET_TOKEN_TTL_MS = 60 * 60 * 1000;
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -15,7 +19,8 @@ export async function POST(req: NextRequest) {
     if (!email) return NextResponse.json({ ok: false, error: "Email required" }, { status: 400 });
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.trimtrack.fit";
-    const resetToken = Math.random().toString(36).slice(2) + Date.now().toString(36);
+    // The email says one hour, so issue a token that actually lasts one hour.
+    const resetToken = createConfirmToken(RESET_TOKEN_TTL_MS);
 
     const { data: user } = await supabase
       .from("subscriptions")
