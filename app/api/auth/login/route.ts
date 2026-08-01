@@ -8,6 +8,21 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+/**
+ * Rows created before this predate the confirmation gate and keep working
+ * even with a null flag. Anything newer must confirm. Kept as a constant so
+ * the backfill and this check can be reasoned about together.
+ */
+const CONFIRMATION_REQUIRED_FROM = Date.parse("2026-08-01T00:00:00Z");
+
+function isUnconfirmed(flag: unknown, createdAt: unknown): boolean {
+  if (flag === true) return false;
+  if (flag === false) return true;
+  // Null or missing: only gate accounts created after the cutoff.
+  const created = typeof createdAt === "string" ? Date.parse(createdAt) : NaN;
+  return Number.isFinite(created) && created >= CONFIRMATION_REQUIRED_FROM;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { email, password } = await req.json();
@@ -40,6 +55,20 @@ export async function POST(req: NextRequest) {
     const valid = await bcrypt.compare(password, user.password_hash);
     if (!valid) {
       return NextResponse.json({ ok: false, error: "Incorrect password" }, { status: 401 });
+    }
+
+    // Confirmation gate. Checked only after the password, so an attacker
+    // cannot use it to discover which addresses have accounts.
+    //
+    // A null email_confirmed means one of two things: a row that predates the
+    // column, or one written before this shipped. Accounts older than the
+    // cutoff are let through so existing users are never locked out; anything
+    // created after it has to confirm.
+    if (isUnconfirmed(user.email_confirmed, user.created_at)) {
+      return NextResponse.json(
+        { ok: false, error: "unconfirmed", email },
+        { status: 403 }
+      );
     }
 
     const response = NextResponse.json({

@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
+import { createConfirmToken } from "@/lib/confirmToken";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -27,19 +28,33 @@ export async function POST(req: NextRequest) {
 
     const sessionId =
       req.cookies.get("trimtrack_session")?.value || body.session_id;
-    if (!sessionId) {
-      return NextResponse.json({ ok: false, error: "Not authenticated" }, { status: 401 });
+    const email = typeof body.email === "string" ? body.email.trim() : null;
+
+    // An unconfirmed account has no session — login refuses to issue one — so
+    // the address alone has to be enough to ask for the email again. Nothing
+    // is disclosed that signup does not already reveal through its 409.
+    if (!sessionId && !email) {
+      return NextResponse.json(
+        { ok: false, error: "Session or email required" },
+        { status: 400 }
+      );
     }
 
-    const { data: sub } = await supabase
+    const query = supabase
       .from("subscriptions")
-      .select("email, name, email_confirmed")
-      .eq("session_id", sessionId)
-      .maybeSingle();
+      .select("session_id, email, name, email_confirmed");
+
+    const { data: rows } = sessionId
+      ? await query.eq("session_id", sessionId).limit(1)
+      : await query.eq("email", email!).order("created_at", { ascending: false }).limit(1);
+
+    const sub = rows?.[0];
 
     if (!sub) {
       return NextResponse.json({ ok: false, error: "Account not found" }, { status: 404 });
     }
+
+    const targetSession = sub.session_id;
 
     // Already done — a success, so the caller can just hide its banner.
     if (sub.email_confirmed) {
@@ -53,14 +68,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const confirmToken =
-      Math.random().toString(36).slice(2) + Date.now().toString(36);
+    // A fresh 7-day token every time, so the newest email is always the one
+    // that works and older links stop being useful.
+    const confirmToken = createConfirmToken();
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.trimtrack.fit";
 
     const { error: dbError } = await supabase
       .from("subscriptions")
       .update({ confirm_token: confirmToken, updated_at: new Date().toISOString() })
-      .eq("session_id", sessionId);
+      .eq("session_id", targetSession);
 
     if (dbError) {
       console.error("Resend token error:", dbError);
@@ -80,7 +96,7 @@ export async function POST(req: NextRequest) {
           <h2 style="color:#0f1f14;">Hi ${sub.name || "there"},</h2>
           <p style="color:#444;line-height:1.6;">Click below to confirm your email. This keeps your account recoverable if you ever forget your password.</p>
           <div style="text-align:center;margin:32px 0;">
-            <a href="${appUrl}/api/trial/confirm?token=${confirmToken}&sessionId=${sessionId}"
+            <a href="${appUrl}/api/trial/confirm?token=${confirmToken}&sessionId=${targetSession}"
               style="background:#1a5c38;color:#b5f23d;padding:16px 32px;border-radius:12px;
               text-decoration:none;font-weight:700;font-size:16px;display:inline-block;">
               Confirm my email
