@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { isConfirmTokenExpired } from "@/lib/confirmToken";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -14,6 +15,12 @@ export async function GET(req: NextRequest) {
 
   if (!token || !sessionId) {
     return NextResponse.redirect(`${appUrl}/?error=invalid`);
+  }
+
+  // Tokens issued before the expiry format have no expiry part and still
+  // validate, so unclicked emails already in inboxes keep working.
+  if (isConfirmTokenExpired(token)) {
+    return NextResponse.redirect(`${appUrl}/?error=expired`);
   }
 
   const { data } = await supabase

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import bcrypt from "bcryptjs";
+import { createConfirmToken } from "@/lib/confirmToken";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -30,7 +31,7 @@ export async function POST(req: NextRequest) {
     if (existing) return NextResponse.json({ ok: false, error: "An account with this email already exists. Please log in." }, { status: 409 });
 
     const passwordHash = await bcrypt.hash(password, 12);
-    const confirmToken = Math.random().toString(36).slice(2) + Date.now().toString(36);
+    const confirmToken = createConfirmToken(); // 7 days
     const sid = Math.random().toString(36).slice(2) + Date.now().toString(36);
     const trialEndsAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.trimtrack.fit";
