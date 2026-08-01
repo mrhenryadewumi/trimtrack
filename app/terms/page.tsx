@@ -1,33 +1,86 @@
+import type { Metadata } from "next";
+import LegalPage, { A, H2, P, Strong } from "@/components/LegalPage";
+
+export const metadata: Metadata = {
+  title: "Terms of Use — TrimTrack",
+  description:
+    "What TrimTrack is and isn't, your account, the community, subscriptions and liability.",
+};
+
 export default function TermsPage() {
   return (
-    <div style={{ maxWidth: "760px", margin: "0 auto", padding: "60px 24px", fontFamily: "system-ui, sans-serif" }}>
-      <a href="/" style={{ color: "#1a5c38", fontWeight: 700, textDecoration: "none", fontSize: "18px" }}>TrimTrack</a>
-      <h1 style={{ fontSize: "32px", fontWeight: 800, color: "#0f1f14", margin: "32px 0 8px" }}>Terms of Service</h1>
-      <p style={{ color: "#888", marginBottom: "40px" }}>Last updated: 9 April 2026</p>
+    <LegalPage title="Terms of Use" updated="31 July 2026" current="/terms">
+      <P>
+        By using TrimTrack you agree to these terms. If you don&apos;t,
+        don&apos;t use it.
+      </P>
 
-      {[
-        { title: "Acceptance of terms", body: "By using TrimTrack at trimtrack.fit, you agree to these terms. If you do not agree, do not use the service." },
-        { title: "What TrimTrack is", body: "TrimTrack is a calorie tracking and meal planning tool. It is not a medical service. The calorie estimates and meal plans provided are for informational purposes only and should not be used as a substitute for advice from a qualified healthcare professional." },
-        { title: "Free trial and subscription", body: "TrimTrack offers a 30-day free trial with full access to all features. After the trial, continued access to premium features (unlimited AI food scanning, reminders, barcode scanner) requires a subscription of GBP 2.99 per month or GBP 19.99 per year. You can cancel at any time. No charges are made without your explicit consent." },
-        { title: "Your account", body: "You are responsible for keeping your login credentials secure. You must provide accurate information during registration. We reserve the right to suspend accounts that violate these terms." },
-        { title: "Acceptable use", body: "You agree not to misuse TrimTrack. You must not attempt to access other users' data, reverse engineer the application, use the service for any unlawful purpose, or attempt to disrupt the service." },
-        { title: "Intellectual property", body: "TrimTrack and its content, features, and functionality are owned by TapIn Studio. You may not copy, reproduce, or distribute any part of the service without our written permission." },
-        { title: "Disclaimer", body: "TrimTrack is provided on an as-is basis. We make no warranties about the accuracy of calorie estimates or the effectiveness of any meal plan. Results vary by individual. We are not liable for any health outcomes resulting from use of the service." },
-        { title: "Termination", body: "We may suspend or terminate your access at any time if you violate these terms. You may cancel your subscription at any time from your account settings." },
-        { title: "Governing law", body: "These terms are governed by the laws of England and Wales. Any disputes shall be subject to the exclusive jurisdiction of the courts of England and Wales." },
-        { title: "Contact", body: "Questions about these terms: hello@trimtrack.fit" },
-      ].map(s => (
-        <div key={s.title} style={{ marginBottom: "32px" }}>
-          <h2 style={{ fontSize: "18px", fontWeight: 700, color: "#0f1f14", marginBottom: "8px" }}>{s.title}</h2>
-          <p style={{ color: "#444", lineHeight: "1.7", margin: 0 }}>{s.body}</p>
-        </div>
-      ))}
+      <H2>What TrimTrack is</H2>
+      <P>
+        A food and weight diary with an AI assistant and a community. It
+        estimates calories; those estimates are approximations, not measurements.
+        Scanned photos and database entries can be wrong. Use your judgement.
+      </P>
 
-      <div style={{ marginTop: "60px", paddingTop: "24px", borderTop: "1px solid #e5e7eb" }}>
-        <a href="/" style={{ color: "#1a5c38", textDecoration: "none", fontWeight: 600 }}>Back to TrimTrack</a>
-        <span style={{ margin: "0 12px", color: "#ccc" }}>|</span>
-        <a href="/privacy" style={{ color: "#1a5c38", textDecoration: "none", fontWeight: 600 }}>Privacy Policy</a>
-      </div>
-    </div>
-  )
+      <H2>What it isn&apos;t</H2>
+      <P>
+        Medical advice, a diagnosis, a treatment, or a substitute for a doctor,
+        dietitian or therapist. We make no promise about how much weight you will
+        lose or how fast. If you have a health condition, speak to a professional
+        before changing how you eat.
+      </P>
+
+      <H2>Your account</H2>
+      <P>
+        One account per person. Keep your password to yourself. You&apos;re
+        responsible for what happens under your account. You must be 16 or older.
+      </P>
+
+      <H2>The community</H2>
+      <P>
+        Circle is public to other members. Don&apos;t post anything you
+        wouldn&apos;t want read back to you. We remove content that harasses,
+        sells supplements, promotes disordered eating, or breaks the law — and we
+        can suspend accounts that keep doing it. Your posts remain yours; by
+        posting you let us display them in the app.
+      </P>
+
+      <H2>Subscriptions</H2>
+      <P>
+        The trial is 30 days and needs no card. Paid plans are billed through the
+        store or website you bought them from, and cancellation follows that
+        platform&apos;s rules. Prices can change; we&apos;ll tell you before a
+        change affects you.
+      </P>
+
+      <H2>Ending it</H2>
+      <P>
+        You can delete your account whenever you like, in the app. We can close
+        accounts that break these terms. Deletion is permanent.
+      </P>
+
+      <H2>Liability</H2>
+      <P>
+        TrimTrack is provided as-is. To the extent the law allows, we&apos;re not
+        liable for losses arising from your use of it, including decisions made
+        on the basis of a calorie estimate. Nothing here limits liability we
+        cannot legally limit.
+      </P>
+
+      <H2>Law</H2>
+      <P>
+        These terms are governed by the law of England and Wales.
+      </P>
+
+      <H2>Contact</H2>
+      <P>
+        <A href="mailto:hello@trimtrack.fit">hello@trimtrack.fit</A>
+      </P>
+
+      <P>
+        <Strong>Rainclean Solutions Limited</Strong>, trading as Tapin Studio.
+        Company number 16751715, registered in England and Wales.
+      </P>
+    </LegalPage>
+  );
 }
