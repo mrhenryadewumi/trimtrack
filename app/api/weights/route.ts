@@ -10,6 +10,24 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
+const BACKDATE_LIMIT_DAYS = 90
+
+/** Today when absent; otherwise a valid, non-future date within the window. */
+function resolveEntryDate(raw: unknown): string | null {
+  const today = new Date().toISOString().split('T')[0]
+  if (raw === undefined || raw === null || raw === '') return today
+  if (typeof raw !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(raw)) return null
+
+  const asked = Date.parse(`${raw}T00:00:00Z`)
+  if (!Number.isFinite(asked)) return null
+
+  const todayMs = Date.parse(`${today}T00:00:00Z`)
+  if (asked > todayMs) return null
+  if (todayMs - asked > BACKDATE_LIMIT_DAYS * 24 * 60 * 60 * 1000) return null
+
+  return raw
+}
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
@@ -43,11 +61,19 @@ export async function POST(req: NextRequest) {
     if (!sessionId || !weight) return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
     if (weight < 30 || weight > 300) return NextResponse.json({ error: 'Invalid weight' }, { status: 400 })
 
-    // One row per day: the upsert replaces today's entry rather than adding.
-    const today = new Date().toISOString().split('T')[0]
+    // Optional back-dating for a missed weigh-in, bounded the same way meals
+    // are. One row per day either way: the upsert replaces that day's entry.
+    const entryDate = resolveEntryDate(body.date)
+    if (entryDate === null) {
+      return NextResponse.json(
+        { error: 'date must be YYYY-MM-DD, not in the future, within the last 90 days' },
+        { status: 400 }
+      )
+    }
+
     const { data, error } = await supabase
       .from('weight_log')
-      .upsert([{ session_id: sessionId, date: today, weight }], { onConflict: 'session_id,date' })
+      .upsert([{ session_id: sessionId, date: entryDate, weight }], { onConflict: 'session_id,date' })
       .select()
       .single()
 
