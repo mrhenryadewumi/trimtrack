@@ -1,32 +1,141 @@
+import type { Metadata } from "next";
+import LegalPage, { A, H2, LI, P, Strong, UL } from "@/components/LegalPage";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy — TrimTrack",
+  description:
+    "What TrimTrack collects, why, who else sees it, and how to get it deleted.",
+};
+
 export default function PrivacyPage() {
   return (
-    <div style={{ maxWidth: "760px", margin: "0 auto", padding: "60px 24px", fontFamily: "system-ui, sans-serif" }}>
-      <a href="/" style={{ color: "#1a5c38", fontWeight: 700, textDecoration: "none", fontSize: "18px" }}>TrimTrack</a>
-      <h1 style={{ fontSize: "32px", fontWeight: 800, color: "#0f1f14", margin: "32px 0 8px" }}>Privacy Policy</h1>
-      <p style={{ color: "#888", marginBottom: "40px" }}>Last updated: 9 April 2026</p>
+    <LegalPage title="Privacy Policy" updated="31 July 2026" current="/privacy">
+      <P>
+        TrimTrack is operated by <Strong>Rainclean Solutions Limited</Strong>,
+        trading as Tapin Studio, a company registered in England and Wales,
+        company number <Strong>16751715</Strong>, at{" "}
+        <Strong>
+          26 South Durham Court, Sunderland, SR1 2JA, United Kingdom
+        </Strong>
+        .
+      </P>
 
-      {[
-        { title: "Who we are", body: "TrimTrack is a calorie tracking web application available at trimtrack.fit, built and operated by TapIn Studio. If you have any questions about this policy, contact us at hello@trimtrack.fit." },
-        { title: "What data we collect", body: "We collect the information you provide during onboarding (name, age, gender, country, weight, height, activity level, food preferences), meal entries you log in the app, your weight log entries, your email address when you sign up for the trial or waitlist, and anonymous session identifiers stored in your browser." },
-        { title: "How we use your data", body: "We use your data to calculate your personalised daily calorie goal, generate your meal plan, send you morning and evening reminder emails if you opted in, and improve the accuracy of our food database. We do not sell your data to any third party. We do not use your data for advertising." },
-        { title: "Data storage", body: "Your data is stored securely in Supabase (PostgreSQL database hosted on AWS infrastructure in the EU). Email reminders are sent via Resend. Payments are processed by Stripe. None of these providers sell your data." },
-        { title: "Your rights (UK GDPR)", body: "You have the right to access, correct, or delete your personal data at any time. To exercise any of these rights, email us at hello@trimtrack.fit and we will respond within 30 days. You also have the right to lodge a complaint with the Information Commissioner's Office (ICO) at ico.org.uk." },
-        { title: "Cookies", body: "TrimTrack uses a single session identifier stored in your browser's localStorage to keep your data consistent across visits. We do not use advertising cookies or third-party tracking cookies." },
-        { title: "Data retention", body: "We retain your data for as long as your account is active. If you request deletion, we will remove your personal data within 30 days. Anonymised aggregate data may be retained for analytics." },
-        { title: "Changes to this policy", body: "We may update this policy from time to time. We will notify active users by email if we make significant changes. The date at the top of this page will always reflect the most recent update." },
-        { title: "Contact", body: "For any privacy-related questions: hello@trimtrack.fit" },
-      ].map(s => (
-        <div key={s.title} style={{ marginBottom: "32px" }}>
-          <h2 style={{ fontSize: "18px", fontWeight: 700, color: "#0f1f14", marginBottom: "8px" }}>{s.title}</h2>
-          <p style={{ color: "#444", lineHeight: "1.7", margin: 0 }}>{s.body}</p>
-        </div>
-      ))}
+      <H2>What we collect</H2>
+      <P>
+        <Strong>Account</Strong> — your email address and a password. Passwords
+        are stored hashed; we never see them.
+      </P>
+      <P>
+        <Strong>What you log</Strong> — meals, calories and macros, your weight
+        and weight history, your height, your goals, and the dates and times you
+        logged them.
+      </P>
+      <P>
+        <Strong>Photos of meals</Strong> — only when you use the scan feature.
+        The photo is sent to our AI provider to identify the food, then
+        discarded. We do not keep your meal photos, and they are not used to
+        train any model.
+      </P>
+      <P>
+        <Strong>What you post</Strong> — anything you write in Circle, including
+        your weight numbers if you choose to share them. Posts are visible to
+        other TrimTrack users.
+      </P>
+      <P>
+        <Strong>Coach conversations</Strong> — the messages you send the AI
+        coach, so it can answer with your actual diary in view.
+      </P>
+      <P>
+        <Strong>Basic technical data</Strong> — device type, app version, and
+        error reports, so we can fix crashes.
+      </P>
+      <P>
+        We do <Strong>not</Strong> collect your location, your contacts, or
+        advertising identifiers, and we use no third-party advertising or
+        analytics trackers.
+      </P>
 
-      <div style={{ marginTop: "60px", paddingTop: "24px", borderTop: "1px solid #e5e7eb" }}>
-        <a href="/" style={{ color: "#1a5c38", textDecoration: "none", fontWeight: 600 }}>Back to TrimTrack</a>
-        <span style={{ margin: "0 12px", color: "#ccc" }}>|</span>
-        <a href="/terms" style={{ color: "#1a5c38", textDecoration: "none", fontWeight: 600 }}>Terms of Service</a>
-      </div>
-    </div>
-  )
+      <H2>Why we collect it</H2>
+      <P>
+        To run the app: show your daily totals, track progress over time, let the
+        coach give relevant advice, and let the community work. Nothing else.
+      </P>
+
+      <H2>Who else sees it</H2>
+      <UL>
+        <LI>
+          <Strong>Supabase</Strong> — hosts our database; stores your account and
+          your logs.
+        </LI>
+        <LI>
+          <Strong>Vercel</Strong> — hosts the app.
+        </LI>
+        <LI>
+          <Strong>Anthropic</Strong> — processes meal photos and coach messages.
+          They do not train on this data.
+        </LI>
+        <LI>
+          <Strong>Resend</Strong> — sends confirmation and reminder emails.
+        </LI>
+        <LI>
+          <Strong>Stripe</Strong> — if you subscribe on the website. We never see
+          your card details.
+        </LI>
+      </UL>
+      <P>
+        We do not sell your data. We do not share it with advertisers. We will
+        only hand it to authorities where the law compels us to.
+      </P>
+
+      <H2>Health data</H2>
+      <P>
+        TrimTrack is a food and weight diary. It is <Strong>not</Strong> a
+        medical device and gives no medical advice. The AI coach cannot diagnose,
+        treat, or prescribe. Talk to a doctor before making significant changes
+        to how you eat, particularly if you are pregnant, diabetic, or being
+        treated for an eating disorder.
+      </P>
+
+      <H2>How long we keep it</H2>
+      <P>
+        Until you delete it. Individual entries can be deleted any time in the
+        app. Delete your whole account from{" "}
+        <Strong>You → Delete account</Strong> — that permanently removes your
+        meals, weight history, goals, posts and coach messages. We cannot recover
+        them afterwards.
+      </P>
+
+      <H2>Your rights</H2>
+      <P>
+        Under UK GDPR you can ask for a copy of your data, ask us to correct it,
+        or ask us to erase it. Email{" "}
+        <A href="mailto:privacy@trimtrack.fit">privacy@trimtrack.fit</A> and we
+        will respond within 30 days. You can also complain to the Information
+        Commissioner&apos;s Office at <A href="https://ico.org.uk">ico.org.uk</A>
+        .
+      </P>
+
+      <H2>Children</H2>
+      <P>
+        TrimTrack is not for under-16s. We do not knowingly collect data from
+        children. If you believe a child has an account, email us and we will
+        remove it.
+      </P>
+
+      <H2>Changes</H2>
+      <P>
+        If we change this policy we will update the date above and tell you in
+        the app before the change takes effect.
+      </P>
+
+      <H2>Contact</H2>
+      <P>
+        Rainclean Solutions Limited (trading as Tapin Studio)
+        <br />
+        26 South Durham Court, Sunderland, SR1 2JA, United Kingdom
+        <br />
+        <A href="mailto:privacy@trimtrack.fit">privacy@trimtrack.fit</A>
+      </P>
+    </LegalPage>
+  );
 }
