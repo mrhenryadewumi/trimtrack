@@ -11,13 +11,40 @@ export async function GET(req: NextRequest) {
   try {
     const postId = req.nextUrl.searchParams.get("post_id");
     if (!postId) return NextResponse.json({ error: "Missing post_id" }, { status: 400 });
+
+    const sessionId =
+      req.cookies.get("trimtrack_session")?.value ||
+      req.nextUrl.searchParams.get("session_id");
+
     const { data, error } = await supabase
       .from("community_replies")
       .select("*")
       .eq("post_id", postId)
       .order("created_at", { ascending: true });
     if (error) throw error;
-    return NextResponse.json({ replies: data || [] });
+
+    let blocked = new Set<string>();
+    if (sessionId) {
+      const { data: blocks } = await supabase
+        .from("blocked_members")
+        .select("blocked_session_id")
+        .eq("session_id", sessionId);
+      blocked = new Set((blocks || []).map((b: any) => b.blocked_session_id));
+    }
+
+    // Same rule as the feed: session_id is the auth token and must not leave
+    // the server. Whitelist, and drop replies from blocked members.
+    const replies = (data || [])
+      .filter((r: any) => !blocked.has(r.session_id))
+      .map((r: any) => ({
+        id: r.id,
+        post_id: r.post_id,
+        author_name: r.author_name,
+        body: r.body,
+        created_at: r.created_at,
+      }));
+
+    return NextResponse.json({ replies });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
