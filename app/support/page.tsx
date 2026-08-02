@@ -56,6 +56,15 @@ export default function SupportPage() {
         conditions, medication, or eating disorders. If you&apos;re struggling
         with food, Beat&apos;s helpline is 0808 801 0677.
       </P>
+
+      <H2>Who runs TrimTrack</H2>
+      <P>
+        <Strong>Rainclean Solutions Limited</Strong>, trading as Tapin Studio.
+        Company number 16751715, registered in England and Wales.
+        <br />4 Ashwood Croft, Hebburn, NE31 1BT, United Kingdom
+        <br />
+        <A href="mailto:hello@trimtrack.fit">hello@trimtrack.fit</A>
+      </P>
     </LegalPage>
   );
 }
