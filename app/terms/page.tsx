@@ -80,6 +80,7 @@ export default function TermsPage() {
       <P>
         <Strong>Rainclean Solutions Limited</Strong>, trading as Tapin Studio.
         Company number 16751715, registered in England and Wales.
+        <br />4 Ashwood Croft, Hebburn, NE31 1BT, United Kingdom
       </P>
     </LegalPage>
   );
