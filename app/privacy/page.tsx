@@ -15,7 +15,7 @@ export default function PrivacyPage() {
         trading as Tapin Studio, a company registered in England and Wales,
         company number <Strong>16751715</Strong>, at{" "}
         <Strong>
-          26 South Durham Court, Sunderland, SR1 2JA, United Kingdom
+          4 Ashwood Croft, Hebburn, NE31 1BT, United Kingdom
         </Strong>
         .
       </P>
@@ -132,7 +132,7 @@ export default function PrivacyPage() {
       <P>
         Rainclean Solutions Limited (trading as Tapin Studio)
         <br />
-        26 South Durham Court, Sunderland, SR1 2JA, United Kingdom
+        4 Ashwood Croft, Hebburn, NE31 1BT, United Kingdom
         <br />
         <A href="mailto:privacy@trimtrack.fit">privacy@trimtrack.fit</A>
       </P>
