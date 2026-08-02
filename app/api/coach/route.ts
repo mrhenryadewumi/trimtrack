@@ -7,6 +7,12 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+/**
+ * Generous enough that nobody having a real conversation will ever see it,
+ * low enough that a script can't run up a bill overnight.
+ */
+const DAILY_COACH_LIMIT = 40;
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -15,20 +21,42 @@ export async function POST(req: NextRequest) {
 
     const message = (body.message || "").trim();
     if (!message) return NextResponse.json({ error: "Empty message" }, { status: 400 });
+    if (message.length > 2000) return NextResponse.json({ error: "Message too long" }, { status: 413 });
     const history = Array.isArray(body.history) ? body.history.slice(-8) : [];
 
     const today = new Date().toISOString().split("T")[0];
     const [{ data: profile }, { data: sub }, { data: meals }] = await Promise.all([
       supabase.from("profiles").select("*").eq("session_id", sessionId).maybeSingle(),
-      supabase.from("subscriptions").select("name").eq("session_id", sessionId).maybeSingle(),
-      supabase.from("meal_entries").select("food_name, kcal, protein, meal_type").eq("session_id", sessionId).eq("date", today),
+      supabase
+        .from("subscriptions")
+        .select("name, coach_count_today, coach_date")
+        .eq("session_id", sessionId)
+        .maybeSingle(),
+      supabase
+        .from("meal_entries")
+        .select("food_name, kcal, protein, meal_type")
+        .eq("session_id", sessionId)
+        .eq("date", today),
     ]);
+
+    // An unresolvable session is not authenticated, whatever it claims.
+    if (!sub) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+
+    const usedToday = sub.coach_date === today ? sub.coach_count_today || 0 : 0;
+    if (usedToday >= DAILY_COACH_LIMIT) {
+      return NextResponse.json(
+        { error: "You've reached today's coach limit. It resets at midnight.", limitReached: true },
+        { status: 429 }
+      );
+    }
 
     const name = profile?.name || sub?.name || "friend";
     const goal = profile?.daily_calorie_goal || 1500;
     const eaten = (meals || []).reduce((s: number, m: any) => s + (m.kcal || 0), 0);
     const protein = Math.round((meals || []).reduce((s: number, m: any) => s + (m.protein || 0), 0));
-    const mealList = (meals || []).map((m: any) => `${m.meal_type}: ${m.food_name} ${m.kcal} kcal`).join("; ") || "nothing logged yet";
+    const mealList =
+      (meals || []).map((m: any) => `${m.meal_type}: ${m.food_name} ${m.kcal} kcal`).join("; ") ||
+      "nothing logged yet";
 
     const system =
       `You are Trim, the warm, practical AI nutrition coach inside TrimTrack, a calorie tracker built around African (especially Nigerian) food culture. ` +
@@ -37,6 +65,12 @@ export async function POST(req: NextRequest) {
       `current weight ${profile?.start_weight ?? "unknown"} kg, goal ${profile?.goal_weight ?? "unknown"} kg; activity: ${profile?.activity || "light"}. ` +
       `Answer in 1-3 short sentences, concrete and encouraging, referencing familiar Nigerian foods where natural. ` +
       `Plain text only - no markdown, no lists. Never invent data not in this context. You are not a doctor; for medical questions, say so briefly.`;
+
+    // Counted before the call, for the same reason as the scan route.
+    await supabase
+      .from("subscriptions")
+      .update({ coach_count_today: usedToday + 1, coach_date: today })
+      .eq("session_id", sessionId);
 
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
