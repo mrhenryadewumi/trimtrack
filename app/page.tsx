@@ -358,7 +358,7 @@ export default function Home() {
             </p>
             <p style={{ fontSize: 14, color: C.mut, margin: "8px 0 0" }}>
               Or{" "}
-              <Link href="/signup" style={{ color: C.acc, fontWeight: 700 }}>
+              <Link href="/trial" style={{ color: C.acc, fontWeight: 700 }}>
                 start free on the web today
               </Link>{" "}
               — your account carries over.
@@ -587,7 +587,7 @@ export default function Home() {
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <Link
-              href="/signup"
+              href="/trial"
               style={{ background: C.acc, color: C.bg, fontWeight: 700, fontSize: 16, padding: "15px 26px", borderRadius: 14 }}
             >
               Start free on the web
