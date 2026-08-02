@@ -19,6 +19,13 @@ export async function GET(req: NextRequest) {
     const sessionId = req.cookies.get("trimtrack_session")?.value || req.nextUrl.searchParams.get("session_id");
     if (!sessionId) return NextResponse.json({ error: "Missing session" }, { status: 401 });
 
+    // Who this member has blocked. Their posts never enter the feed.
+    const { data: blocks } = await supabase
+      .from("blocked_members")
+      .select("blocked_session_id")
+      .eq("session_id", sessionId);
+    const blocked = new Set((blocks || []).map((b: any) => b.blocked_session_id));
+
     const { data: posts, error } = await supabase
       .from("community_posts")
       .select("*")
@@ -26,7 +33,9 @@ export async function GET(req: NextRequest) {
       .limit(100);
     if (error) throw error;
 
-    const ids = (posts || []).map(p => p.id);
+    const visible = (posts || []).filter(p => !blocked.has(p.session_id));
+
+    const ids = visible.map(p => p.id);
     let cheers: any[] = [], replies: any[] = [];
     if (ids.length > 0) {
       const [c, r] = await Promise.all([
@@ -36,8 +45,15 @@ export async function GET(req: NextRequest) {
       cheers = c.data || []; replies = r.data || [];
     }
 
-    const enriched = (posts || []).map(p => ({
-      ...p,
+    // Never spread the row: session_id is the auth token, so returning it
+    // would let any reader impersonate the author. Whitelist the fields.
+    const enriched = visible.map(p => ({
+      id: p.id,
+      author_name: p.author_name,
+      kind: p.kind,
+      body: p.body,
+      meta: p.meta,
+      created_at: p.created_at,
       cheer_count: cheers.filter(c => c.post_id === p.id).length,
       cheered: cheers.some(c => c.post_id === p.id && c.session_id === sessionId),
       reply_count: replies.filter(r => r.post_id === p.id).length,
