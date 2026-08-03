@@ -15,8 +15,13 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
   try {
-    const { email } = await req.json();
-    if (!email) return NextResponse.json({ ok: false, error: "Email required" }, { status: 400 });
+    const { email: rawEmail } = await req.json();
+    if (!rawEmail) return NextResponse.json({ ok: false, error: "Email required" }, { status: 400 });
+
+    // Addresses are stored lowercased, and this route answers ok either way
+    // to avoid disclosing who has an account — so a casing mismatch would
+    // silently send nothing and look identical to success.
+    const email = String(rawEmail).trim().toLowerCase();
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.trimtrack.fit";
     // The email says one hour, so issue a token that actually lasts one hour.

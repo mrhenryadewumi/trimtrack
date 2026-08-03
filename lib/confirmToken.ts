@@ -1,16 +1,22 @@
+import { randomBytes } from "crypto";
+
 /**
  * Confirmation tokens that carry their own expiry.
  *
  * Format: `<random>.<expiry-ms in base36>`. The expiry is not signed, but it
  * does not need to be: the whole string is compared against the value stored
- * on the row, so editing the expiry breaks the match. This keeps the 7-day
- * limit self-contained and avoids adding a column.
+ * on the row, so editing the expiry breaks the match.
+ *
+ * The random half is now crypto-strong. It was Math.random(), which is
+ * predictable — a guessable confirm token means confirming someone else's
+ * account. Hex contains no dot, so the lastIndexOf(".") split below is still
+ * unambiguous, and old tokens with no expiry part keep validating.
  */
 
 export const CONFIRM_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 export function createConfirmToken(ttlMs: number = CONFIRM_TOKEN_TTL_MS): string {
-  const random = Math.random().toString(36).slice(2) + Date.now().toString(36);
+  const random = randomBytes(32).toString("hex");
   const expiresAt = (Date.now() + ttlMs).toString(36);
   return `${random}.${expiresAt}`;
 }
