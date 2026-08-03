@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import bcrypt from "bcryptjs";
 import { createConfirmToken } from "@/lib/confirmToken";
+import { createSessionId } from "@/lib/sessionId";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -13,10 +14,14 @@ const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KE
 
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, sessionId, password } = await req.json();
+    const { name, email: rawEmail, password } = await req.json();
 
-    if (!email) return NextResponse.json({ ok: false, error: "Email is required" }, { status: 400 });
+    if (!rawEmail) return NextResponse.json({ ok: false, error: "Email is required" }, { status: 400 });
     if (!password || password.length < 8) return NextResponse.json({ ok: false, error: "Password must be at least 8 characters" }, { status: 400 });
+
+    // Store one canonical form. Without this, Henry@ and henry@ are two
+    // accounts, and the unique index would reject the second with a 500.
+    const email = String(rawEmail).trim().toLowerCase();
 
     // .single() errors on anything other than exactly one row — including two
     // or more — which left `existing` null and let the signup through. Once an
@@ -32,7 +37,7 @@ export async function POST(req: NextRequest) {
 
     const passwordHash = await bcrypt.hash(password, 12);
     const confirmToken = createConfirmToken(); // 7 days
-    const sid = Math.random().toString(36).slice(2) + Date.now().toString(36);
+    const sid = createSessionId();
     const trialEndsAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.trimtrack.fit";
 
@@ -51,6 +56,15 @@ export async function POST(req: NextRequest) {
     });
 
     if (dbError) {
+      // 23505 is the unique index on lower(email). The check above races with
+      // a simultaneous signup on the same address; the index is what actually
+      // guarantees uniqueness, so treat it as the same answer, not a 500.
+      if (dbError.code === "23505") {
+        return NextResponse.json(
+          { ok: false, error: "An account with this email already exists. Please log in." },
+          { status: 409 }
+        );
+      }
       console.error("DB error:", dbError);
       return NextResponse.json({ ok: false, error: dbError.message }, { status: 500 });
     }

@@ -11,7 +11,8 @@ const supabase = createClient(
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, token, password } = await req.json();
+    const { email: rawEmail, token, password } = await req.json();
+    const email = rawEmail ? String(rawEmail).trim().toLowerCase() : rawEmail;
 
     if (!email || !token || !password) {
       return NextResponse.json({ ok: false, error: "Missing fields" }, { status: 400 });

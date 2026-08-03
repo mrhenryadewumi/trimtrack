@@ -25,11 +25,15 @@ function isUnconfirmed(flag: unknown, createdAt: unknown): boolean {
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, password } = await req.json();
+    const { email: rawEmail, password } = await req.json();
 
-    if (!email || !password) {
+    if (!rawEmail || !password) {
       return NextResponse.json({ ok: false, error: "Email and password are required" }, { status: 400 });
     }
+
+    // Signup stores the address lowercased, so the lookup has to match it —
+    // otherwise anyone who typed a capital at signup can never log in.
+    const email = String(rawEmail).trim().toLowerCase();
 
     // subscriptions has no unique constraint on email, so one address can own
     // several accounts. .single() errored on those and locked the person out
