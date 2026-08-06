@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: "Delete your account — TrimTrack",
   description:
     "How to permanently delete your TrimTrack account and everything in it.",
+  alternates: {
+    canonical: "https://www.trimtrack.fit/account/delete",
+  },
 };
 
 export default function DeleteAccountPage() {

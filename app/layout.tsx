@@ -27,9 +27,6 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  alternates: {
-    canonical: 'https://www.trimtrack.fit',
-  },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -44,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="apple-touch-icon" href="/icon-192.png" />
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className="min-h-screen bg-[#f6fbf8]">
+      <body className="min-h-screen bg-[#0a1310]">
         {children}
         <script dangerouslySetInnerHTML={{ __html: `
           if ('serviceWorker' in navigator) {

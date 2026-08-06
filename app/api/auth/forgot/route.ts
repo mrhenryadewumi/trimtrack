@@ -3,9 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import { createConfirmToken } from "@/lib/confirmToken";
+import { checkRateLimit } from "@/lib/rateLimit";
 
 /** Matches the "expires in 1 hour" line in the email below. */
 const RESET_TOKEN_TTL_MS = 60 * 60 * 1000;
+const FORGOT_WINDOW_MS = 60 * 60 * 1000;
+const FORGOT_EMAIL_LIMIT = 3;
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -22,6 +25,14 @@ export async function POST(req: NextRequest) {
     // to avoid disclosing who has an account — so a casing mismatch would
     // silently send nothing and look identical to success.
     const email = String(rawEmail).trim().toLowerCase();
+
+    const limit = await checkRateLimit("forgot-password", email, FORGOT_EMAIL_LIMIT, FORGOT_WINDOW_MS);
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { ok: false, error: "Too many requests. Try again later." },
+        { status: 429 }
+      );
+    }
 
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.trimtrack.fit";
     // The email says one hour, so issue a token that actually lasts one hour.
