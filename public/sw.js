@@ -1,4 +1,4 @@
-const CACHE_NAME = 'trimtrack-v3'
+const CACHE_NAME = 'trimtrack-v4'
 const STATIC_ASSETS = [
   '/', '/dashboard', '/community', '/coach', '/onboarding',
   '/login', '/profile', '/statements', '/trial',
@@ -22,16 +22,39 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return
   if (event.request.url.includes('/api/')) return
+
+  const isNavigation =
+    event.request.mode === 'navigate' ||
+    (event.request.headers.get('accept') || '').includes('text/html')
+
+  if (isNavigation) {
+    // Network-first: returning visitors always get the latest deploy's HTML.
+    // Cache is only a fallback for when the network is unavailable.
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response.ok) {
+            const clone = response.clone()
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone))
+          }
+          return response
+        })
+        .catch(() => caches.match(event.request))
+    )
+    return
+  }
+
+  // Cache-first for static assets.
   event.respondWith(
     caches.match(event.request).then((cached) => {
-      const network = fetch(event.request).then((response) => {
+      if (cached) return cached
+      return fetch(event.request).then((response) => {
         if (response.ok) {
           const clone = response.clone()
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone))
         }
         return response
-      }).catch(() => cached)
-      return cached || network
+      })
     })
   )
 })

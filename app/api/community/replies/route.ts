@@ -1,6 +1,11 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { checkRateLimit } from "@/lib/rateLimit";
+
+const REPLY_WINDOW_MS = 60 * 60 * 1000;
+const REPLY_LIMIT = 10;
+const BODY_MAX_LENGTH = 4000;
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -56,6 +61,14 @@ export async function POST(req: NextRequest) {
     const sessionId = req.cookies.get("trimtrack_session")?.value || body.session_id;
     const text = (body.body || "").trim();
     if (!sessionId || !body.post_id || !text) return NextResponse.json({ error: "Missing params" }, { status: 400 });
+    if (text.length > BODY_MAX_LENGTH) {
+      return NextResponse.json({ error: "Reply is too long" }, { status: 400 });
+    }
+
+    const limit = await checkRateLimit("community-reply", sessionId, REPLY_LIMIT, REPLY_WINDOW_MS);
+    if (!limit.allowed) {
+      return NextResponse.json({ error: "Too many replies. Try again later." }, { status: 429 });
+    }
 
     const { data: prof } = await supabase.from("profiles").select("name").eq("session_id", sessionId).maybeSingle();
     let author_name = prof?.name;

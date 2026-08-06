@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: "Terms of Use — TrimTrack",
   description:
     "What TrimTrack is and isn't, your account, the community, subscriptions and liability.",
+  alternates: {
+    canonical: "https://www.trimtrack.fit/terms",
+  },
 };
 
 export default function TermsPage() {

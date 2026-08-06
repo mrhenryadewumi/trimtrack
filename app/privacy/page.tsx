@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: "Privacy Policy — TrimTrack",
   description:
     "What TrimTrack collects, why, who else sees it, and how to get it deleted.",
+  alternates: {
+    canonical: "https://www.trimtrack.fit/privacy",
+  },
 };
 
 export default function PrivacyPage() {

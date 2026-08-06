@@ -5,6 +5,9 @@ export const metadata: Metadata = {
   title: "Help with TrimTrack",
   description:
     "Common questions, how to reach a person, and how to get your data or delete your account.",
+  alternates: {
+    canonical: "https://www.trimtrack.fit/support",
+  },
 };
 
 export default function SupportPage() {

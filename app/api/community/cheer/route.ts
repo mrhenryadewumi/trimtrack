@@ -1,6 +1,10 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { checkRateLimit } from "@/lib/rateLimit";
+
+const CHEER_WINDOW_MS = 60 * 60 * 1000;
+const CHEER_LIMIT = 60;
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -12,6 +16,11 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const sessionId = req.cookies.get("trimtrack_session")?.value || body.session_id;
     if (!sessionId || !body.post_id) return NextResponse.json({ error: "Missing params" }, { status: 400 });
+
+    const limit = await checkRateLimit("community-cheer", sessionId, CHEER_LIMIT, CHEER_WINDOW_MS);
+    if (!limit.allowed) {
+      return NextResponse.json({ error: "Too many requests. Try again later." }, { status: 429 });
+    }
 
     const { data: existing } = await supabase
       .from("community_cheers")

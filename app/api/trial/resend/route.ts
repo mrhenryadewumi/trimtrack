@@ -3,6 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import { createConfirmToken } from "@/lib/confirmToken";
+import { checkRateLimit } from "@/lib/rateLimit";
+
+const RESEND_WINDOW_MS = 60 * 60 * 1000;
+const RESEND_EMAIL_LIMIT = 3;
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -65,6 +69,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         { ok: false, error: "Email sending is not configured" },
         { status: 503 }
+      );
+    }
+
+    const limit = await checkRateLimit(
+      "trial-resend",
+      sub.email.toLowerCase(),
+      RESEND_EMAIL_LIMIT,
+      RESEND_WINDOW_MS
+    );
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { ok: false, error: "Too many requests. Try again later." },
+        { status: 429 }
       );
     }
 

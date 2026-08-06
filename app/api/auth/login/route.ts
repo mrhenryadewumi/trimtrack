@@ -2,6 +2,11 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import bcrypt from "bcryptjs";
+import { checkRateLimit, resetRateLimit, getClientIp } from "@/lib/rateLimit";
+
+const LOGIN_WINDOW_MS = 15 * 60 * 1000;
+const LOGIN_EMAIL_LIMIT = 5;
+const LOGIN_IP_LIMIT = 20;
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -35,6 +40,18 @@ export async function POST(req: NextRequest) {
     // otherwise anyone who typed a capital at signup can never log in.
     const email = String(rawEmail).trim().toLowerCase();
 
+    const ip = getClientIp(req);
+    const [emailLimit, ipLimit] = await Promise.all([
+      checkRateLimit("login-email", email, LOGIN_EMAIL_LIMIT, LOGIN_WINDOW_MS),
+      checkRateLimit("login-ip", ip, LOGIN_IP_LIMIT, LOGIN_WINDOW_MS),
+    ]);
+    if (!emailLimit.allowed || !ipLimit.allowed) {
+      return NextResponse.json(
+        { ok: false, error: "Too many attempts. Try again later." },
+        { status: 429 }
+      );
+    }
+
     // subscriptions has no unique constraint on email, so one address can own
     // several accounts. .single() errored on those and locked the person out
     // entirely. Take the newest account that can actually be signed into, and
@@ -48,17 +65,21 @@ export async function POST(req: NextRequest) {
 
     const user = users?.find((u) => u.password_hash) ?? users?.[0];
 
-    if (!user) {
-      return NextResponse.json({ ok: false, error: "No account found with this email" }, { status: 404 });
-    }
-
-    if (!user.password_hash) {
-      return NextResponse.json({ ok: false, error: "Please reset your password using Forgot Password" }, { status: 400 });
+    // Unknown email and wrong password get the same answer — a 404 here
+    // told an attacker which addresses have accounts.
+    if (!user || !user.password_hash) {
+      return NextResponse.json(
+        { ok: false, error: "Email or password is incorrect" },
+        { status: 401 }
+      );
     }
 
     const valid = await bcrypt.compare(password, user.password_hash);
     if (!valid) {
-      return NextResponse.json({ ok: false, error: "Incorrect password" }, { status: 401 });
+      return NextResponse.json(
+        { ok: false, error: "Email or password is incorrect" },
+        { status: 401 }
+      );
     }
 
     // Confirmation gate. Checked only after the password, so an attacker
@@ -74,6 +95,8 @@ export async function POST(req: NextRequest) {
         { status: 403 }
       );
     }
+
+    await resetRateLimit("login-email", email, LOGIN_WINDOW_MS);
 
     const response = NextResponse.json({
       ok: true,

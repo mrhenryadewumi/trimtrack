@@ -1,6 +1,11 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { checkRateLimit } from "@/lib/rateLimit";
+
+const POST_WINDOW_MS = 60 * 60 * 1000;
+const POST_LIMIT = 10;
+const BODY_MAX_LENGTH = 4000;
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -74,7 +79,15 @@ export async function POST(req: NextRequest) {
 
     const text = (body.body || "").trim();
     if (!text) return NextResponse.json({ error: "Empty post" }, { status: 400 });
+    if (text.length > BODY_MAX_LENGTH) {
+      return NextResponse.json({ error: "Post is too long" }, { status: 400 });
+    }
     const kind = ["journey", "idea", "recipe", "question"].includes(body.kind) ? body.kind : "journey";
+
+    const limit = await checkRateLimit("community-post", sessionId, POST_LIMIT, POST_WINDOW_MS);
+    if (!limit.allowed) {
+      return NextResponse.json({ error: "Too many posts. Try again later." }, { status: 429 });
+    }
 
     const author_name = await resolveName(sessionId);
     const { data, error } = await supabase
