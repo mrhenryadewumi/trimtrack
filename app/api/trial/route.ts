@@ -38,7 +38,6 @@ export async function POST(req: NextRequest) {
     const passwordHash = await bcrypt.hash(password, 12);
     const confirmToken = createConfirmToken(); // 7 days
     const sid = createSessionId();
-    const trialEndsAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
     const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.trimtrack.fit";
 
     const { error: dbError } = await supabase.from("subscriptions").insert({
@@ -49,8 +48,7 @@ export async function POST(req: NextRequest) {
       email_confirmed: !resend,
       confirm_token: confirmToken,
       trial_started_at: new Date().toISOString(),
-      trial_ends_at: trialEndsAt,
-      plan: "trial",
+      plan: "free",
       status: resend ? "pending" : "active",
       updated_at: new Date().toISOString(),
     });
@@ -80,7 +78,7 @@ export async function POST(req: NextRequest) {
             <p style="color:#a8d5b5;margin:8px 0 0;">Confirm your account</p>
           </div>
           <h2 style="color:#0f1f14;">Hi ${name || "there"},</h2>
-          <p style="color:#444;line-height:1.6;">Click below to confirm your email and start your 30-day free trial.</p>
+          <p style="color:#444;line-height:1.6;">Click below to confirm your email and start using TrimTrack. It is free while we test.</p>
           <div style="text-align:center;margin:32px 0;">
             <a href="${appUrl}/api/trial/confirm?token=${confirmToken}&sessionId=${sid}"
               style="background:#1a5c38;color:#b5f23d;padding:16px 32px;border-radius:12px;
@@ -89,7 +87,7 @@ export async function POST(req: NextRequest) {
             </a>
           </div>
           <p style="color:#888;font-size:13px;text-align:center;">
-            30 days free. No credit card required.
+            Free while we test. No credit card.
           </p>
         </div>
       `,
