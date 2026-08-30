@@ -23,7 +23,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const FREE_SCANS_PER_DAY = 6;
+const FREE_SCANS_PER_DAY = 50;
 
 async function resolve(req: NextRequest, bodySession?: string) {
   const sessionId =
