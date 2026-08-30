@@ -113,7 +113,7 @@ async function analyzeWithOpenAI(image: string, mediaType: string) {
   const key = process.env.OPENAI_API_KEY;
   if (!key) return null;
   const mime = mediaType || "image/jpeg";
-  const response = await fetch("https://openai.com/v1/chat/completions", {
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${key}`,
