@@ -54,7 +54,8 @@ export default function PhotoScanner({ onAdd, mealType, autoOpen = false, onClos
         if (data.error) throw new Error(data.error)
         setResult(data)
       } catch (err) {
-        setError('Could not analyse image. Please try again.')
+        const msg = err instanceof Error ? err.message : ''
+        setError(msg || 'Could not analyse image. Please try again.')
       } finally {
         setScanning(false)
       }
