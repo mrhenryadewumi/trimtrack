@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function PrivacyPage() {
   return (
-    <LegalPage title="Privacy Policy" updated="31 July 2026" current="/privacy">
+    <LegalPage title="Privacy Policy" updated="30 August 2026" current="/privacy">
       <P>
         TrimTrack is operated by <Strong>Rainclean Solutions Limited</Strong>,
         trading as Tapin Studio, a company registered in England and Wales,
@@ -81,8 +81,8 @@ export default function PrivacyPage() {
           <Strong>Resend</Strong> — sends confirmation and reminder emails.
         </LI>
         <LI>
-          <Strong>Stripe</Strong> — if you subscribe on the website. We never see
-          your card details.
+          <Strong>Stripe</Strong> — payments are switched off while we test.
+          We do not take cards.
         </LI>
       </UL>
       <P>
