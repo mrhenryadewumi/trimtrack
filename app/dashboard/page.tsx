@@ -39,10 +39,8 @@ export default function Dashboard() {
   const dk = darkMode;
   const bg = dk ? "#0a1310" : "#f4f7f2";
   const card = dk ? "#162a20" : "#ffffff";
-  const deep = dk ? "#0e1e16" : "#eef2ec";
   const line = dk ? "rgba(255,255,255,0.05)" : "rgba(15,31,20,0.08)";
   const txt = dk ? "#ffffff" : "#0f1f14";
-  const body = dk ? "#c9d8ce" : "#3d5240";
   const mut = dk ? "#8a9a92" : "#5c6b60";
   const faint = dk ? "#5f7269" : "#8a9589";
   const acc = dk ? "#b5f23d" : "#1a5c38";
@@ -96,7 +94,6 @@ export default function Dashboard() {
   return (
     <div style={{ minHeight: "100vh", background: bg, color: txt, paddingBottom: "96px", transition: "background 0.3s", fontFamily: "'Plus Jakarta Sans', sans-serif" }}>
 
-      {/* HEADER */}
       <div style={{ maxWidth: "480px", margin: "0 auto", padding: "20px 20px 0" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
           <div>
@@ -115,7 +112,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* HERO RING CARD */}
         <div style={{ background: heroBg, borderRadius: "28px", padding: "17px 20px", border: `1px solid ${line}`, boxShadow: dk ? "0 16px 40px -14px rgba(0,0,0,0.7)" : "0 16px 40px -18px rgba(15,31,20,0.18)", marginBottom: "10px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
             <div style={{ position: "relative", width: "112px", height: "112px", flexShrink: 0 }}>
@@ -131,13 +127,12 @@ export default function Dashboard() {
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: "10px", color: faint, fontWeight: 700, letterSpacing: "0.1em" }}>EATEN</div>
               <div style={{ fontSize: "19px", fontWeight: 800, marginBottom: "9px" }}>{eaten.toLocaleString()}<span style={{ fontSize: "12px", color: faint, fontWeight: 600 }}> / {goal.toLocaleString()}</span></div>
-              <div style={{ display: "inline-flex", gap: "6px", background: accBg, padding: "5px 10px", borderRadius: "99px", fontSize: "11px", fontWeight: 700, color: acc }}>{progress}%{" \u00B7 "}{statusMsg}</div>
+              <div style={{ display: "inline-flex", gap: "6px", background: accBg, padding: "5px 10px", borderRadius: "99px", fontSize: "11px", fontWeight: 700, color: acc }}>{progress}% · {statusMsg}</div>
               {motivation && <div style={{ fontSize: "11px", color: mut, marginTop: "9px", lineHeight: 1.4 }}>{motivation}</div>}
             </div>
           </div>
         </div>
 
-        {/* MACROS */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "9px", marginBottom: "10px" }}>
           {macroRows.map(m => (
             <div key={m.label} style={{ background: card, border: `1px solid ${line}`, borderRadius: "16px", padding: "10px 12px" }}>
@@ -150,7 +145,6 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* SCAN CTA */}
         <button onClick={() => setShowScanner(true)}
           style={{ display: "flex", alignItems: "center", gap: "12px", width: "100%", background: "#b5f23d", border: "none", borderRadius: "18px", padding: "11px 16px", marginBottom: "10px", cursor: "pointer", boxShadow: "0 8px 22px -8px rgba(181,242,61,0.55)", textAlign: "left" as const }}>
           <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "#0a1310", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
@@ -163,7 +157,6 @@ export default function Dashboard() {
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0a1310" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
         </button>
 
-        {/* ASK TRIM */}
         <a href="/coach" style={{ display: "flex", alignItems: "center", gap: "12px", background: card, border: `1px solid ${accLine}`, borderRadius: "18px", padding: "12px 16px", marginBottom: "10px", textDecoration: "none", color: txt }}>
           <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "linear-gradient(135deg,#1a5c38,#0f3d25)", border: "1.5px solid rgba(181,242,61,0.4)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="#b5f23d"><path d="M12 2l2.4 6.4L21 11l-6.6 2.6L12 22l-2.4-6.4L3 13l6.6-2.6z"/></svg>
@@ -175,7 +168,6 @@ export default function Dashboard() {
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={acc} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6" /></svg>
         </a>
 
-        {/* MEAL TABS */}
         <div style={{ display: "flex", gap: "8px", marginBottom: "10px", overflowX: "auto" as const, paddingBottom: "4px" }}>
           {["breakfast", "lunch", "dinner", "snack"].map(m => (
             <button key={m} onClick={() => setActiveMeal(m)}
@@ -185,12 +177,10 @@ export default function Dashboard() {
           ))}
         </div>
 
-        {/* FOOD SEARCH */}
         <div style={{ background: card, borderRadius: "20px", padding: "16px", marginBottom: "14px", border: `1px solid ${line}` }}>
           <FoodSearch activeMeal={activeMeal} onAdd={addFood} />
         </div>
 
-        {/* MEALS LIST */}
         {mealsArray.length > 0 && (
           <div style={{ marginBottom: "14px" }}>
             <div style={{ fontSize: "11px", color: faint, fontWeight: 800, letterSpacing: "0.12em", margin: "0 2px 7px" }}>TODAY'S MEALS</div>
@@ -203,7 +193,7 @@ export default function Dashboard() {
                     <div style={{ fontSize: "10px", color: faint, textTransform: "capitalize" as const }}>{meal.meal_type}</div>
                   </div>
                   <div style={{ fontFamily: NUM, fontSize: "14px", fontWeight: 700, color: acc }}>{meal.kcal}</div>
-                  <button onClick={() => removeMeal(meal.id, i)} style={{ background: "transparent", border: "none", color: faint, cursor: "pointer", padding: "4px 6px", fontSize: "16px", minHeight: "auto", lineHeight: 1 }}>{{"\u00D7"}}</button>
+                  <button onClick={() => removeMeal(meal.id, i)} style={{ background: "transparent", border: "none", color: faint, cursor: "pointer", padding: "4px 6px", fontSize: "16px", minHeight: "auto", lineHeight: 1 }}>{String.fromCharCode(215)}</button>
                 </div>
               ))}
             </div>
@@ -211,7 +201,6 @@ export default function Dashboard() {
         )}
       </div>
 
-      {/* BOTTOM NAV */}
       <nav style={{ position: "fixed" as const, bottom: 0, left: 0, right: 0, height: "72px", background: navBg, backdropFilter: "blur(20px)", borderTop: `1px solid ${line}`, display: "flex", justifyContent: "space-around", alignItems: "center", padding: "0 8px" }}>
         <a href="/dashboard" style={{ display: "flex", flexDirection: "column" as const, alignItems: "center", gap: "3px", textDecoration: "none", color: acc, fontWeight: 800, fontSize: "11px", padding: "6px 10px" }}>
           <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: acc }} />Home
