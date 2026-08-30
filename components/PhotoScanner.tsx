@@ -13,6 +13,8 @@ interface ScanResult {
   confidence?: string
   notes?: string
   message?: string
+  source?: string
+  estimate?: boolean
 }
 
 interface PhotoScannerProps {
@@ -62,6 +64,7 @@ export default function PhotoScanner({ onAdd, mealType, autoOpen = false, onClos
 
   function handleAdd() {
     if (!result?.identified || !result.meal_name) return
+    if (result.estimate || !result.kcal) return
     onAdd({
       food_name: result.meal_name,
       kcal: result.kcal || 0,
@@ -100,7 +103,6 @@ export default function PhotoScanner({ onAdd, mealType, autoOpen = false, onClos
       </button>
       )}
 
-      {/* Modal */}
       <AnimatePresence>
         {open && (
           <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
@@ -111,7 +113,6 @@ export default function PhotoScanner({ onAdd, mealType, autoOpen = false, onClos
               exit={{ opacity: 0, y: 40 }}
               className="w-full max-w-md bg-[#162a20] rounded-3xl overflow-hidden shadow-2xl border border-white/10"
             >
-              {/* Header */}
               <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
                 <div>
                   <div className="font-bold text-white">Scan your meal</div>
@@ -119,12 +120,11 @@ export default function PhotoScanner({ onAdd, mealType, autoOpen = false, onClos
                 </div>
                 <button onClick={close}
                   className="w-8 h-8 rounded-full bg-[#0e1e16] flex items-center justify-center text-[#8a9a92] hover:bg-[#1f3a2b]">
-                  ×
+                  x
                 </button>
               </div>
 
               <div className="p-6">
-                {/* No image yet */}
                 {!preview && !scanning && (
                   <>
                     <div className="text-center mb-6">
@@ -135,10 +135,10 @@ export default function PhotoScanner({ onAdd, mealType, autoOpen = false, onClos
                         </svg>
                       </div>
                       <p className="text-sm text-[#8a9a92] leading-relaxed">
-                        Take a photo of your meal or upload from your gallery. AI will instantly identify the food and estimate calories.
+                        Take a photo. We name the dish, then look up calories in the food tables - we do not guess.
                       </p>
                       <div className="inline-flex items-center gap-1.5 bg-[#233020] text-[#b5f23d] text-xs font-semibold px-3 py-1.5 rounded-full mt-3">
-                        ✓ Trained on Nigerian & West African foods
+                        Trained on Nigerian and West African foods
                       </div>
                     </div>
 
@@ -173,7 +173,6 @@ export default function PhotoScanner({ onAdd, mealType, autoOpen = false, onClos
                   </>
                 )}
 
-                {/* Scanning */}
                 {scanning && (
                   <div className="text-center py-8">
                     {preview && (
@@ -183,11 +182,10 @@ export default function PhotoScanner({ onAdd, mealType, autoOpen = false, onClos
                       <div className="w-5 h-5 border-2 border-[#b5f23d] border-t-transparent rounded-full animate-spin" />
                       <span className="font-semibold text-white">Analysing your meal...</span>
                     </div>
-                    <p className="text-sm text-[#5f7269]">AI is identifying the food and calculating calories</p>
+                    <p className="text-sm text-[#5f7269]">Identifying the dish, then looking it up in the food tables</p>
                   </div>
                 )}
 
-                {/* Error */}
                 {error && !scanning && (
                   <div className="text-center py-6">
                     <div className="text-[#ff8a5e] font-semibold mb-2">{error}</div>
@@ -195,7 +193,6 @@ export default function PhotoScanner({ onAdd, mealType, autoOpen = false, onClos
                   </div>
                 )}
 
-                {/* Result */}
                 {result && !scanning && (
                   <>
                     {preview && (
@@ -218,7 +215,6 @@ export default function PhotoScanner({ onAdd, mealType, autoOpen = false, onClos
                           </div>
                         </div>
 
-                        {/* Macros */}
                         <div className="grid grid-cols-4 gap-2 mb-4">
                           {[
                             { label: 'Calories', val: result.kcal, unit: 'kcal', color: 'bg-[rgba(181,242,61,0.12)] text-[#b5f23d]' },
@@ -245,10 +241,17 @@ export default function PhotoScanner({ onAdd, mealType, autoOpen = false, onClos
                             className="flex-1 py-3 border border-white/10 rounded-full text-sm font-semibold text-[#8a9a92] hover:bg-[#0e1e16]">
                             Retake
                           </button>
-                          <button onClick={handleAdd}
-                            className="flex-1 py-3 bg-[#b5f23d] text-[#0a1310] rounded-full text-sm font-bold hover:bg-[#8dc42a]">
-                            Add to {mealType}
-                          </button>
+                          {result.estimate || !result.kcal ? (
+                            <button onClick={close}
+                              className="flex-1 py-3 bg-[#b5f23d] text-[#0a1310] rounded-full text-sm font-bold hover:bg-[#8dc42a]">
+                              Search the list instead
+                            </button>
+                          ) : (
+                            <button onClick={handleAdd}
+                              className="flex-1 py-3 bg-[#b5f23d] text-[#0a1310] rounded-full text-sm font-bold hover:bg-[#8dc42a]">
+                              Add to {mealType}
+                            </button>
+                          )}
                         </div>
                       </>
                     ) : (
