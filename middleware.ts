@@ -22,7 +22,7 @@ export function middleware(request: NextRequest) {
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com data:",
       "img-src 'self' data: blob: https:",
-      "connect-src 'self' https://api.anthropic.com https://*.supabase.co https://world.openfoodfacts.org https://*.openfoodfacts.org https://api.stripe.com https://api.resend.com https://*.vercel.app https://www.trimtrack.fit",
+      "connect-src 'self' https://api.anthropic.com https://api.openai.com https://*.supabase.co https://world.openfoodfacts.org https://*.openfoodfacts.org https://api.stripe.com https://api.resend.com https://*.vercel.app https://www.trimtrack.fit",
       "frame-src https://js.stripe.com https://hooks.stripe.com",
       "object-src 'none'",
       "base-uri 'self'",
