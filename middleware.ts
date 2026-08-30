@@ -5,7 +5,10 @@ export function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
   response.headers.set("X-Content-Type-Options", "nosniff");
-  response.headers.set("X-Frame-Options", "DENY");
+  // SAMEORIGIN (not DENY): a top-level PWA/TWA still works. CSP
+  // frame-ancestors is the real clickjacking control and lets the Grok
+  // preview host the live site without a blank blocked page.
+  response.headers.set("X-Frame-Options", "SAMEORIGIN");
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   response.headers.set(
     "Permissions-Policy",
@@ -22,6 +25,7 @@ export function middleware(request: NextRequest) {
       "img-src 'self' data: blob: https:",
       "connect-src 'self' https://api.anthropic.com https://api.openai.com https://api.nal.usda.gov https://*.supabase.co https://world.openfoodfacts.org https://*.openfoodfacts.org https://api.stripe.com https://api.resend.com https://*.vercel.app https://www.trimtrack.fit",
       "frame-src https://js.stripe.com https://hooks.stripe.com",
+      "frame-ancestors 'self' https://grok.com https://*.grok.com https://x.com https://*.x.com",
       "object-src 'none'",
       "base-uri 'self'",
     ].join("; ")
