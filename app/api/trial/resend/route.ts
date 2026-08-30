@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
 
     const sessionId =
       req.cookies.get("trimtrack_session")?.value || body.session_id;
-    const email = typeof body.email === "string" ? body.email.trim() : null;
+    const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : null;
 
     // An unconfirmed account has no session — login refuses to issue one — so
     // the address alone has to be enough to ask for the email again. Nothing
@@ -97,7 +97,7 @@ export async function POST(req: NextRequest) {
 
     if (dbError) {
       console.error("Resend token error:", dbError);
-      return NextResponse.json({ ok: false, error: dbError.message }, { status: 500 });
+      return NextResponse.json({ ok: false, error: "Server error" }, { status: 500 });
     }
 
     const { error: emailError } = await resend.emails.send({

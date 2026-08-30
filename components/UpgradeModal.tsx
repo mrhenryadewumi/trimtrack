@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { useState } from "react";
 
 const MONTHLY_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID || "";
@@ -11,9 +11,11 @@ interface UpgradeModalProps {
 
 export default function UpgradeModal({ onClose, sessionId }: UpgradeModalProps) {
   const [loading, setLoading] = useState<string | null>(null);
+  const [error, setError] = useState("");
 
   const handleUpgrade = async (priceId: string, plan: string) => {
     setLoading(plan);
+    setError("");
     try {
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
@@ -21,9 +23,14 @@ export default function UpgradeModal({ onClose, sessionId }: UpgradeModalProps) 
         body: JSON.stringify({ priceId, sessionId }),
       });
       const data = await res.json();
-      if (data.url) window.location.href = data.url;
+      if (data.url) {
+        window.location.href = data.url;
+        return;
+      }
+      setError(data.error || "Payments are not ready yet. Email hello@trimtrack.fit.");
     } catch (err) {
       console.error(err);
+      setError("Network error. Please try again.");
     } finally {
       setLoading(null);
     }
@@ -44,7 +51,7 @@ export default function UpgradeModal({ onClose, sessionId }: UpgradeModalProps) 
           borderRadius: "16px", display: "flex", alignItems: "center",
           justifyContent: "center", margin: "0 auto 16px"
         }}>
-          <span style={{ fontSize: "28px" }}>📸</span>
+          <span style={{ fontSize: "28px" }}>📷</span>
         </div>
 
         <h2 style={{ fontSize: "22px", fontWeight: "700", color: "#0f1f14", marginBottom: "8px" }}>
@@ -56,7 +63,7 @@ export default function UpgradeModal({ onClose, sessionId }: UpgradeModalProps) 
 
         <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "20px" }}>
           <button
-            onClick={() => handleUpgrade(process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID!, "annual")}
+            onClick={() => handleUpgrade(ANNUAL_PRICE_ID, "annual")}
             disabled={loading !== null}
             style={{
               background: "#1a5c38", color: "#b5f23d", border: "none",
@@ -66,21 +73,21 @@ export default function UpgradeModal({ onClose, sessionId }: UpgradeModalProps) 
           >
             {loading === "annual" ? "Loading..." : (
               <>
-                <div>Annual - GBP19.99/year</div>
+                <div>Yearly — £3.19/month</div>
                 <div style={{ fontSize: "13px", opacity: 0.85, fontWeight: "400", marginTop: "2px" }}>
-                  Just GBP1.67/month - Best value
+                  Billed £38.28 a year — best value
                 </div>
                 <div style={{
                   position: "absolute", top: "-10px", right: "12px",
                   background: "#b5f23d", color: "#1a5c38", fontSize: "11px",
                   fontWeight: "700", padding: "3px 10px", borderRadius: "100px"
-                }}>SAVE 53%</div>
+                }}>SAVE 36%</div>
               </>
             )}
           </button>
 
           <button
-            onClick={() => handleUpgrade(process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID!, "monthly")}
+            onClick={() => handleUpgrade(MONTHLY_PRICE_ID, "monthly")}
             disabled={loading !== null}
             style={{
               background: "#f6fbf8", color: "#1a5c38", border: "2px solid #1a5c38",
@@ -90,7 +97,7 @@ export default function UpgradeModal({ onClose, sessionId }: UpgradeModalProps) 
           >
             {loading === "monthly" ? "Loading..." : (
               <>
-                <div>Monthly - GBP2.99/month</div>
+                <div>Monthly — £4.99/month</div>
                 <div style={{ fontSize: "13px", color: "#666", fontWeight: "400", marginTop: "2px" }}>
                   Cancel anytime
                 </div>
@@ -99,9 +106,11 @@ export default function UpgradeModal({ onClose, sessionId }: UpgradeModalProps) 
           </button>
         </div>
 
+        {error && <p style={{ color: "#b91c1c", fontSize: "13px", marginBottom: "12px" }}>{error}</p>}
+
         <div style={{ marginBottom: "16px" }}>
           <div style={{ fontSize: "13px", color: "#888", marginBottom: "8px" }}>What you get:</div>
-          {["Unlimited AI food scanning", "Morning & evening reminders", "Barcode scanner", "Full meal history", "Nigerian + 3M+ foods"].map(f => (
+          {["Unlimited AI food scanning", "Morning & evening reminders", "Full meal history", "Nigerian + West African foods"].map(f => (
             <div key={f} style={{ fontSize: "13px", color: "#333", padding: "4px 0", display: "flex", alignItems: "center", gap: "8px", justifyContent: "center" }}>
               <span style={{ color: "#1a5c38", fontWeight: "700" }}>✓</span> {f}
             </div>
