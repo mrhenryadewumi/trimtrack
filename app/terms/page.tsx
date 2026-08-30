@@ -4,7 +4,7 @@ import LegalPage, { A, H2, P, Strong } from "@/components/LegalPage";
 export const metadata: Metadata = {
   title: "Terms of Use — TrimTrack",
   description:
-    "What TrimTrack is and isn't, your account, the community, subscriptions and liability.",
+    "What TrimTrack is and isn't, your account, the community and liability.",
   alternates: {
     canonical: "https://www.trimtrack.fit/terms",
   },
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function TermsPage() {
   return (
-    <LegalPage title="Terms of Use" updated="31 July 2026" current="/terms">
+    <LegalPage title="Terms of Use" updated="30 August 2026" current="/terms">
       <P>
         By using TrimTrack you agree to these terms. If you don&apos;t,
         don&apos;t use it.
@@ -48,12 +48,11 @@ export default function TermsPage() {
         posting you let us display them in the app.
       </P>
 
-      <H2>Subscriptions</H2>
+      <H2>Price</H2>
       <P>
-        The trial is 30 days and needs no card. Paid plans are billed through the
-        store or website you bought them from, and cancellation follows that
-        platform&apos;s rules. Prices can change; we&apos;ll tell you before a
-        change affects you.
+        TrimTrack is free while we test it with people. No card is taken. If a
+        paid plan is ever introduced, we will tell you before it starts. Nobody
+        is charged today.
       </P>
 
       <H2>Ending it</H2>
