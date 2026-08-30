@@ -1,18 +1,15 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { FOODS } from "@/lib/foods";
 
 /**
  * Meal photo scanning.
  *
- * This route had NO authentication of any kind. It read an image off the body
- * and called Claude Opus on the production key — so anyone who found the URL
- * could loop it until the Anthropic bill was exhausted. It now requires a real
- * session and enforces a daily cap using the scan_count_today / scan_date
- * columns that already existed on subscriptions and were never read.
- *
- * It also used the anon Supabase client, built it, and never used it. Now on
- * the service role like every other route, and actually used.
+ * Requires a real session and a daily cap (scan_count_today / scan_date).
+ * Tries Anthropic first (already on the account), then OpenAI GPT-4o if
+ * Claude fails or the Anthropic key is missing. Google Vision is not used:
+ * it labels objects, it does not estimate a West African plate.
  */
 
 const supabase = createClient(
@@ -20,90 +17,14 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const DAILY_SCAN_LIMIT = 6; // matches FREE_SCANS_PER_DAY in /api/subscription
-
-/** ~8MB of base64 ≈ a 6MB photo. Anything larger is not a phone camera. */
+const DAILY_SCAN_LIMIT = 6;
 const MAX_IMAGE_CHARS = 8_000_000;
 
-export async function POST(req: NextRequest) {
-  try {
-    const body = await req.json();
-    const sessionId =
-      req.cookies.get("trimtrack_session")?.value || body.session_id;
+const CATALOG = FOODS.slice(0, 80)
+  .map((f) => `${f.name} (${f.kcal} kcal)`)
+  .join("; ");
 
-    if (!sessionId) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
-
-    // The session must resolve to a real account — not just be non-empty.
-    const { data: sub } = await supabase
-      .from("subscriptions")
-      .select("session_id, scan_count_today, scan_date")
-      .eq("session_id", sessionId)
-      .maybeSingle();
-
-    if (!sub) {
-      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    }
-
-    const today = new Date().toISOString().split("T")[0];
-    const usedToday = sub.scan_date === today ? sub.scan_count_today || 0 : 0;
-
-    if (usedToday >= DAILY_SCAN_LIMIT) {
-      return NextResponse.json(
-        {
-          error: `That's all ${DAILY_SCAN_LIMIT} scans for today. Search for the food or add it by hand — the count resets at midnight.`,
-          limitReached: true,
-        },
-        { status: 429 }
-      );
-    }
-
-    const { image, mediaType } = body;
-    if (!image) {
-      return NextResponse.json({ error: "No image provided" }, { status: 400 });
-    }
-    if (typeof image !== "string" || image.length > MAX_IMAGE_CHARS) {
-      return NextResponse.json({ error: "Image too large" }, { status: 413 });
-    }
-
-    const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
-    if (!ANTHROPIC_API_KEY) {
-      return NextResponse.json({ error: "Scanning is unavailable right now" }, { status: 503 });
-    }
-
-    // Counted before the call, not after: otherwise a burst of concurrent
-    // requests all pass the check above and every one of them bills.
-    await supabase
-      .from("subscriptions")
-      .update({ scan_count_today: usedToday + 1, scan_date: today })
-      .eq("session_id", sessionId);
-
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "claude-opus-4-6",
-        max_tokens: 1024,
-        messages: [
-          {
-            role: "user",
-            content: [
-              {
-                type: "image",
-                source: {
-                  type: "base64",
-                  media_type: mediaType || "image/jpeg",
-                  data: image,
-                },
-              },
-              {
-                type: "text",
-                text: `You are a nutrition expert specialising in Nigerian, West African, and global foods.
+const ANALYZE_PROMPT = `You are a nutrition expert specialising in Nigerian and West African home cooking.
 
 Analyse this food photo and return ONLY a valid JSON object with no other text.
 
@@ -126,33 +47,162 @@ If you cannot identify food:
   "message": "Could not identify food in this image"
 }
 
-Important:
-- Be specific with Nigerian/West African foods (Jollof Rice, Egusi Soup, Moi Moi, Pepper Soup, Efo Riro, Akara, Suya, Fufu, Eba, Pounded Yam, Banga Soup, etc)
-- Estimate for a typical single serving portion
-- If multiple foods are visible, estimate the total
-- Be accurate — people are tracking calories for weight loss`,
+Visual rules - do not mix these up:
+- Akara: golden-brown deep-fried black-eyed pea fritters (balls). Not a mixed rice spread.
+- Egusi: thick orange melon-seed soup with greens, usually beside swallow (pounded yam, eba, fufu). Never a plate of rice.
+- Moin moin / moi moi: smooth steamed orange-red bean pudding, often with egg inside. Not a stew.
+- Jollof: smoky orange-red rice, often with chicken or plantain.
+- Suya: spiced grilled meat skewers with yaji, usually with onion.
+
+Estimate for a typical single serving as served at home, not a lab 100g.
+If multiple foods are visible, estimate the total.
+Prefer names from this list when they match: ${CATALOG}`;
+
+function parseScanJson(text: string) {
+  const jsonMatch = text.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) return null;
+  try {
+    return JSON.parse(jsonMatch[0]);
+  } catch {
+    return null;
+  }
+}
+
+async function analyzeWithAnthropic(image: string, mediaType: string) {
+  const key = process.env.ANTHROPIC_API_KEY;
+  if (!key) return null;
+  const response = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "x-api-key": key,
+      "anthropic-version": "2023-06-01",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "claude-opus-4-6",
+      max_tokens: 1024,
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "image",
+              source: {
+                type: "base64",
+                media_type: mediaType || "image/jpeg",
+                data: image,
               },
-            ],
-          },
-        ],
-      }),
-    });
+            },
+            { type: "text", text: ANALYZE_PROMPT },
+          ],
+        },
+      ],
+    }),
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    console.error("Anthropic scan error:", response.status, err);
+    return null;
+  }
+  const data = await response.json();
+  return parseScanJson(data.content?.[0]?.text || "");
+}
 
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      console.error("Anthropic scan error:", response.status, err);
+async function analyzeWithOpenAI(image: string, mediaType: string) {
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) return null;
+  const mime = mediaType || "image/jpeg";
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${key}`,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "gpt-4o",
+      max_tokens: 700,
+      temperature: 0.2,
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "image_url",
+              image_url: { url: `data:${mime};base64,${image}` },
+            },
+            { type: "text", text: ANALYZE_PROMPT },
+          ],
+        },
+      ],
+    }),
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    console.error("OpenAI scan error:", response.status, err);
+    return null;
+  }
+  const data = await response.json();
+  return parseScanJson(data.choices?.[0]?.message?.content || "");
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const sessionId =
+      req.cookies.get("trimtrack_session")?.value || body.session_id;
+
+    if (!sessionId) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
+
+    const { data: sub } = await supabase
+      .from("subscriptions")
+      .select("session_id, scan_count_today, scan_date")
+      .eq("session_id", sessionId)
+      .maybeSingle();
+
+    if (!sub) {
+      return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    }
+
+    const today = new Date().toISOString().split("T")[0];
+    const usedToday = sub.scan_date === today ? sub.scan_count_today || 0 : 0;
+
+    if (usedToday >= DAILY_SCAN_LIMIT) {
+      return NextResponse.json(
+        {
+          error: `That's all ${DAILY_SCAN_LIMIT} scans for today. Search for the food or add it by hand - the count resets at midnight.`,
+          limitReached: true,
+        },
+        { status: 429 }
+      );
+    }
+
+    const { image, mediaType } = body;
+    if (!image) {
+      return NextResponse.json({ error: "No image provided" }, { status: 400 });
+    }
+    if (typeof image !== "string" || image.length > MAX_IMAGE_CHARS) {
+      return NextResponse.json({ error: "Image too large" }, { status: 413 });
+    }
+
+    if (!process.env.ANTHROPIC_API_KEY && !process.env.OPENAI_API_KEY) {
+      return NextResponse.json({ error: "Scanning is unavailable right now" }, { status: 503 });
+    }
+
+    await supabase
+      .from("subscriptions")
+      .update({ scan_count_today: usedToday + 1, scan_date: today })
+      .eq("session_id", sessionId);
+
+    const result =
+      (await analyzeWithAnthropic(image, mediaType)) ||
+      (await analyzeWithOpenAI(image, mediaType));
+
+    if (!result) {
       return NextResponse.json({ error: "Failed to analyse image" }, { status: 502 });
     }
 
-    const data = await response.json();
-    const text = data.content?.[0]?.text || "";
-
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      return NextResponse.json({ error: "Failed to analyse image" }, { status: 502 });
-    }
-
-    const result = JSON.parse(jsonMatch[0]);
     return NextResponse.json({
       ...result,
       scansLeft: Math.max(0, DAILY_SCAN_LIMIT - (usedToday + 1)),
