@@ -19,7 +19,7 @@ export default function LaunchBanner() {
     >
       The web app is live.{" "}
       <a href="/trial" style={{ color: "#0a1310", textDecoration: "underline" }}>
-        Start free — 30 days, no card
+        Free while we test — create an account
       </a>
       {" · "}
       <a href="/login" style={{ color: "#0a1310", textDecoration: "underline" }}>

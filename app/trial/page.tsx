@@ -63,7 +63,7 @@ export default function TrialPage() {
             We sent a confirmation link to <strong style={{ color: C.acc }}>{email}</strong>
           </p>
           <p style={{ color: C.mut, fontSize: 14 }}>
-            Click the link to activate your 30-day free trial. Check spam if you do not see it.
+            Click the link to activate your account. Check spam if you do not see it.
           </p>
           <a href="/login" style={{ display: "inline-block", marginTop: 24, color: C.acc, fontWeight: 600, textDecoration: "none" }}>
             Go to login
@@ -77,10 +77,10 @@ export default function TrialPage() {
     <AuthShell>
       <div style={{ background: C.card, borderRadius: 20, padding: 32, border: `1px solid ${C.line}` }}>
         <h2 style={{ fontSize: 22, fontWeight: 800, color: C.ink, marginBottom: 8 }}>
-          Start your free trial
+          Create a free account
         </h2>
         <p style={{ color: C.mut, fontSize: 14, marginBottom: 24, lineHeight: 1.6 }}>
-          30 days full access. No credit card needed.
+          Free while we test. No credit card.
         </p>
 
         <div style={{ marginBottom: 14 }}>
@@ -130,7 +130,7 @@ export default function TrialPage() {
         </button>
 
         <div style={{ borderTop: `1px solid ${C.line}`, paddingTop: 16 }}>
-          {["Unlimited AI food scanning", "Morning and evening reminders", "30 days completely free", "No credit card required"].map((f) => (
+          {["Photograph the plate", "Calories from food tables, not guesses", "West African dishes in the list", "No credit card"].map((f) => (
             <div key={f} style={{ fontSize: 13, color: C.body, padding: "3px 0", display: "flex", alignItems: "center", gap: 8 }}>
               <span style={{ color: C.acc, fontWeight: 700 }}>+</span> {f}
             </div>
@@ -144,7 +144,7 @@ export default function TrialPage() {
         </a>
       </p>
       <p style={{ textAlign: "center", color: C.faint, fontSize: 12, marginTop: 8 }}>
-        After 30 days, continue for £4.99 a month, or £3.19 a month billed yearly.
+        Free while we test. If it ever becomes paid, we will tell you first.
       </p>
     </AuthShell>
   );
