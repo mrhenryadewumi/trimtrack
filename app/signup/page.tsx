@@ -18,7 +18,7 @@ export default function SignupRedirect() {
       }}
     >
       <a href="/trial" style={{ color: "#b5f23d", fontWeight: 700 }}>
-        Start free trial
+        Create a free account
       </a>
     </main>
   );

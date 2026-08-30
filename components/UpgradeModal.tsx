@@ -1,41 +1,11 @@
 "use client";
-import { useState } from "react";
-
-const MONTHLY_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_MONTHLY_PRICE_ID || "";
-const ANNUAL_PRICE_ID = process.env.NEXT_PUBLIC_STRIPE_ANNUAL_PRICE_ID || "";
 
 interface UpgradeModalProps {
   onClose: () => void;
   sessionId: string;
 }
 
-export default function UpgradeModal({ onClose, sessionId }: UpgradeModalProps) {
-  const [loading, setLoading] = useState<string | null>(null);
-  const [error, setError] = useState("");
-
-  const handleUpgrade = async (priceId: string, plan: string) => {
-    setLoading(plan);
-    setError("");
-    try {
-      const res = await fetch("/api/stripe/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId, sessionId }),
-      });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-        return;
-      }
-      setError(data.error || "Payments are not ready yet. Email hello@trimtrack.fit.");
-    } catch (err) {
-      console.error(err);
-      setError("Network error. Please try again.");
-    } finally {
-      setLoading(null);
-    }
-  };
-
+export default function UpgradeModal({ onClose }: UpgradeModalProps) {
   return (
     <div style={{
       position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)",
@@ -46,82 +16,18 @@ export default function UpgradeModal({ onClose, sessionId }: UpgradeModalProps) 
         background: "#fff", borderRadius: "24px", padding: "32px",
         maxWidth: "400px", width: "100%", textAlign: "center"
       }}>
-        <div style={{
-          width: "64px", height: "64px", background: "#1a5c38",
-          borderRadius: "16px", display: "flex", alignItems: "center",
-          justifyContent: "center", margin: "0 auto 16px"
-        }}>
-          <span style={{ fontSize: "28px" }}>📷</span>
-        </div>
-
         <h2 style={{ fontSize: "22px", fontWeight: "700", color: "#0f1f14", marginBottom: "8px" }}>
-          You have used your 3 free scans today
+          It is free while we test
         </h2>
         <p style={{ fontSize: "15px", color: "#666", marginBottom: "24px", lineHeight: "1.5" }}>
-          Upgrade to Premium for unlimited AI food scanning, reminders, and full history.
+          No card. Payments are switched off. Use TrimTrack and tell us what to fix.
         </p>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "20px" }}>
-          <button
-            onClick={() => handleUpgrade(ANNUAL_PRICE_ID, "annual")}
-            disabled={loading !== null}
-            style={{
-              background: "#1a5c38", color: "#b5f23d", border: "none",
-              borderRadius: "14px", padding: "16px", fontSize: "16px",
-              fontWeight: "700", cursor: "pointer", position: "relative"
-            }}
-          >
-            {loading === "annual" ? "Loading..." : (
-              <>
-                <div>Yearly — £3.19/month</div>
-                <div style={{ fontSize: "13px", opacity: 0.85, fontWeight: "400", marginTop: "2px" }}>
-                  Billed £38.28 a year — best value
-                </div>
-                <div style={{
-                  position: "absolute", top: "-10px", right: "12px",
-                  background: "#b5f23d", color: "#1a5c38", fontSize: "11px",
-                  fontWeight: "700", padding: "3px 10px", borderRadius: "100px"
-                }}>SAVE 36%</div>
-              </>
-            )}
-          </button>
-
-          <button
-            onClick={() => handleUpgrade(MONTHLY_PRICE_ID, "monthly")}
-            disabled={loading !== null}
-            style={{
-              background: "#f6fbf8", color: "#1a5c38", border: "2px solid #1a5c38",
-              borderRadius: "14px", padding: "16px", fontSize: "16px",
-              fontWeight: "700", cursor: "pointer"
-            }}
-          >
-            {loading === "monthly" ? "Loading..." : (
-              <>
-                <div>Monthly — £4.99/month</div>
-                <div style={{ fontSize: "13px", color: "#666", fontWeight: "400", marginTop: "2px" }}>
-                  Cancel anytime
-                </div>
-              </>
-            )}
-          </button>
-        </div>
-
-        {error && <p style={{ color: "#b91c1c", fontSize: "13px", marginBottom: "12px" }}>{error}</p>}
-
-        <div style={{ marginBottom: "16px" }}>
-          <div style={{ fontSize: "13px", color: "#888", marginBottom: "8px" }}>What you get:</div>
-          {["Unlimited AI food scanning", "Morning & evening reminders", "Full meal history", "Nigerian + West African foods"].map(f => (
-            <div key={f} style={{ fontSize: "13px", color: "#333", padding: "4px 0", display: "flex", alignItems: "center", gap: "8px", justifyContent: "center" }}>
-              <span style={{ color: "#1a5c38", fontWeight: "700" }}>✓</span> {f}
-            </div>
-          ))}
-        </div>
-
         <button onClick={onClose} style={{
-          background: "none", border: "none", color: "#999",
-          fontSize: "14px", cursor: "pointer", padding: "8px"
+          background: "#1a5c38", color: "#b5f23d", border: "none",
+          borderRadius: "14px", padding: "14px 20px", fontSize: "16px",
+          fontWeight: "700", cursor: "pointer"
         }}>
-          Maybe later - continue with 0 scans left today
+          Back to the diary
         </button>
       </div>
     </div>
