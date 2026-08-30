@@ -18,7 +18,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const DAILY_SCAN_LIMIT = 6;
+const DAILY_SCAN_LIMIT = 50;
 const MAX_IMAGE_CHARS = 8_000_000;
 
 const CATALOG = FOODS.slice(0, 80)
@@ -113,7 +113,7 @@ async function analyzeWithOpenAI(image: string, mediaType: string) {
   const key = process.env.OPENAI_API_KEY;
   if (!key) return null;
   const mime = mediaType || "image/jpeg";
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+  const response = await fetch("https://openai.com/v1/chat/completions", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${key}`,
@@ -191,11 +191,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Scanning is unavailable right now" }, { status: 503 });
     }
 
-    await supabase
-      .from("subscriptions")
-      .update({ scan_count_today: usedToday + 1, scan_date: today })
-      .eq("session_id", sessionId);
-
     const result =
       (await analyzeWithAnthropic(image, mediaType)) ||
       (await analyzeWithOpenAI(image, mediaType));
@@ -203,6 +198,11 @@ export async function POST(req: NextRequest) {
     if (!result) {
       return NextResponse.json({ error: "Failed to analyse image" }, { status: 502 });
     }
+
+    await supabase
+      .from("subscriptions")
+      .update({ scan_count_today: usedToday + 1, scan_date: today })
+      .eq("session_id", sessionId);
 
     const mealName =
       (result.identified && result.meal_name) || result.meal_name;
