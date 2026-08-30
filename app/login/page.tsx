@@ -1,18 +1,24 @@
 "use client";
 import { useState, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
+import AuthShell, { C, inputStyle, labelStyle, btnStyle } from "@/components/AuthShell";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [unconfirmed, setUnconfirmed] = useState<string | null>(null);
+  const [resendState, setResendState] = useState<"idle" | "sending" | "sent" | "fail">("idle");
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const handleLogin = async () => {
     setError("");
-    if (!email || !password) { setError("Please enter your email and password."); return; }
+    setUnconfirmed(null);
+    if (!email || !password) {
+      setError("Please enter your email and password.");
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch("/api/auth/login", {
@@ -30,6 +36,8 @@ function LoginForm() {
           localStorage.setItem("trimtrack_profile", JSON.stringify({ name: data.name, plan: data.plan }));
         }
         router.push("/dashboard");
+      } else if (data.error === "unconfirmed") {
+        setUnconfirmed(data.email || email);
       } else {
         setError(data.error || "Login failed. Please try again.");
       }
@@ -40,47 +48,109 @@ function LoginForm() {
     }
   };
 
+  const handleResend = async () => {
+    if (!unconfirmed) return;
+    setResendState("sending");
+    try {
+      const res = await fetch("/api/trial/resend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: unconfirmed }),
+      });
+      const data = await res.json();
+      if (data.ok) setResendState("sent");
+      else setResendState("fail");
+    } catch {
+      setResendState("fail");
+    }
+  };
+
+  if (unconfirmed) {
+    return (
+      <AuthShell>
+        <div style={{ background: C.card, borderRadius: 20, padding: 32, border: `1px solid ${C.line}`, textAlign: "center" }}>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: C.ink, marginBottom: 8 }}>Confirm your email</h2>
+          <p style={{ color: C.body, fontSize: 14, lineHeight: 1.6, marginBottom: 20 }}>
+            We have an account for <strong style={{ color: C.acc }}>{unconfirmed}</strong>, but the confirmation link has not been clicked yet.
+          </p>
+          {resendState === "sent" ? (
+            <p style={{ color: C.acc, fontSize: 14 }}>Sent. Check your inbox and spam folder.</p>
+          ) : (
+            <button onClick={handleResend} disabled={resendState === "sending"} style={btnStyle(resendState === "sending")}>
+              {resendState === "sending" ? "Sending..." : "Resend confirmation"}
+            </button>
+          )}
+          {resendState === "fail" && (
+            <p style={{ color: C.danger, fontSize: 13, marginTop: 12 }}>Could not send it just now. Try again in a minute.</p>
+          )}
+          <button
+            onClick={() => setUnconfirmed(null)}
+            style={{ background: "none", border: "none", color: C.mut, marginTop: 20, cursor: "pointer", fontWeight: 600 }}
+          >
+            Back to login
+          </button>
+        </div>
+      </AuthShell>
+    );
+  }
+
   return (
-    <div style={{ minHeight: "100vh", background: "#f6fbf8", display: "flex", alignItems: "center", justifyContent: "center", padding: "16px" }}>
-      <div style={{ maxWidth: "420px", width: "100%", boxSizing: "border-box" }}>
-        <div style={{ textAlign: "center", marginBottom: "28px" }}>
-          <a href="/" style={{ textDecoration: "none" }}>
-            <span style={{ fontWeight: 800, fontSize: "22px", color: "#1a5c38" }}>TrimTrack</span>
+    <AuthShell>
+      <div style={{ background: C.card, borderRadius: 20, padding: 32, border: `1px solid ${C.line}` }}>
+        <h2 style={{ fontSize: 22, fontWeight: 800, color: C.ink, marginBottom: 8 }}>Welcome back</h2>
+        <p style={{ color: C.mut, fontSize: 14, marginBottom: 28 }}>Log in to continue tracking your calories.</p>
+        <div style={{ marginBottom: 16 }}>
+          <label style={labelStyle}>Email address</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setError("");
+            }}
+            onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+            placeholder="you@email.com"
+            style={inputStyle}
+          />
+        </div>
+        <div style={{ marginBottom: 8 }}>
+          <label style={labelStyle}>Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setError("");
+            }}
+            onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+            placeholder="Your password"
+            style={inputStyle}
+          />
+        </div>
+        <div style={{ textAlign: "right", marginBottom: 20 }}>
+          <a href="/forgot-password" style={{ fontSize: 13, color: C.acc, textDecoration: "none" }}>
+            Forgot password?
           </a>
         </div>
-        <div style={{ background: "white", borderRadius: "20px", padding: "32px", border: "1px solid #e5e7eb" }}>
-          <h2 style={{ fontSize: "22px", fontWeight: "800", color: "#0f1f14", marginBottom: "8px" }}>Welcome back</h2>
-          <p style={{ color: "#666", fontSize: "14px", marginBottom: "28px" }}>Log in to continue tracking your calories.</p>
-          <div style={{ marginBottom: "16px" }}>
-            <label style={{ fontSize: "13px", fontWeight: "600", color: "#333", display: "block", marginBottom: "6px" }}>Email address</label>
-            <input type="email" value={email} onChange={e => { setEmail(e.target.value); setError(""); }}
-              onKeyDown={e => e.key === "Enter" && handleLogin()} placeholder="you@email.com"
-              style={{ width: "100%", padding: "12px 14px", borderRadius: "10px", border: "1.5px solid #e5e7eb", fontSize: "15px", outline: "none", boxSizing: "border-box" }} />
-          </div>
-          <div style={{ marginBottom: "8px" }}>
-            <label style={{ fontSize: "13px", fontWeight: "600", color: "#333", display: "block", marginBottom: "6px" }}>Password</label>
-            <input type="password" value={password} onChange={e => { setPassword(e.target.value); setError(""); }}
-              onKeyDown={e => e.key === "Enter" && handleLogin()} placeholder="Your password"
-              style={{ width: "100%", padding: "12px 14px", borderRadius: "10px", border: "1.5px solid #e5e7eb", fontSize: "15px", outline: "none", boxSizing: "border-box" }} />
-          </div>
-          <div style={{ textAlign: "right", marginBottom: "20px" }}>
-            <a href="/forgot-password" style={{ fontSize: "13px", color: "#1a5c38", textDecoration: "none" }}>Forgot password?</a>
-          </div>
-          {error && <p style={{ color: "#dc2626", fontSize: "13px", marginBottom: "16px" }}>{error}</p>}
-          <button onClick={handleLogin} disabled={loading}
-            style={{ width: "100%", padding: "15px", background: loading ? "#2d8a56" : "#1a5c38", color: "#b5f23d", border: "none", borderRadius: "12px", fontSize: "16px", fontWeight: "700", cursor: loading ? "not-allowed" : "pointer", marginBottom: "16px" }}>
-            {loading ? "Logging in..." : "Log in"}
-          </button>
-          <p style={{ textAlign: "center", color: "#888", fontSize: "13px" }}>
-            No account yet?{" "}
-            <a href="/trial" style={{ color: "#1a5c38", fontWeight: "600", textDecoration: "none" }}>Start free trial</a>
-          </p>
-        </div>
+        {error && <p style={{ color: C.danger, fontSize: 13, marginBottom: 16 }}>{error}</p>}
+        <button onClick={handleLogin} disabled={loading} style={{ ...btnStyle(loading), marginBottom: 16 }}>
+          {loading ? "Logging in..." : "Log in"}
+        </button>
+        <p style={{ textAlign: "center", color: C.mut, fontSize: 13 }}>
+          No account yet?{" "}
+          <a href="/trial" style={{ color: C.acc, fontWeight: 600, textDecoration: "none" }}>
+            Start free trial
+          </a>
+        </p>
       </div>
-    </div>
+    </AuthShell>
   );
 }
 
 export default function LoginPage() {
-  return <Suspense><LoginForm /></Suspense>;
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
+  );
 }
