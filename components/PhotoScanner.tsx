@@ -18,10 +18,12 @@ interface ScanResult {
 interface PhotoScannerProps {
   onAdd: (meal: { food_name: string; kcal: number; protein: number; carbs: number; fat: number }) => void
   mealType: string
+  autoOpen?: boolean
+  onClose?: () => void
 }
 
-export default function PhotoScanner({ onAdd, mealType }: PhotoScannerProps) {
-  const [open, setOpen] = useState(false)
+export default function PhotoScanner({ onAdd, mealType, autoOpen = false, onClose }: PhotoScannerProps) {
+  const [open, setOpen] = useState(autoOpen)
   const [scanning, setScanning] = useState(false)
   const [result, setResult] = useState<ScanResult | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
@@ -67,9 +69,7 @@ export default function PhotoScanner({ onAdd, mealType }: PhotoScannerProps) {
       carbs: result.carbs || 0,
       fat: result.fat || 0,
     })
-    setOpen(false)
-    setResult(null)
-    setPreview(null)
+    close()
   }
 
   function reset() {
@@ -79,9 +79,15 @@ export default function PhotoScanner({ onAdd, mealType }: PhotoScannerProps) {
     setScanning(false)
   }
 
+  function close() {
+    setOpen(false)
+    reset()
+    onClose?.()
+  }
+
   return (
     <>
-      {/* Trigger Button */}
+      {!autoOpen && (
       <button
         onClick={() => setOpen(true)}
         className="flex items-center gap-2 px-4 py-2.5 bg-[#b5f23d] text-[#0a1310] rounded-full text-sm font-semibold hover:bg-[#8dc42a] transition-colors"
@@ -92,6 +98,7 @@ export default function PhotoScanner({ onAdd, mealType }: PhotoScannerProps) {
         </svg>
         Scan Food
       </button>
+      )}
 
       {/* Modal */}
       <AnimatePresence>
@@ -110,7 +117,7 @@ export default function PhotoScanner({ onAdd, mealType }: PhotoScannerProps) {
                   <div className="font-bold text-white">Scan your meal</div>
                   <div className="text-xs text-[#5f7269] mt-0.5">Adding to {mealType}</div>
                 </div>
-                <button onClick={() => { setOpen(false); reset(); }}
+                <button onClick={close}
                   className="w-8 h-8 rounded-full bg-[#0e1e16] flex items-center justify-center text-[#8a9a92] hover:bg-[#1f3a2b]">
                   ×
                 </button>
