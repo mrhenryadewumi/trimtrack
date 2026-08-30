@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
+import LaunchBanner from '@/components/LaunchBanner'
 
 export const metadata: Metadata = {
   title: 'TrimTrack - The calorie tracker that understands your food',
@@ -49,6 +50,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body className="min-h-screen bg-[#0a1310] text-white">
+        <LaunchBanner />
         {children}
         <script dangerouslySetInnerHTML={{ __html: `
           if ('serviceWorker' in navigator) {
