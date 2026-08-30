@@ -140,7 +140,7 @@ function PhoneMock() {
         }}
       >
         <span style={{ fontFamily: UI, fontWeight: 800, fontSize: 14, color: C.bg, flex: 1 }}>Ask Trim anything</span>
-        <span style={{ fontFamily: UI, fontWeight: 800, fontSize: 16, color: C.bg }}>{{">"}}</span>
+        <span style={{ fontFamily: UI, fontWeight: 800, fontSize: 16, color: C.bg }}>{String.fromCharCode(62)}</span>
       </div>
 
       <div style={{ fontFamily: UI, fontWeight: 800, fontSize: 10, letterSpacing: "0.12em", color: C.faint, margin: "16px 0 8px" }}>
