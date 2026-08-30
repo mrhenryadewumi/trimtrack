@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { FOODS } from "@/lib/foods";
+import { resolveScanNutrition } from "@/lib/nutrition-lookup";
 
 /**
  * Meal photo scanning.
@@ -48,14 +49,14 @@ If you cannot identify food:
 }
 
 Visual rules - do not mix these up:
-- Akara: golden-brown deep-fried black-eyed pea fritters (balls). Not a mixed rice spread.
+- Akara: irregular craggy deep-fried black-eyed pea fritters. Not puff puff, not rice.
 - Egusi: thick orange melon-seed soup with greens, usually beside swallow (pounded yam, eba, fufu). Never a plate of rice.
 - Moin moin / moi moi: smooth steamed orange-red bean pudding, often with egg inside. Not a stew.
 - Jollof: smoky orange-red rice, often with chicken or plantain.
 - Suya: spiced grilled meat skewers with yaji, usually with onion.
 
-Estimate for a typical single serving as served at home, not a lab 100g.
-If multiple foods are visible, estimate the total.
+Name the dish. Do not invent calorie numbers - tables fill those in after.
+If multiple foods are visible, name the main plate.
 Prefer names from this list when they match: ${CATALOG}`;
 
 function parseScanJson(text: string) {
@@ -201,6 +202,20 @@ export async function POST(req: NextRequest) {
 
     if (!result) {
       return NextResponse.json({ error: "Failed to analyse image" }, { status: 502 });
+    }
+
+    const mealName =
+      (result.identified && result.meal_name) || result.meal_name;
+    if (result.identified && mealName) {
+      const table = await resolveScanNutrition(String(mealName));
+      result.meal_name = table.meal_name;
+      result.kcal = table.kcal;
+      result.protein = table.protein;
+      result.carbs = table.carbs;
+      result.fat = table.fat;
+      result.source = table.source;
+      result.estimate = table.estimate;
+      result.notes = table.source;
     }
 
     return NextResponse.json({
