@@ -203,7 +203,7 @@ export default function Dashboard() {
                     <div style={{ fontSize: "10px", color: faint, textTransform: "capitalize" as const }}>{meal.meal_type}</div>
                   </div>
                   <div style={{ fontFamily: NUM, fontSize: "14px", fontWeight: 700, color: acc }}>{meal.kcal}</div>
-                  <button onClick={() => removeMeal(meal.id, i)} style={{ background: "transparent", border: "none", color: faint, cursor: "pointer", padding: "4px 6px", fontSize: "16px", minHeight: "auto", lineHeight: 1 }}>{"\u00D7"}</button>
+                  <button onClick={() => removeMeal(meal.id, i)} style={{ background: "transparent", border: "none", color: faint, cursor: "pointer", padding: "4px 6px", fontSize: "16px", minHeight: "auto", lineHeight: 1 }}>{{"\u00D7"}}</button>
                 </div>
               ))}
             </div>
@@ -223,7 +223,12 @@ export default function Dashboard() {
       </nav>
 
       {showScanner && (
-        <PhotoScanner mealType={activeMeal} onAdd={(food: any) => { addFood(food); setShowScanner(false); }} />
+        <PhotoScanner
+          autoOpen
+          mealType={activeMeal}
+          onAdd={(food: any) => { addFood(food); setShowScanner(false); }}
+          onClose={() => setShowScanner(false)}
+        />
       )}
     </div>
   );
