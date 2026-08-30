@@ -1,14 +1,14 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
   title: 'TrimTrack - The calorie tracker that understands your food',
   description: 'AI-powered calorie tracking built for Nigerian and African food. Scan your meal, get instant calories, and lose weight eating food you love. Free 30-day trial.',
-  keywords: ['calorie tracker', 'African food', 'African food', 'weight loss app', 'AI food scanner', 'jollof rice calories', 'egusi calories', 'Nigerian diet'],
+  keywords: ['calorie tracker', 'African food', 'Nigerian food', 'weight loss app', 'AI food scanner', 'jollof rice calories', 'egusi calories', 'Nigerian diet'],
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'default',
+    statusBarStyle: 'black-translucent',
     title: 'TrimTrack',
   },
   openGraph: {
@@ -29,6 +29,13 @@ export const metadata: Metadata = {
   },
 }
 
+export const viewport: Viewport = {
+  themeColor: '#0a1310',
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+}
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -36,12 +43,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="theme-color" content="#0a1310" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="TrimTrack" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className="min-h-screen bg-[#0a1310]">
+      <body className="min-h-screen bg-[#0a1310] text-white">
         {children}
         <script dangerouslySetInnerHTML={{ __html: `
           if ('serviceWorker' in navigator) {
@@ -56,6 +63,3 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   )
 }
-
-
-
