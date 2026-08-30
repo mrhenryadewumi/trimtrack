@@ -1,8 +1,7 @@
 "use client";
-import { useState } from "react";
 import Link from "next/link";
 
-// Marketing page only — routes and the signup flow are untouched.
+// Marketing page only - routes and the signup flow are untouched.
 // Palette is the mobile app's, exactly.
 const C = {
   bg: "#0a1310",
@@ -117,7 +116,7 @@ function PhoneMock() {
           </div>
           <div style={{ background: C.accBg, border: `1px solid ${C.accLine}`, borderRadius: 99, padding: "5px 10px" }}>
             <span style={{ fontFamily: UI, fontWeight: 600, fontSize: 12, color: C.acc }}>
-              <span style={{ fontFamily: NUM, fontWeight: 700 }}>83%</span> · on track
+              <span style={{ fontFamily: NUM, fontWeight: 700 }}>83%</span> | on track
             </span>
           </div>
         </div>
@@ -141,7 +140,7 @@ function PhoneMock() {
         }}
       >
         <span style={{ fontFamily: UI, fontWeight: 800, fontSize: 14, color: C.bg, flex: 1 }}>Ask Trim anything</span>
-        <span style={{ fontFamily: UI, fontWeight: 800, fontSize: 16, color: C.bg }}>›</span>
+        <span style={{ fontFamily: UI, fontWeight: 800, fontSize: 16, color: C.bg }}>{{">"}}</span>
       </div>
 
       <div style={{ fontFamily: UI, fontWeight: 800, fontSize: 10, letterSpacing: "0.12em", color: C.faint, margin: "16px 0 8px" }}>
@@ -192,52 +191,33 @@ function LogoMark() {
 
 const STEPS = [
   { n: "01", title: "Point the camera", body: "One photo of the plate. It reads the dish, not a barcode, so it works on food that never came in a packet." },
-  { n: "02", title: "Correct anything", body: "The estimate is a starting point. Tap any number and change it — your correction is what gets saved." },
-  { n: "03", title: "See what's left", body: "The ring shows the calories still available today, and the macro bars show where they should come from." },
+  { n: "02", title: "Correct anything", body: "The estimate is a starting point. Tap any number and change it - your correction is what gets saved." },
+  { n: "03", title: "See what is left", body: "The ring shows the calories still available today, and the macro bars show where they should come from." },
 ];
 
 const FOODS = ["Jollof rice", "Egusi", "Akara", "Pounded yam", "Suya", "Moin moin", "Pepper soup"];
 
 const SEARCH_RESULTS = [
-  { name: "Egusi soup", detail: "1 bowl · 285 kcal" },
-  { name: "Egusi with eba", detail: "1 plate · 640 kcal" },
-  { name: "Egusi with pounded yam", detail: "1 plate · 680 kcal" },
-  { name: "Egusi (melon seed) raw", detail: "100 g · 557 kcal" },
+  { name: "Egusi soup", detail: "1 bowl | 285 kcal" },
+  { name: "Egusi with eba", detail: "1 plate | 640 kcal" },
+  { name: "Egusi with pounded yam", detail: "1 plate | 680 kcal" },
+  { name: "Egusi (melon seed) raw", detail: "100 g | 557 kcal" },
 ];
 
 const CHAT = [
   { from: "user", text: "Why has the scale not moved this week?" },
-  { from: "coach", text: "Your average is 1,610 a day against a 1,500 target — close, but not under. Tuesday and Thursday were the heavy ones, both dinners over 800." },
+  { from: "coach", text: "Your average is 1,610 a day against a 1,500 target - close, but not under. Tuesday and Thursday were the heavy ones, both dinners over 800." },
   { from: "user", text: "So cut dinner?" },
   { from: "coach", text: "Or move some of it to lunch. You logged nothing before 2pm on both days, which is usually what makes dinner large." },
 ];
 
 const POSTS = [
-  { who: "Chidi A.", day: "Day 12", text: "Weighed in this morning, same as last week. Annoying, but I logged every day so at least I know why — three takeaways.", cheers: 14 },
+  { who: "Chidi A.", day: "Day 12", text: "Weighed in this morning, same as last week. Annoying, but I logged every day so at least I know why - three takeaways.", cheers: 14 },
   { who: "Bola T.", day: "Day 31", text: "Made moin moin in a batch on Sunday and it carried me through four lunches. Logging took ten seconds each time.", cheers: 22 },
-  { who: "Femi O.", day: "Day 6", text: "First week done. Nothing dramatic to report — mostly surprised by how much the evening snacking added up.", cheers: 9 },
+  { who: "Femi O.", day: "Day 6", text: "First week done. Nothing dramatic to report - mostly surprised by how much the evening snacking added up.", cheers: 9 },
 ];
 
 export default function Home() {
-  const [email, setEmail] = useState("");
-  const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
-
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!email.includes("@") || state === "sending") return;
-    setState("sending");
-    try {
-      const res = await fetch("/api/waitlist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-      setState(res.ok ? "done" : "error");
-    } catch {
-      setState("error");
-    }
-  }
-
   return (
     <div style={{ background: C.bg, minHeight: "100vh", fontFamily: UI }}>
       <style>{`
@@ -248,18 +228,14 @@ export default function Home() {
         h1, h2, h3 { letter-spacing: -.03em; font-weight: 800; margin: 0; }
         p { line-height: 1.65; }
         a { text-decoration: none; }
-        .heroform { display: flex; gap: 10px; }
-        .heroform input { flex: 1; min-width: 0; }
         @media (max-width: 900px) {
           .two { grid-template-columns: 1fr; gap: 36px; }
           .three { grid-template-columns: 1fr; }
           .navlinks { display: none; }
           .phonecol { order: 2; display: flex; justify-content: center; }
-          .heroform { flex-direction: column; }
         }
       `}</style>
 
-      {/* 1 — Nav */}
       <nav style={{ borderBottom: `1px solid ${C.line}` }}>
         <div className="wrap" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 76 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -272,15 +248,14 @@ export default function Home() {
             <a href="#circle" style={{ color: C.body, fontSize: 15, fontWeight: 600 }}>Circle</a>
           </div>
           <a
-            href="#early"
+            href="/trial"
             style={{ background: C.acc, color: C.bg, fontWeight: 700, fontSize: 15, padding: "11px 18px", borderRadius: 99 }}
           >
-            Get early access
+            Create a free account
           </a>
         </div>
       </nav>
 
-      {/* 2 — Hero */}
       <section className="wrap" style={{ padding: "72px 24px 88px" }} id="early">
         <div className="two">
           <div>
@@ -296,7 +271,7 @@ export default function Home() {
                 borderRadius: 99,
               }}
             >
-              Free for 30 days · no card
+              Free while we test
             </span>
 
             <h1 style={{ fontSize: 52, lineHeight: 1.05, color: C.ink, margin: "22px 0 18px" }}>
@@ -304,64 +279,43 @@ export default function Home() {
             </h1>
 
             <p style={{ fontSize: 17, color: C.body, margin: "0 0 28px" }}>
-              TrimTrack knows jollof, egusi, akara, pounded yam and suya — the way they are actually
+              TrimTrack knows jollof, egusi, akara, pounded yam and suya - the way they are actually
               cooked and actually served. Photograph the plate and it reads the dish, not a barcode.
             </p>
 
-            <form className="heroform" onSubmit={onSubmit}>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                aria-label="Email address"
-                style={{
-                  background: C.card,
-                  border: `1px solid ${C.line2}`,
-                  borderRadius: 14,
-                  padding: "15px 16px",
-                  color: C.ink,
-                  fontFamily: UI,
-                  fontSize: 16,
-                  outline: "none",
-                }}
-              />
-              <button
-                type="submit"
-                disabled={state === "sending" || state === "done"}
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <Link
+                href="/trial"
                 style={{
                   background: C.acc,
                   color: C.bg,
                   fontFamily: UI,
                   fontWeight: 700,
                   fontSize: 16,
-                  border: "none",
                   borderRadius: 14,
                   padding: "15px 22px",
-                  cursor: "pointer",
-                  opacity: state === "sending" ? 0.6 : 1,
-                  whiteSpace: "nowrap",
                 }}
               >
-                {state === "done" ? "You're on the list" : state === "sending" ? "Sending…" : "Tell me when it's out"}
-              </button>
-            </form>
-
-            {state === "error" && (
-              <p style={{ fontSize: 14, color: C.fat, margin: "10px 0 0" }}>
-                That didn&apos;t send. Try again in a moment.
-              </p>
-            )}
+                Create a free account
+              </Link>
+              <Link
+                href="/login"
+                style={{
+                  border: `1px solid ${C.line2}`,
+                  color: C.body,
+                  fontFamily: UI,
+                  fontWeight: 700,
+                  fontSize: 16,
+                  borderRadius: 14,
+                  padding: "15px 22px",
+                }}
+              >
+                Log in
+              </Link>
+            </div>
 
             <p style={{ fontSize: 14, color: C.mut, margin: "16px 0 0" }}>
-              Landing on the App Store and Google Play in August. iPhone and Android, UK &amp; Nigeria.
-            </p>
-            <p style={{ fontSize: 14, color: C.mut, margin: "8px 0 0" }}>
-              Or{" "}
-              <Link href="/trial" style={{ color: C.acc, fontWeight: 700 }}>
-                start free on the web today
-              </Link>{" "}
-              — your account carries over.
+              Same account on the web and on Android. No card. We will not charge you while we test.
             </p>
           </div>
 
@@ -371,7 +325,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3 — How it works */}
       <section id="how" style={{ borderTop: `1px solid ${C.line}`, background: C.deep }}>
         <div className="wrap" style={{ padding: "72px 24px" }}>
           <h2 style={{ fontSize: 34, color: C.ink, marginBottom: 10 }}>Three taps, not a spreadsheet</h2>
@@ -390,7 +343,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4 — The food database */}
       <section id="food" className="wrap" style={{ padding: "80px 24px" }}>
         <div className="two">
           <div>
@@ -398,7 +350,7 @@ export default function Home() {
             <p style={{ fontSize: 17, color: C.body, margin: "0 0 24px" }}>
               Most databases were built from American supermarket shelves, so a plate of egusi and
               pounded yam comes back as &quot;stew&quot; and a guess. Ours starts from the dishes
-              themselves — portions as they are served at home, not as a lab weighs them.
+              themselves - portions as they are served at home, not as a lab weighs them.
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 9 }}>
               {FOODS.map((f) => (
@@ -486,7 +438,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5 — The coach */}
       <section style={{ borderTop: `1px solid ${C.line}`, background: C.deep }}>
         <div className="wrap two" style={{ padding: "80px 24px" }}>
           <div style={{ background: C.card, border: `1px solid ${C.line}`, borderRadius: 22, padding: 18 }}>
@@ -514,7 +465,7 @@ export default function Home() {
           <div>
             <h2 style={{ fontSize: 34, color: C.ink, marginBottom: 14 }}>A coach that has read your diary</h2>
             <p style={{ fontSize: 17, color: C.body, margin: "0 0 18px" }}>
-              Ask it anything and it answers with your actual week in front of it — what you logged,
+              Ask it anything and it answers with your actual week in front of it - what you logged,
               when you logged it, and where the calories went. No generic advice about drinking more
               water.
             </p>
@@ -526,7 +477,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 6 — Circle */}
       <section id="circle" className="wrap" style={{ padding: "80px 24px", textAlign: "center" }}>
         <h2 style={{ fontSize: 34, color: C.ink, marginBottom: 12 }}>Real numbers. Real setbacks. No gym lighting.</h2>
         <p style={{ fontSize: 17, color: C.mut, margin: "0 auto 36px", maxWidth: "56ch" }}>
@@ -561,14 +511,13 @@ export default function Home() {
               </div>
               <p style={{ fontSize: 15, color: C.body, margin: "0 0 14px" }}>{p.text}</p>
               <div style={{ fontFamily: NUM, fontSize: 13, color: C.faint }}>
-                <span style={{ color: C.acc }}>♥</span> {p.cheers}
+                <span style={{ color: C.acc }}>+</span> {p.cheers}
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* 7 — Closing CTA */}
       <section className="wrap" style={{ padding: "0 24px 88px" }}>
         <div
           style={{
@@ -581,19 +530,17 @@ export default function Home() {
         >
           <h2 style={{ fontSize: 38, color: C.ink, marginBottom: 12 }}>Start tonight. It takes one plate.</h2>
           <p style={{ fontSize: 17, color: C.body, margin: "0 auto 28px", maxWidth: "52ch" }}>
-            Thirty days free, no card. After that it is{" "}
-            <span style={{ fontFamily: NUM, fontWeight: 700, color: C.ink }}>£4.99</span> a month, or{" "}
-            <span style={{ fontFamily: NUM, fontWeight: 700, color: C.ink }}>£3.19</span> a month billed yearly.
+            Free while we test. No card. Same account on the web and on Android.
           </p>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <Link
               href="/trial"
               style={{ background: C.acc, color: C.bg, fontWeight: 700, fontSize: 16, padding: "15px 26px", borderRadius: 14 }}
             >
-              Start free on the web
+              Create a free account
             </Link>
-            <a
-              href="#early"
+            <Link
+              href="/login"
               style={{
                 border: `1px solid ${C.line2}`,
                 color: C.body,
@@ -603,13 +550,12 @@ export default function Home() {
                 borderRadius: 14,
               }}
             >
-              Get the app at launch
-            </a>
+              Log in
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* 8 — Footer */}
       <footer style={{ borderTop: `1px solid ${C.line}`, background: C.deep }}>
         <div className="wrap two" style={{ padding: "48px 24px", alignItems: "start" }}>
           <div>
