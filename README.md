@@ -30,6 +30,16 @@ Fill `.env.local` with Supabase and Resend keys. Stripe keys are unused while pa
 - Native `/signup` deep links redirect to `/trial` so the mobile route and the website agree.
 - Payments are switched off. Checkout will not take money.
 
+## Tests
+
+```bash
+npm test          # source guards: no broken JSX, no prices, payments off, food catalog
+npm run test:types
+npm run test:live # hits www.trimtrack.fit
+```
+
+GitHub Actions runs `npm test` and TypeScript on every push, so a homepage crash like the broken arrow fails on GitHub before Vercel tries to build it.
+
 ## Current product
 
 - 4-step onboarding with BMR / TDEE calorie goal
