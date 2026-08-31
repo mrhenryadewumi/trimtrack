@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "node --test tests/v1.test.mjs",
+    "test:types": "tsc --noEmit",
+    "test:live": "node tests/live-smoke.mjs"
   },
   "dependencies": {
     "@stripe/stripe-js": "^9.1.0",
