@@ -1,7 +1,6 @@
-const CACHE_NAME = 'trimtrack-v4'
+const CACHE_NAME = 'trimtrack-v5'
+// Do not precache HTML. An old cached '/' is why some phones still show the waitlist.
 const STATIC_ASSETS = [
-  '/', '/dashboard', '/community', '/coach', '/onboarding',
-  '/login', '/profile', '/statements', '/trial',
   '/manifest.json', '/icon-192.png', '/icon-512.png',
 ]
 
@@ -28,10 +27,8 @@ self.addEventListener('fetch', (event) => {
     (event.request.headers.get('accept') || '').includes('text/html')
 
   if (isNavigation) {
-    // Network-first: returning visitors always get the latest deploy's HTML.
-    // Cache is only a fallback for when the network is unavailable.
     event.respondWith(
-      fetch(event.request)
+      fetch(event.request, { cache: 'no-store' })
         .then((response) => {
           if (response.ok) {
             const clone = response.clone()
@@ -44,7 +41,6 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  // Cache-first for static assets.
   event.respondWith(
     caches.match(event.request).then((cached) => {
       if (cached) return cached
@@ -59,9 +55,8 @@ self.addEventListener('fetch', (event) => {
   )
 })
 
-// --- Push notifications (daily reminders) ---
 self.addEventListener('push', (event) => {
-  let data = { title: 'TrimTrack', body: 'Time to log your meal 🍽️' }
+  let data = { title: 'TrimTrack', body: 'Time to log your meal' }
   try { if (event.data) data = { ...data, ...event.data.json() } } catch (e) {}
   event.waitUntil(
     self.registration.showNotification(data.title, {
@@ -85,18 +80,10 @@ self.addEventListener('notificationclick', (event) => {
   )
 })
 
-// --- Background Sync (retry failed meal logs) ---
 self.addEventListener('sync', (event) => {
   if (event.tag === 'sync-meals') {
     event.waitUntil(
-      self.registration.showNotification('TrimTrack', { body: 'Your meals are synced ✅', icon: '/icon-192.png' })
+      self.registration.showNotification('TrimTrack', { body: 'Your meals are synced', icon: '/icon-192.png' })
     )
-  }
-})
-
-// --- Periodic Sync (refresh daily goal) ---
-self.addEventListener('periodicsync', (event) => {
-  if (event.tag === 'refresh-day') {
-    event.waitUntil(caches.open(CACHE_NAME).then((c) => c.add('/dashboard')))
   }
 })
