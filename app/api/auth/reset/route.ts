@@ -54,6 +54,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true });
   } catch (err: any) {
     console.error("Reset password error:", err);
-    return NextResponse.json({ ok: false, error: err.message }, { status: 500 });
+    return (console.error(err), NextResponse.json({ ok: false, error: "Server error" }, { status: 500 }));
   }
 }

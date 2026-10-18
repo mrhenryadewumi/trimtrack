@@ -151,12 +151,12 @@ export async function POST(req: NextRequest) {
 
     if (error) {
       console.error("Profile upsert error:", error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return (console.error(error), NextResponse.json({ error: "Server error" }, { status: 500 }));
     }
 
     return NextResponse.json({ ok: true });
   } catch (err: any) {
     console.error("Profile POST error:", err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return (console.error(err), NextResponse.json({ error: "Server error" }, { status: 500 }));
   }
 }

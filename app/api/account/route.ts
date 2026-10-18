@@ -111,7 +111,7 @@ export async function DELETE(req: NextRequest) {
 
     if (error) {
       console.error("Account delete error:", error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return (console.error(error), NextResponse.json({ error: "Server error" }, { status: 500 }));
     }
 
     return clearedResponse({ ok: true, deleted: existed });

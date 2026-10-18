@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { sessionExists } from "@/lib/requireSession";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -25,7 +26,7 @@ export async function GET(req: NextRequest) {
     if (error) throw error;
     return NextResponse.json({ meals: data || [] });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return (console.error(err), NextResponse.json({ error: "Server error" }, { status: 500 }));
   }
 }
 
@@ -57,6 +58,7 @@ export async function POST(req: NextRequest) {
     const sessionId = cookieSession || body.session_id;
 
     if (!sessionId) return NextResponse.json({ error: "Missing session" }, { status: 400 });
+    if (!(await sessionExists(supabase, sessionId))) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
     // Optional back-dating, so a meal missed yesterday can still be logged.
     // Bounded to the last 90 days and never the future.
@@ -92,7 +94,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true, data });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return (console.error(err), NextResponse.json({ error: "Server error" }, { status: 500 }));
   }
 }
 
@@ -129,7 +131,7 @@ export async function DELETE(req: NextRequest) {
     await rebuildStatement(sessionId, meal.date);
     return NextResponse.json({ ok: true });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return (console.error(err), NextResponse.json({ error: "Server error" }, { status: 500 }));
   }
 }
 

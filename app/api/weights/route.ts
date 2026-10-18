@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { sessionExists } from "@/lib/requireSession";
 
 // Service-role, like every other route here. This used to build an anon
 // client, so writes to weight_log went through row-level security and were
@@ -43,7 +44,7 @@ export async function GET(req: NextRequest) {
 
     if (error) {
       console.error('Weights GET error:', error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      return (console.error(error), NextResponse.json({ error: "Server error" }, { status: 500 }))
     }
     return NextResponse.json({ data })
   } catch (err: any) {
@@ -60,6 +61,7 @@ export async function POST(req: NextRequest) {
 
     if (!sessionId || !weight) return NextResponse.json({ error: 'Missing fields' }, { status: 400 })
     if (weight < 30 || weight > 300) return NextResponse.json({ error: 'Invalid weight' }, { status: 400 })
+    if (!(await sessionExists(supabase, sessionId))) return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
 
     // Optional back-dating for a missed weigh-in, bounded the same way meals
     // are. One row per day either way: the upsert replaces that day's entry.
@@ -81,7 +83,7 @@ export async function POST(req: NextRequest) {
       // The blanket 500 this used to return is what made the RLS rejection so
       // hard to place; pass the real reason back.
       console.error('Weights POST error:', error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      return (console.error(error), NextResponse.json({ error: "Server error" }, { status: 500 }))
     }
     return NextResponse.json({ data })
   } catch (err: any) {
