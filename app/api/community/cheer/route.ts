@@ -36,6 +36,6 @@ export async function POST(req: NextRequest) {
     await supabase.from("community_cheers").insert({ post_id: body.post_id, session_id: sessionId });
     return NextResponse.json({ ok: true, cheered: true });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return (console.error(err), NextResponse.json({ error: "Server error" }, { status: 500 }));
   }
 }

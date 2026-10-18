@@ -67,7 +67,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ posts: enriched });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return (console.error(err), NextResponse.json({ error: "Server error" }, { status: 500 }));
   }
 }
 
@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
     if (error) throw error;
     return NextResponse.json({ ok: true, post: data });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return (console.error(err), NextResponse.json({ error: "Server error" }, { status: 500 }));
   }
 }
 
@@ -111,6 +111,6 @@ export async function DELETE(req: NextRequest) {
     if (error) throw error;
     return NextResponse.json({ ok: true });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return (console.error(err), NextResponse.json({ error: "Server error" }, { status: 500 }));
   }
 }

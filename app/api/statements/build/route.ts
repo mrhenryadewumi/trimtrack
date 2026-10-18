@@ -92,6 +92,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ ok: true, built });
   } catch (err: any) {
     console.error("Statement build error:", err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return (console.error(err), NextResponse.json({ error: "Server error" }, { status: 500 }));
   }
 }

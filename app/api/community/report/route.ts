@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     // 23505 is the unique index: already reported by this person.
     if (error && error.code !== "23505") {
       console.error("Report insert error:", error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return (console.error(error), NextResponse.json({ error: "Server error" }, { status: 500 }));
     }
 
     return NextResponse.json({ ok: true });

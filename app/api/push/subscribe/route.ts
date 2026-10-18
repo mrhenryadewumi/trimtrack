@@ -1,6 +1,7 @@
 ﻿export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { sessionExists } from "@/lib/requireSession";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -13,6 +14,7 @@ export async function POST(req: NextRequest) {
     const sessionId = req.cookies.get("trimtrack_session")?.value || body.session_id;
     const sub = body.subscription;
     if (!sessionId || !sub?.endpoint) return NextResponse.json({ error: "Missing params" }, { status: 400 });
+    if (!(await sessionExists(supabase, sessionId))) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
     const { error } = await supabase
       .from("push_subscriptions")
@@ -20,6 +22,6 @@ export async function POST(req: NextRequest) {
     if (error) throw error;
     return NextResponse.json({ ok: true });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return (console.error(err), NextResponse.json({ error: "Server error" }, { status: 500 }));
   }
 }

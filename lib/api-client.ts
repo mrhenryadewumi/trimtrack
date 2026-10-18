@@ -80,20 +80,3 @@ export async function fetchWeights() {
   return res.json()
 }
 
-// ── REMINDERS ─────────────────────────────────────────────────
-export async function sendReminder(params: {
-  type: 'morning' | 'evening'
-  email: string
-  name: string
-  daily_goal: number
-  breakfast?: string
-  avoid?: string[]
-  eaten?: number
-}) {
-  const res = await fetch('/api/reminders', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(params),
-  })
-  return res.json()
-}

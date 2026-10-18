@@ -26,7 +26,7 @@ export function middleware(request: NextRequest) {
       "img-src 'self' data: blob: https:",
       "connect-src 'self' https://api.anthropic.com https://api.openai.com https://api.nal.usda.gov https://*.supabase.co https://world.openfoodfacts.org https://*.openfoodfacts.org https://api.stripe.com https://api.resend.com https://*.vercel.app https://www.trimtrack.fit https://trimtrack.fit",
       "frame-src https://js.stripe.com https://hooks.stripe.com",
-      "frame-ancestors 'self' https://grok.com https://*.grok.com https://grok.x.ai https://*.x.ai https://x.com https://*.x.com",
+      "frame-ancestors 'self'",
       "object-src 'none'",
       "base-uri 'self'",
     ].join("; ")
